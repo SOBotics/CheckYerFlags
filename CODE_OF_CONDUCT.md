@@ -20,6 +20,7 @@ Examples of unacceptable behavior by participants include:
 * Trolling, insulting/derogatory comments, and personal or political attacks
 * Public or private harassment
 * Publishing others' private information, such as a physical or electronic address, without explicit permission
+* Behavior that conflicts with the [Be Nice policy of Stack Overflow](https://stackoverflow.com/help/be-nice)
 * Other conduct which could reasonably be considered inappropriate in a professional setting
 
 ## Our Responsibilities
