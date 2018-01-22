@@ -61,7 +61,7 @@ def on_message(message, client):
         #message.message.reply(message.content.split('say', 1)[1])
     elif messagecompare.compareMessage(message_val, "status mine"):
         print(message)
-        message.message.reply("You need [69] more helpful flags to get your next rank: **Burn the evil** (666 flags)")
+        message.message.reply("**This feature is not working yet!** You need [69] more helpful flags to get your next rank: **Burn the evil** (666 flags)")
     elif messagecompare.compareMessage(message_val, "status"):
         print(message)
         message.message.reply("Please specify whose status you want to get")
