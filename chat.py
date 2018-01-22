@@ -40,11 +40,11 @@ def main():
 def on_message(message, client):
     if not isinstance(message, MessagePosted):
         # Ignore non-message_posted events.
-        logger.debug("event: %r", message)
+        #logger.debug("event: %r", message)
         return
     message_val = message.content
-    print("")
-    print(">> (%s) %s" % (message.user.name, message.content))
+    #print("")
+    #print(">> (%s) %s" % (message.user.name, message.content))
 
     #Here are the responses defined
     if message.content.startswith('!!/random'):
