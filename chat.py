@@ -11,7 +11,8 @@ from chatexchange.chatexchange.events import MessageEvent, MessagePosted
 
 
 logger = logging.getLogger(__name__)
-host_name = 'HP Envy'
+host_maintaner = 'chade_'
+host_name = 'HP Envy (dev machine)'
 
 def main():
     setup_logging()
@@ -53,7 +54,7 @@ def on_message(message, client):
     #region default bot commands
     elif messagecompare.compareMessage(message_val, "alive"):
         print(message)
-        message.message.reply("👍 on " + host_name)
+        message.message.reply("instance is running on " + host_maintaner + "/" + host_name)
     elif messagecompare.compareMessage(message_val, "say"):
         print(message)
         room = client.get_room(163468)
