@@ -11,8 +11,9 @@ from chatexchange.chatexchange.events import MessageEvent, MessagePosted
 
 
 logger = logging.getLogger(__name__)
-host_maintaner = 'chade_'
-host_name = 'HP Envy (dev machine)'
+bot_parent = 'chade_'
+bot_machine = 'HP Envy (dev machine)'
+bot_version = 'v0.2'
 
 def main():
     setup_logging()
@@ -48,32 +49,36 @@ def on_message(message, client):
     #print(">> (%s) %s" % (message.user.name, message.content))
 
     #Here are the responses defined
-    if message.content.startswith('!!/random'):
-        print(message)
-        message.message.reply(str(random.random()))
     #region default bot commands
-    elif messagecompare.compareMessage(message_val, "alive"):
+    if messagecompare.compareMessage(message_val, "alive"):
         print(message)
-        message.message.reply("instance is running on " + host_maintaner + "/" + host_name)
+        message.message.reply("instance of {} is running on **{}/{}**".format(bot_version, bot_parent, bot_machine))
     elif messagecompare.compareMessage(message_val, "say"):
         print(message)
         room = client.get_room(163468)
         room.send_message(message.content.split('say', 1)[1])
-        #message.message.reply(message.content.split('say', 1)[1])
+    elif messagecompare.compareMessage(message_val, "command") or messagecompare.compareMessage(message_val, "commands"):
+        print(message)
+        message.message.reply("You can find a list of my commands [here](https://github.com/SOBotics/FlaggersHall/wiki#commands)")
+    #endregion
     elif messagecompare.compareMessage(message_val, "status mine"):
         print(message)
         message.message.reply("**This feature is not working yet!** You need [69] more helpful flags to get your next rank: **Burn the evil** (666 flags)")
     elif messagecompare.compareMessage(message_val, "status"):
         print(message)
-        message.message.reply("Please specify whose status you want to get")
+        message.message.reply("Please specify whose status you want to get (for yourself it's `status mine`)")
     #region fun answers
+    elif message.content.startswith("🚂"):
+        print(message)
+        room = client.get_room(163468)
+        room.send_message("🚃")
     elif messagecompare.compareMessage(message_val, "why"):
         print(message)
         message.message.reply("[Because of you](https://www.youtube.com/watch?v=Ra-Om7UMSJc)")
     elif messagecompare.compareMessage(message_val, "good bot"):
         print(message)
         message.message.reply("Thank you")
-    elif messagecompare.compareMessage(message_val, "Thanks") or messagecompare.compareMessage(message_val, "Thank you"):
+    elif messagecompare.compareMessage(message_val.lower(), "thanks") or messagecompare.compareMessage(message_val.lower(), "thank you") or  messagecompare.compareMessage(message_val.lower(), "thx"):
         print(message)
         message.message.reply("You're welcome.")
     elif messagecompare.compareMessage(message_val, "status Batty") or messagecompare.compareMessage(message_val, "status batty"):
