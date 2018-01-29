@@ -1,26 +1,27 @@
 import getpass
 import logging
 import logging.handlers
-import os
-import random
 import sys
 import messagecompare
+import flagbot.chathelper
+from urllib.request import urlopen
+from pyquery import PyQuery as pq
 
 from chatexchange.chatexchange.client import Client
-from chatexchange.chatexchange.events import MessageEvent, MessagePosted
+from chatexchange.chatexchange.events import MessagePosted
 
 
 logger = logging.getLogger(__name__)
 bot_parent = 'chade_'
 bot_machine = 'HP Envy (dev machine)'
 bot_version = 'v0.2'
+room_id = 111347 #Use 163468 for the debug room, and 111347 for SOBotics
 
 def main():
-    setup_logging()
+    #setup_logging()
 
     #Setup start actions
     host_id = 'stackoverflow.com'
-    room_id = '163468' #Debug room
     email = input("Email: ")
     password = getpass.getpass("Password: ")
 
@@ -38,15 +39,20 @@ def main():
 
     client.logout()
 
+def getFlagCount(userId):
+    page = urlopen("https://stackoverflow.com/users/{}?tab=topactivity".format(userId))
+    html = page.read().decode("utf-8")
+    jQuery = pq(html)
+    flagCount = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html())
+    userName = str(pq(jQuery(".name")[0]).html())
+    return "{} has {} helpful flags. Ranks are coming soon, stay tuned!".format(userName, flagCount)
+
 
 def on_message(message, client):
     if not isinstance(message, MessagePosted):
-        # Ignore non-message_posted events.
-        #logger.debug("event: %r", message)
+        # We ignore non-message_posted events.
         return
     message_val = message.content
-    #print("")
-    #print(">> (%s) %s" % (message.user.name, message.content))
 
     #Here are the responses defined
     #region default bot commands
@@ -55,7 +61,7 @@ def on_message(message, client):
         message.message.reply("instance of {} is running on **{}/{}**".format(bot_version, bot_parent, bot_machine))
     elif messagecompare.compareMessage(message_val, "say"):
         print(message)
-        room = client.get_room(163468)
+        room = client.get_room(room_id)
         room.send_message(message.content.split('say', 1)[1])
     elif messagecompare.compareMessage(message_val, "command") or messagecompare.compareMessage(message_val, "commands"):
         print(message)
@@ -63,14 +69,19 @@ def on_message(message, client):
     #endregion
     elif messagecompare.compareMessage(message_val, "status mine"):
         print(message)
-        message.message.reply("**This feature is not working yet!** You need [69] more helpful flags to get your next rank: **Burn the evil** (666 flags)")
+        resp = getFlagCount(message.user.id)
+        message.message.reply(resp)
+        # message.message.reply("**This feature is not working yet!** You need [69] more helpful flags to get your next rank: **Burn the evil** (666 flags)") # original message, currently kept for historical reasons
     elif messagecompare.compareMessage(message_val, "status"):
         print(message)
-        message.message.reply("Please specify whose status you want to get (for yourself it's `status mine`)")
+        resp = getFlagCount(message.content.split('status ', 1)[1])
+        message.message.reply(resp)
+
+        #message.message.reply("Please specify whose status you want to get (for yourself it's `status mine`)")
     #region fun answers
     elif message.content.startswith("🚂"):
         print(message)
-        room = client.get_room(163468)
+        room = client.get_room(room_id)
         room.send_message("🚃")
     elif messagecompare.compareMessage(message_val, "why"):
         print(message)
