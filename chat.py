@@ -14,8 +14,8 @@ from chatexchange.chatexchange.events import MessagePosted
 logger = logging.getLogger(__name__)
 bot_parent = 'chade_'
 bot_machine = 'HP Envy (dev machine)'
-bot_version = 'v0.2'
-room_id = 111347 #Use 163468 for the debug room, and 111347 for SOBotics
+bot_version = 'v0.3'
+room_id = 163468 #Use 163468 for the debug room, and 111347 for SOBotics
 
 def main():
     #setup_logging()
@@ -43,8 +43,8 @@ def getFlagCount(userId):
     page = urlopen("https://stackoverflow.com/users/{}?tab=topactivity".format(userId))
     html = page.read().decode("utf-8")
     jQuery = pq(html)
-    flagCount = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html())
-    userName = str(pq(jQuery(".name")[0]).html())
+    flagCount = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '')
+    userName = str(pq(jQuery(".name")[0]).html()).replace('\n', ' ').replace('\r', '')
     return "{} has {} helpful flags. Ranks are coming soon, stay tuned!".format(userName, flagCount)
 
 
