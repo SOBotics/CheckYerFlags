@@ -1,24 +1,27 @@
 import getpass
 import logging
 import logging.handlers
-import os
-import random
 import sys
 import messagecompare
+import flagbot.chathelper
+from urllib.request import urlopen
+from pyquery import PyQuery as pq
 
 from chatexchange.chatexchange.client import Client
-from chatexchange.chatexchange.events import MessageEvent, MessagePosted
+from chatexchange.chatexchange.events import MessagePosted
 
 
 logger = logging.getLogger(__name__)
-host_name = 'HP Envy'
+bot_parent = 'chade_'
+bot_machine = 'HP Envy (dev machine)'
+bot_version = 'v0.3'
+room_id = 163468 #Use 163468 for the debug room, and 111347 for SOBotics
 
 def main():
-    setup_logging()
+    #setup_logging()
 
     #Setup start actions
     host_id = 'stackoverflow.com'
-    room_id = '163468' #Debug room
     email = input("Email: ")
     password = getpass.getpass("Password: ")
 
@@ -36,43 +39,57 @@ def main():
 
     client.logout()
 
+def getFlagCount(userId):
+    page = urlopen("https://stackoverflow.com/users/{}?tab=topactivity".format(userId))
+    html = page.read().decode("utf-8")
+    jQuery = pq(html)
+    flagCount = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '')
+    userName = str(pq(jQuery(".name")[0]).html()).replace('\n', ' ').replace('\r', '')
+    return "{} has {} helpful flags. Ranks are coming soon, stay tuned!".format(userName, flagCount)
+
 
 def on_message(message, client):
     if not isinstance(message, MessagePosted):
-        # Ignore non-message_posted events.
-        logger.debug("event: %r", message)
+        # We ignore non-message_posted events.
         return
     message_val = message.content
-    print("")
-    print(">> (%s) %s" % (message.user.name, message.content))
 
     #Here are the responses defined
-    if message.content.startswith('!!/random'):
-        print(message)
-        message.message.reply(str(random.random()))
     #region default bot commands
-    elif messagecompare.compareMessage(message_val, "alive"):
+    if messagecompare.compareMessage(message_val, "alive"):
         print(message)
-        message.message.reply("👍 on " + host_name)
+        message.message.reply("instance of {} is running on **{}/{}**".format(bot_version, bot_parent, bot_machine))
     elif messagecompare.compareMessage(message_val, "say"):
         print(message)
-        room = client.get_room(163468)
+        room = client.get_room(room_id)
         room.send_message(message.content.split('say', 1)[1])
-        #message.message.reply(message.content.split('say', 1)[1])
+    elif messagecompare.compareMessage(message_val, "command") or messagecompare.compareMessage(message_val, "commands"):
+        print(message)
+        message.message.reply("You can find a list of my commands [here](https://github.com/SOBotics/FlaggersHall/wiki#commands)")
+    #endregion
     elif messagecompare.compareMessage(message_val, "status mine"):
         print(message)
-        message.message.reply("You need [69] more helpful flags to get your next rank: **Burn the evil** (666 flags)")
+        resp = getFlagCount(message.user.id)
+        message.message.reply(resp)
+        # message.message.reply("**This feature is not working yet!** You need [69] more helpful flags to get your next rank: **Burn the evil** (666 flags)") # original message, currently kept for historical reasons
     elif messagecompare.compareMessage(message_val, "status"):
         print(message)
-        message.message.reply("Please specify whose status you want to get")
+        resp = getFlagCount(message.content.split('status ', 1)[1])
+        message.message.reply(resp)
+
+        #message.message.reply("Please specify whose status you want to get (for yourself it's `status mine`)")
     #region fun answers
+    elif message.content.startswith("🚂"):
+        print(message)
+        room = client.get_room(room_id)
+        room.send_message("🚃")
     elif messagecompare.compareMessage(message_val, "why"):
         print(message)
         message.message.reply("[Because of you](https://www.youtube.com/watch?v=Ra-Om7UMSJc)")
     elif messagecompare.compareMessage(message_val, "good bot"):
         print(message)
         message.message.reply("Thank you")
-    elif messagecompare.compareMessage(message_val, "Thanks") or messagecompare.compareMessage(message_val, "Thank you"):
+    elif messagecompare.compareMessage(message_val.lower(), "thanks") or messagecompare.compareMessage(message_val.lower(), "thank you") or  messagecompare.compareMessage(message_val.lower(), "thx"):
         print(message)
         message.message.reply("You're welcome.")
     elif messagecompare.compareMessage(message_val, "status Batty") or messagecompare.compareMessage(message_val, "status batty"):
