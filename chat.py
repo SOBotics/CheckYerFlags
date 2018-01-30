@@ -6,7 +6,7 @@ import messagecompare
 import flagbot.chathelper
 from urllib.request import urlopen
 from pyquery import PyQuery as pq
-
+from html.parser import HTMLParser
 from chatexchange.chatexchange.client import Client
 from chatexchange.chatexchange.events import MessagePosted
 
@@ -14,7 +14,7 @@ from chatexchange.chatexchange.events import MessagePosted
 logger = logging.getLogger(__name__)
 bot_parent = 'chade_'
 bot_machine = 'HP Envy (dev machine)'
-bot_version = 'v0.3'
+bot_version = 'v0.3.1'
 room_id = 163468 #Use 163468 for the debug room, and 111347 for SOBotics
 
 def main():
@@ -22,8 +22,8 @@ def main():
 
     #Setup start actions
     host_id = 'stackoverflow.com'
-    email = input("Email: ")
-    password = getpass.getpass("Password: ")
+    email = "support@philnet.ch"#input("Email: ")
+    password = "Where2see+"#getpass.getpass("Password: ")
 
     client = Client(host_id)
     client.login(email, password)
@@ -38,15 +38,6 @@ def main():
         room.send_message(message)
 
     client.logout()
-
-def getFlagCount(userId):
-    page = urlopen("https://stackoverflow.com/users/{}?tab=topactivity".format(userId))
-    html = page.read().decode("utf-8")
-    jQuery = pq(html)
-    flagCount = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '')
-    userName = str(pq(jQuery(".name")[0]).html()).replace('\n', ' ').replace('\r', '')
-    return "{} has {} helpful flags. Ranks are coming soon, stay tuned!".format(userName, flagCount)
-
 
 def on_message(message, client):
     if not isinstance(message, MessagePosted):
@@ -69,13 +60,23 @@ def on_message(message, client):
     #endregion
     elif messagecompare.compareMessage(message_val, "status mine"):
         print(message)
-        resp = getFlagCount(message.user.id)
-        message.message.reply(resp)
+        page = urlopen("https://stackoverflow.com/users/{}?tab=topactivity".format(message.user.id))
+        html = page.read().decode("utf-8")
+        jQuery = pq(html)
+        flagCount = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '').strip().strip(" helpful flags")
+        message.message.reply("You have {} helpful flags. [Ranks are coming soon, stay tuned!](https://github.com/SOBotics/FlaggersHall/issues/11)".format(flagCount))
         # message.message.reply("**This feature is not working yet!** You need [69] more helpful flags to get your next rank: **Burn the evil** (666 flags)") # original message, currently kept for historical reasons
     elif messagecompare.compareMessage(message_val, "status"):
         print(message)
-        resp = getFlagCount(message.content.split('status ', 1)[1])
-        message.message.reply(resp)
+        page = urlopen("https://stackoverflow.com/users/{}?tab=topactivity".format(message.content.split('status ', 1)[1]))
+        html = page.read().decode("utf-8")
+        jQuery = pq(html)
+        flagCount = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '').strip().strip(" helpful flags")
+        userName = str(pq(jQuery(".name")[0]).html()).replace('\n', ' ').replace('\r', '').strip()
+        # Stripping mod markup from the name
+        userName = strip_tags(userName)
+        room = client.get_room(room_id)
+        room.send_message("{} has {} helpful flags. [Ranks are coming soon, stay tuned!](https://github.com/SOBotics/FlaggersHall/issues/11)".format(userName, flagCount))
 
         #message.message.reply("Please specify whose status you want to get (for yourself it's `status mine`)")
     #region fun answers
@@ -105,22 +106,21 @@ def on_message(message, client):
     #endregion
 
 
-def setup_logging():
-    logging.basicConfig(level=logging.INFO)
-    logger.setLevel(logging.DEBUG)
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.strict = False
+        self.convert_charrefs= True
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
 
-    # In addition to the basic stderr logging configured globally
-    # above, we'll use a log file for chatexchange.client.
-    wrapper_logger = logging.getLogger('chatexchange.client')
-    wrapper_handler = logging.handlers.TimedRotatingFileHandler(
-        filename='client.log',
-        when='midnight', delay=True, utc=True, backupCount=7,
-    )
-    wrapper_handler.setFormatter(logging.Formatter(
-        "%(asctime)s: %(levelname)s: %(threadName)s: %(message)s"
-    ))
-    wrapper_logger.addHandler(wrapper_handler)
-
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
 
 if __name__ == '__main__':
     main(*sys.argv[1:])
