@@ -22,8 +22,8 @@ chat_helper = chat_helper(room_id)
 def main():
     #Setup start actions
     host_id = 'stackoverflow.com'
-    email = "support@philnet.ch"#input("Email: ")
-    password = "Where2see+"#getpass.getpass("Password: ")
+    email = input("Email: ")
+    password = getpass.getpass("Password: ")
 
     client = Client(host_id)
     client.login(email, password)
