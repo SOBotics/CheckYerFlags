@@ -14,7 +14,7 @@ from chatexchange.chatexchange.events import MessagePosted, MessageEdited
 
 bot_parent = 'chade_'
 bot_machine = 'HP Envy (dev machine)'
-bot_version = 'v0.4'
+bot_version = 'v0.4.1'
 room_id = 163468 # Use 163468 for the debug room, and 111347 for SOBotics
 chat_helper = chat_helper(room_id)
 

@@ -37,6 +37,6 @@ class chat_helper:
             return False
 
     @staticmethod
-    def replyWith(self, message, reply):
+    def replyWith(message, reply):
         logging.info(message)
         message.message.reply(reply)
