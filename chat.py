@@ -2,19 +2,22 @@ import getpass
 import logging
 import sys
 import json
-import flagbot.check_flags as check_flags
 import io
 import gzip
+import threading
+
+import flagbot.check_flags as check_flags
+import flagbot.redunda as redunda
 
 from flagbot.chat_helper import chat_helper
+
 from urllib.request import urlopen
-from pyquery import PyQuery as pq
 from chatexchange.chatexchange.client import Client
 from chatexchange.chatexchange.events import MessagePosted, MessageEdited
 
 bot_parent = 'chade_'
 bot_machine = 'HP Envy (dev machine)'
-bot_version = 'v0.4.1'
+bot_version = 'v0.5'
 rooms = {
     "Debug": 163468,
     "SOBotics": 111347,
@@ -48,8 +51,14 @@ def main():
     logging.basicConfig(filename="CheckYerFlags.log", level=logging.INFO)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
-    #print("Joined room {} on {}".format(room.name, host_id))
     logging.info("Joined room '{}' on {}".format(room.name, host_id))
+
+    #Run Redunda reporting on a seperate thread
+
+    redunda_thread = threading.Thread(target=redunda.continousPing(bot_version))
+    redunda_thread.daemon = True
+    redunda_thread.start()
+
     while True:
         message = input("<< ")
         room.send_message(message)
