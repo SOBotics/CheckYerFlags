@@ -29,7 +29,7 @@ def checkFlags(message, chat_helper):
         buffer = io.BytesIO(response)
         gzipped_file = gzip.GzipFile(fileobj=buffer)
         content = gzipped_file.read()
-        data = json.loads(content)
+        data = json.loads(content.decode("utf-8"))
 
         if len(data["items"]) is 1:
             validId = True

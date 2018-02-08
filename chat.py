@@ -15,7 +15,12 @@ from chatexchange.chatexchange.events import MessagePosted, MessageEdited
 bot_parent = 'chade_'
 bot_machine = 'HP Envy (dev machine)'
 bot_version = 'v0.4.1'
-room_id = 163468 # Use 163468 for the debug room, and 111347 for SOBotics
+rooms = {
+    "Debug": 163468,
+    "SOBotics": 111347,
+    "SOCVR": 41570
+}
+room_id = rooms["Debug"]
 chat_helper = chat_helper(room_id)
 
 
@@ -34,7 +39,7 @@ def main():
     room.watch(on_message)
     print(room.get_current_user_names())
 
-    quota_obj = json.loads(gzip.GzipFile(fileobj=io.BytesIO(urlopen("https://api.stackexchange.com/2.2/users/1?order=desc&sort=reputation&site=stackoverflow&key=K8pani4F)SeUn0QlbHQsbA((").read())).read())
+    quota_obj = json.loads(gzip.GzipFile(fileobj=io.BytesIO(urlopen("https://api.stackexchange.com/2.2/users/1?order=desc&sort=reputation&site=stackoverflow&key=K8pani4F)SeUn0QlbHQsbA((").read())).read().decode("utf-8"))
 
 
     if quota_obj['quota_remaining'] is not None:
