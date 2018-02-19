@@ -17,7 +17,7 @@ from chatexchange.chatexchange.events import MessagePosted, MessageEdited
 
 bot_parent = 'chade_'
 bot_machine = 'HP Envy (dev machine)'
-bot_version = 'v0.5'
+bot_version = 'v0.6.0'
 rooms = {
     "Debug": 163468,
     "SOBotics": 111347,
@@ -53,10 +53,9 @@ def main():
 
     logging.info("Joined room '{}' on {}".format(room.name, host_id))
 
-    #Run Redunda reporting on a seperate thread
-
-    redunda_thread = threading.Thread(target=redunda.continousPing(bot_version))
-    redunda_thread.daemon = True
+    #Run Redunda reporting on a seperate thread/in the background
+    stop_redunda = threading.Event()
+    redunda_thread = redunda.RedundaThread(stop_redunda, bot_version, logging)
     redunda_thread.start()
 
     while True:
@@ -64,6 +63,7 @@ def main():
         room.send_message(message)
 
     client.logout()
+    stop_redunda.set()
 
 def on_message(message, client):
     if not isinstance(message, MessagePosted) and not isinstance(message, MessageEdited):
@@ -107,4 +107,4 @@ def on_message(message, client):
 
 
 if __name__ == '__main__':
-    main(*sys.argv[1:])
+    main()
