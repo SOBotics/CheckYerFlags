@@ -17,7 +17,7 @@ from chatexchange.chatexchange.events import MessagePosted, MessageEdited
 
 bot_parent = 'chade_'
 bot_machine = 'HP Envy (dev machine)'
-bot_version = 'v0.6.0'
+bot_version = 'v0.6.1'
 rooms = {
     "Debug": 163468,
     "SOBotics": 111347,
@@ -77,6 +77,8 @@ def on_message(message, client):
         chat_helper.replyWith(message, "instance of {} is running on **{}/{}**".format(bot_version, bot_parent, bot_machine))
     elif chat_helper.checkAliases(message_val, "say"):
         chat_helper.postMessage(message.content.split('say', 1)[1])
+    elif chat_helper.checkAliases(message_val, "welcome"):
+        chat_helper.postMessage("Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
     elif chat_helper.checkAliases(message_val, "quota"):
         chat_helper.postMessage("The remaining API quota is {}.".format(chat_helper.getQuota()))
     elif chat_helper.checkAliases(message_val, "command") or chat_helper.checkAliases(message_val, "commands"):
