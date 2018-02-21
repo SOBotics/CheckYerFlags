@@ -7,10 +7,10 @@ from urllib.error import URLError
 
 
 class RedundaThread(Thread):
-    def __init__(self, event, bot_version, logging):
+    def __init__(self, event, config, logging):
         Thread.__init__(self)
         self.stopped = event
-        self.bot_version = bot_version
+        self.config = config
         self.logging = logging
 
     def run(self):
@@ -19,7 +19,7 @@ class RedundaThread(Thread):
 
     def pingRedunda(self):
         try:
-            data = parse.urlencode({"key": "19b558436329ff6eb8247bc21fdd2aaa1135597b5bb858a10e8eef2688b8565e", "version": self.bot_version}).encode()
+            data = parse.urlencode({"key": self.config["redundaKey"], "version": self.config["botVersion"]}).encode()
             req = request.Request("https://redunda.sobotics.org/status.json", data)
 
             response = request.urlopen(req)
@@ -27,4 +27,4 @@ class RedundaThread(Thread):
             jsonReturned = json.loads(response.read().decode("utf-8"))
         except (OSError, URLError) as e:
             current_timestamp = strftime("%Y-%m-%d %H:%M:%S", localtime())
-            self.logging.warn("Pinging Redunda failed at {} CET", current_timestamp)
+            self.logging.warn("Pinging Redunda failed at {} CET".format(current_timestamp))

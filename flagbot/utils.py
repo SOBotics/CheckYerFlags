@@ -3,28 +3,24 @@ Helper class to post messages either as reply or as independent message
 """
 import logging
 
-class chat_helper:
-    def __init__(self, roomNumber, client = None, quota = None):
-        self.roomNumber = roomNumber
+class utils:
+    def __init__(self, roomNumber = None, client = None, quota = None, config = None):
+        if roomNumber is not None:
+            self.roomNumber = roomNumber
 
         if client is not None:
             self.client = client
 
         if quota is not None:
             self.quota = quota
-
-
-    def setClient(self, client):
-        self.client = client
-
-    def setQuota(self, quota):
-        self.quota = quota
-
-    def getQuota(self):
-        if self.quota is not None:
-            return self.quota
         else:
-            return -1;
+            self.quota = -1
+
+        if config is not None:
+            self.config = config
+
+    def setConfig(self, config):
+        self.config = config
 
     def postMessage(self, message):
         logging.info(message)

@@ -1,62 +1,62 @@
-ranks = {
-    "365": {
+ranks = [
+    {
+        "count": 365,
         "title": "A flag a day keeps bad posts away",
-        "description": "One year has 365 days",
-        "count": 365
+        "description": "One year has 365 days"
     },
-    "1111": {
+    {
+        "count": 1111,
         "title": "No badge needed",
-        "description": "A number is prettier than a badge anyway!",
-        "count": 1111
+        "description": "A number is prettier than a badge anyway!"
     },
-    "2008": {
+    {
+        "count": 2008,
         "title": "Flag Overflow",
-        "description": "Stack Overflow was created in 2008",
-        "count": 2008
+        "description": "Stack Overflow was created in 2008"
     },
-    "10000": {
+    {
+        "count": 10000,
         "title": "Elite Squad",
-        "description": "At one point of time, there were only 16 of us",
-        "count": 10000
+        "description": "At one point of time, there were only 16 of us"
     },
-    "11111": {
+    {
+        "count": 11111,
         "title": "Game of Flags",
-        "description": "All elevens because the TV show Game of Thrones started in 2011",
-        "count": 11111
+        "description": "All elevens because the TV show Game of Thrones started in 2011"
     },
-    "22656": {
+    {
+        "count": 22656,
         "title": "Almost Jon Skeet",
-        "description": "22656 is his (John's) user ID",
-        "count": 22656
+        "description": "22656 is his (John's) user ID"
     },
-    "33333": {
+    {
+        "count": 33333,
         "title": "The Mad Flagger",
-        "description": "Got nothing better to do with your time? ;D",
-        "count": 33333
+        "description": "Got nothing better to do with your time? ;D"
     },
-    "42195": {
+    {
+        "count": 42195,
         "title": "The Marathon",
-        "description": "Marathon's length in meters",
-        "count": 42195
+        "description": "Marathon's length in meters"
     },
-    "65536": {
+    {
+        "count": 65536,
         "title": "The two to the sixteen",
-        "description": None,
-        "count": 65536
+        "description": None
     },
-    "101010": {
+    {
+        "count": 101010,
         "title": "Definitely a robot",
-        "description": "42 in binary code. [Also 42 is the Answer to the Ultimate Question of Life, the Universe, and Everything](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))",
-        "count": 101010
+        "description": "42 in binary code. [Also 42 is the Answer to the Ultimate Question of Life, the Universe, and Everything](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))"
     },
-    "2147483647": {
+    {
+        "count": 2147483647,
         "title": "The Overflow",
-        "description": "[Maximum size of a 32-bit integer](https://stackoverflow.com/a/94608)",
-        "count": 2147483647
+        "description": "[Maximum size of a 32-bit integer](https://stackoverflow.com/a/94608)"
     },
-    "4294967296": {
+    {
+        "count": 4294967296,
         "title": "A `long` journey",
-        "description": None,
-        "count": 4294967296
+        "description": None
     }
-}
+]
