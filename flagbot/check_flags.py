@@ -48,10 +48,15 @@ def checkFlags(message, utils):
         html = page.read().decode("utf-8")
         jQuery = pq(html)
         flagCount = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '').strip().strip(" helpful flags")
-        currentFlagRank = getCurrentFlagRank(int(flagCount.replace(",", "")))
-        userName = str(pq(jQuery(".name")[0]).html()).replace('\n', ' ').replace('\r', '').strip()
         # Stripping mod markup from the name
+        userName = str(pq(jQuery(".name")[0]).html()).replace('\n', ' ').replace('\r', '').strip()
         userName = html_parser.strip_tags(userName)
+        try:
+            currentFlagRank = getCurrentFlagRank(int(flagCount.replace(",", "")))
+        except ValueError as e:
+            if str(e) is "NEF":
+                utils.postMessage("{} has {} helpful flags. They don't have enough helpful flags for a rank yet.".format(userName, flagCount))
+            return
         utils.postMessage("{} has {} helpful flags. Their last achieved rank was **{}** ({}) for {} helpful flags.".format(userName, flagCount, currentFlagRank["title"], currentFlagRank["description"], currentFlagRank["count"]))
     else:
         utils.postMessage("The specfied user id does not belong to an existing user.")
@@ -61,4 +66,13 @@ def getCurrentFlagRank(flagCount):
     for rank in ranks.ranks:
         differences.append(flagCount - rank["count"])
 
-    return ranks.ranks[differences.index(min(i for i in differences if i > 0))]
+    positive_differences = []
+    for difference in differences:
+        if difference > 0:
+            positive_differences.append(difference)
+
+    if len(positive_differences) <= 0:
+        raise ValueError("NEF")
+
+
+    return ranks.ranks[differences.index(min(positive_differences))]

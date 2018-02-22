@@ -5,7 +5,7 @@ Is this file are the configurations for debug and production mode defined. In th
 debugConfig = {
     "botParent": "chade_", # The person which is responsible for running the instance (e.g. you if you're running your own instance)
     "botMachine": "HP Envy (dev machine)", # The machine the bot runs on. Try to give it something easy to identify (I use the manufacturer and model name of my machine for development, and the distribution name for the productive server)
-    "botVersion": "v0.7.0", # The current version of the Bot, be sure to read the wiki on how to increment the version
+    "botVersion": "v0.7.1", # The current version of the Bot, be sure to read the wiki on how to increment the version
     "room": 163468, # The ID for the chatroom we work with.
     "chatHost": "stackoverflow.com", # The site where the bot runs. Please note that the bot has only been tested in rooms on stackoverflow.com
     "email": "", # The credentials to log in a user which posts the messages.
@@ -17,7 +17,7 @@ debugConfig = {
 prodConfig = {
     "botParent": "chade_", # The person which is responsible for running the instance (e.g. you if you're running your own instance)
     "botMachine": "UbuntuServer", # The machine the bot runs on. Try to give it something easy to identify (I use the manufacturer and model name of my machine for development, and the distribution name for the productive server)
-    "botVersion": "v0.7.0", # The current version of the Bot, be sure to read the wiki on how to increment the version
+    "botVersion": "v0.7.1", # The current version of the Bot, be sure to read the wiki on how to increment the version
     "room": 111347,
     "chatHost": "stackoverflow.com", # The site where the bot runs. Please note that the bot has only been tested in rooms on stackoverflow.com
     "email": "", # The credentials to log in a user which posts the messages.

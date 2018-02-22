@@ -20,7 +20,7 @@ utils = utils()
 def main():
 
     #Get config for the mode (debug/prod)
-    if input("Mode (use d dor debug, leave blank for productive): ") is "d":
+    if input("Mode (use d for debug, leave blank for productive): ") is "d":
         print("Loading Debug config")
         utils.config = config.debugConfig
     else:
@@ -74,7 +74,8 @@ def on_message(message, client):
     elif utils.checkAliases(message_val, "v") or utils.checkAliases(message_val, "version"):
         utils.replyWith(message, "Current version is {}".format(utils.config["botVersion"]))
     elif utils.checkAliases(message_val, "say"):
-        utils.postMessage(message.content.split('say', 1)[1])
+        if not message.content.split('say', 1)[1].startswith(" cf say") and not message.content.split('say', 1)[1].startswith(" cyf say") and not message.content.split('say', 1)[1].startswith(" CheckYerFlags say") and not message.content.split('say', 1)[1].startswith(" @cf say") and not message.content.split('say', 1)[1].startswith(" @cyf say") and not message.content.split('say', 1)[1].startswith(" @CheckYerFlags say"):
+            utils.postMessage(message.content.split('say', 1)[1])
     elif utils.checkAliases(message_val, "welcome"):
         utils.postMessage("Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
     elif utils.checkAliases(message_val, "quota"):
