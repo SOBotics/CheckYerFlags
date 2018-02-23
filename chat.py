@@ -73,8 +73,7 @@ def on_message(message, client):
         utils.replyWith(message, "instance of {} is running on **{}/{}**".format(utils.config["botVersion"], utils.config["botParent"], utils.config["botMachine"]))
     elif utils.checkAliases(message_val, "v") or utils.checkAliases(message_val, "version"):
         utils.replyWith(message, "Current version is {}".format(utils.config["botVersion"]))
-    elif utils.checkAliases(message_val, "say"):
-        if not message.content.split('say', 1)[1].startswith(" cf say") and not message.content.split('say', 1)[1].startswith(" cyf say") and not message.content.split('say', 1)[1].startswith(" CheckYerFlags say") and not message.content.split('say', 1)[1].startswith(" @cf say") and not message.content.split('say', 1)[1].startswith(" @cyf say") and not message.content.split('say', 1)[1].startswith(" @CheckYerFlags say"):
+    elif utils.checkAliases(message_val, "say") and not utils.blockedMessages(message):
             utils.postMessage(message.content.split('say', 1)[1])
     elif utils.checkAliases(message_val, "welcome"):
         utils.postMessage("Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")

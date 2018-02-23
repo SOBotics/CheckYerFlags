@@ -13,7 +13,12 @@ def checkOwnFlags(message, utils):
     html = page.read().decode("utf-8")
     jQuery = pq(html)
     flagCount = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '').strip().strip(" helpful flags")
-    currentFlagRank = getCurrentFlagRank(int(flagCount.replace(",", "")))
+    try:
+        currentFlagRank = getCurrentFlagRank(int(flagCount.replace(",", "")))
+    except ValueError as e:
+        if str(e) is "NEF":
+            utils.postMessage("You have {} helpful flags. You don't have enough helpful flags for a rank yet.".format(flagCount))
+        return
     utils.replyWith(message, "You have {} helpful flags. Your last achieved rank was **{}** ({}) for {} helpful flags.".format(flagCount, currentFlagRank["title"], currentFlagRank["description"], currentFlagRank["count"]))
     # message.message.reply("**This feature is not working yet!** You need [69] more helpful flags to get your next rank: **Burn the evil** (666 flags)") # original message, currently kept for historical reasons
 
