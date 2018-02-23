@@ -36,12 +36,3 @@ class utils:
     def replyWith(message, reply):
         logging.info(message)
         message.message.reply(reply)
-
-    @staticmethod
-    def blockedMessages(message):
-        if not message.content.split('say', 1)[1].startswith(" cf say") and not message.content.split('say', 1)[1].startswith(" cyf say") and not message.content.split('say', 1)[1].startswith(" CheckYerFlags say") and not message.content.split('say', 1)[1].startswith(" @cf say") and not message.content.split('say', 1)[1].startswith(" @cyf say") and not message.content.split('say', 1)[1].startswith(" @CheckYerFlags say") and not message.content.split('say', 1)[1].startswith(" cf status mine") and not message.content.split('say', 1)[1].startswith(" cyf status mine") and not message.content.split('say', 1)[1].startswith(" CheckYerFlags status mine") and not message.content.split('say', 1)[1].startswith(" @cf status mine") and not message.content.split('say', 1)[1].startswith(" @cyf status mine") and not message.content.split('say', 1)[1].startswith(" @CheckYerFlags status mine"):
-            logging.warning("Blocked message value detected: {}".format(message.content))
-            return False
-        else:
-            logging.info("Blocked message check passed.")
-            return True
