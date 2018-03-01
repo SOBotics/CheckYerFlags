@@ -10,9 +10,24 @@ ranks = [
         "description": "A number is prettier than a badge anyway!"
     },
     {
+        "count": 1969,
+        "title": "Moon landing",
+        "description": "I flagged the moon!"
+    },
+    {
         "count": 2008,
         "title": "Flag Overflow",
         "description": "Stack Overflow was created in 2008"
+    },
+    {
+        "count": 3456,
+        "title": "<3456",
+        "description": "You <3 flagging too much"
+    },
+    {
+        "count": 5566,
+        "title": "[Long Time No Flag](https://en.wikipedia.org/wiki/Long_Time_No_See_(5566_album))",
+        "description": "[Taiwanese boy band, formed under Taiwanese music company, J-Star](https://en.wikipedia.org/wiki/5566)"
     },
     {
         "count": 10000,
@@ -48,6 +63,11 @@ ranks = [
         "count": 101010,
         "title": "Definitely a robot",
         "description": "42 in binary code. [Also 42 is the Answer to the Ultimate Question of Life, the Universe, and Everything](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))"
+    },
+    {
+        "count": 314159,
+        "title": "π",
+        "description": "Who ate all the Pi?"
     },
     {
         "count": 2147483647,
