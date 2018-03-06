@@ -27,6 +27,9 @@ class utils:
         self.client.get_room(self.roomNumber).send_message(message)
 
     def checkAliases(self, message, command):
+        if message is None or command is None:
+            return False
+
         if "@cyf " + command in message or "@cf " + command in message or "@CheckYerFlags " + command in message or "cyf " + command in message or "cf " + command in message:
             return True
         else:

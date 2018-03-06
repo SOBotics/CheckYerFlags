@@ -7,6 +7,7 @@ A bot notifying when a user reach a certain flag count
 - BeautifulSoup (`pip install beautifulsoup4`)
 - Requests (`pip install requests` and/or update with `pip install requests --upgrade`)
 - PyQuery (`pip install pyquery`)
+- Markdownify (`pip install markdownify`) Make sure that setuptools version is >= 30
 
 ## Thanks to the bug hunters
 - @K-Davis1
