@@ -25,7 +25,7 @@ def checkOwnFlags(message, utils):
 def checkFlags(message, utils):
     userId = ""
     try:
-        userId = message.content.split('status ', 1)[1]
+        userId = message.content.replace('status', 's').split('s ', 1)[1]
     except IndexError:
         pass
 

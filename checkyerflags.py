@@ -84,15 +84,15 @@ def on_message(message, client):
         elif utils.checkAliases(message_val, "quota"):
             utils.postMessage("The remaining API quota is {}.".format(utils.quota))
         elif utils.checkAliases(message_val, "command") or utils.checkAliases(message_val, "commands"):
-            utils.replyWith(message, "You can find a list of my commands [here](https://github.com/SOBotics/FlaggersHall/wiki#commands)")
+            utils.replyWith(message, "You can find a list of my commands [here](http://checkyerflags.philnet.ch/#commands)")
         #endregion
-        elif utils.checkAliases(message_val, "status mine") or utils.checkAliases(message_val, "s mine"):
+        elif utils.checkAliases(message_val, "status mine") or utils.checkAliases(message_val, "s m"):
             check_flags.checkOwnFlags(message, utils)
         elif utils.checkAliases(message_val, "status") or utils.checkAliases(message_val, "s"):
             check_flags.checkFlags(message, utils)
-        elif utils.checkAliases(message_val, "ranks"):
+        elif utils.checkAliases(message_val, "ranks") or utils.checkAliases(message_val, "r"):
             utils.replyWith(message, "A list of all ranks is available [here](https://github.com/SOBotics/FlaggersHall/issues/11). Feel free to leave a suggestion there!")
-        elif utils.checkAliases(message_val, "ranks next"):
+        elif utils.checkAliases(message_val, "ranks next") or utils.checkAliases(message_val, "r n"):
             utils.replyWith(message, "I'm sorry, but this command is not functional yet. Please [check this issue on GitHub](https://github.com/SOBotics/FlaggersHall/issues/17) for updates.")
         #region Fun commands
         elif message.content.startswith("🚂"):
