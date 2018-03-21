@@ -7,11 +7,12 @@ Redunda: https://redunda.sobotics.org/bots/26/bot_instances
 Docs: http://checkyerflags.philnet.ch/
 
 ## Dependencies
-- BeautifulSoup (`pip install beautifulsoup4`)
-- Requests (`pip install requests` and/or update with `pip install requests --upgrade`)
-- PyQuery (`pip install pyquery`)
-- Markdownify (`pip install markdownify`) Make sure that setuptools version is >= 30
+Run `pip install setuptools --upgrade` if your version is not >= 30  
+Run `pip install -r requirements.txt`
 
 ## Thanks to the bug hunters
 - @K-Davis1
 - @geisterfurz007
+
+## Needed refactorings
+Design all code optimized for testing/CI
