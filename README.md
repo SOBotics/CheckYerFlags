@@ -1,5 +1,6 @@
 Flaggers Hall
 ===
+[![Build Status](https://travis-ci.org/SOBotics/FlaggersHall.svg?branch=master)](https://travis-ci.org/SOBotics/FlaggersHall)
 
 A bot notifying when a user reach a certain flag count
 
