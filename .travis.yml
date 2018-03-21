@@ -8,7 +8,7 @@ install:
 
 script:
   - pytest --ignore=chatexchange/tests
-  - coverage run tests\travis_test.py
+#  - coverage run tests\travis_test.py
 
 after_success:
-  - codecov
+#  - codecov
