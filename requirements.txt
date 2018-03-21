@@ -34,7 +34,6 @@ pycparser==2.18
 PyInstaller==3.2.1
 pypandoc==1.4
 pyparsing==2.2.0
-pypiwin32==220
 pyquery==1.4.0
 pytest==3.4.2
 python-dateutil==2.6.1
