@@ -96,7 +96,7 @@ def on_message(message, client):
             utils.postMessage("The remaining API quota is {}.".format(utils.quota))
         elif utils.checkAliases(message_val, "command") or utils.checkAliases(message_val, "commands"):
             logging.info("command list command was called")
-            utils.replyWith(message, "You can find a list of my commands [here](http://checkyerflags.philnet.ch/#commands)")
+            utils.replyWith(message, "You can find a list of my commands [here](http://checkyerflags.sobotics.org/#commands)")
         #endregion
         elif utils.checkAliases(message_val, "status mine") or utils.checkAliases(message_val, "s m"):
             logging.info("status mine command was called")
