@@ -5,7 +5,7 @@ Flaggers Hall
 A bot notifying when a user reach a certain flag count
 
 Redunda: https://redunda.sobotics.org/bots/26/bot_instances  
-Docs: http://checkyerflags.philnet.ch/
+Docs: http://checkyerflags.sobotics.org/
 
 ## Dependencies
 Run `pip install setuptools --upgrade` if your version is not >= 30  
