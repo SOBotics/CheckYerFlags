@@ -18,7 +18,7 @@ def check_own_flags(message, utils):
         flag_count_difference = next_flag_rank["count"]  - current_flag_rank["count"]
     except ValueError as e:
         if str(e) is "NEF":
-            utils.post_message("You have {} helpful flags. Appears that you are a total noob when it comes to flagging :P".format(flag_count))
+            utils.post_message("You have {} helpful flags. Appears that you are not flagging that much.".format(flag_count))
         return
     utils.reply_with(message, "You have {} helpful flags. Your last achieved rank was **{}** ({}) for {} helpful flags. You need {} more flags for your next rank, *{}*.".format(flag_count, current_flag_rank["title"], current_flag_rank["description"], current_flag_rank["count"], flag_count_difference, next_flag_rank["title"]))
 
@@ -88,7 +88,7 @@ def check_flags(message, utils, config = None, user_id = 0, verbose = True):
         except ValueError as e:
             if str(e) is "NEF":
                 if verbose:
-                    utils.post_message("{} has {} helpful flags. Appears that they are a total noob when it comes to flagging :P".format(user_name, flag_count))
+                    utils.post_message("{} has {} helpful flags. Appears that they're not flagging so much".format(user_name, flag_count))
                 else:
                     return { "flag_count": int(flag_count.replace(",", "")), "next_rank": ranks.ranks[0] }
             return
@@ -119,4 +119,3 @@ def get_next_flag_rank(current_rank):
     current_rank_index = ranks.ranks.index(current_rank)
 
     return  ranks.ranks[current_rank_index + 1]
-
