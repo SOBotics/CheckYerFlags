@@ -13,7 +13,7 @@
     <!-- Global CSS -->
     <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
     <!-- Plugins CSS -->
-    <link rel="stylesheet" href="assets/css/fa-svg-with-js.css">
+    <link rel="stylesheet" href="assets/css/fa-svg-with-js.min.css">
 
     <!-- Theme CSS -->
     <link id="theme-style" rel="stylesheet" href="assets/css/styles.min.css">
@@ -39,30 +39,31 @@
         <div class="container">
             <div id="doc-header" class="doc-header text-center">
                 <h1 class="doc-title"><i class="icon far fa-book"></i> Documentation</h1>
-                <div class="meta"><i class="fa fa-clock"></i> Last updated: March 7th, 2018</div>
             </div><!--//doc-header-->
             <div class="doc-body">
                 <div class="doc-content">
                     <div class="content-inner">
                         <section id="download-section" class="doc-section">
 
-                            <div class="callout-block callout-danger">
+                            <div class="callout-block callout-warning">
                                 <div class="icon-holder">
                                     <i class="fa fa-exclamation-triangle"></i>
                                 </div><!--//icon-holder-->
                                 <div class="content">
                                     <h4 class="callout-title">Not complete</h4>
-                                    <p>This page just contains the most important information right now.</p>
+                                    <p>This page just contains the commands and some basic information right now, but will be updates as the bot development progresses.</p>
                                 </div><!--//content-->
                             </div>
 
                             <h2 class="section-title">About this bot</h2>
                             <div class="section-block">
-                                <p>CheckYerFlags is a chat bot which checks the amount of helpful flags of the users in <a href="https://chat.stackoverflow.com/rooms/111347/sobotics">SOBotics</a> and posts a message to the chat room, if a user surpasses a certain amount, for example 11,111.
+                                <p>CheckYerFlags is a chat bot which checks the amount of helpful flags of the users in <a href="https://chat.stackoverflow.com/rooms/111347/sobotics">SOBotics</a> and posts a message to the chat room, if a user reaches or surpasses a certain amount, for example 11,111.
                                 </p>
+                                <p>Due to the lack of the Stack Exchange API for getting user stats like edited posts or helpful flags, the data is read from the website. This is only done when a user actively calls the command to check the flags.</p>
+								<p>Additionally, there are also automatic checks running, but most of the bots are excluded to reduce the "scraping" to a minimum. Also, this is only done once every 30 minutes. If a user is closer than 10 flags to a new rank, this rate changes to 5 minutes (only for this user) up to the point where the user reaches the rank.</p>
                             </div>
                         </section><!--//doc-section-->
-                        <section id="installation-section" class="doc-section">
+                        <section id="command-section" class="doc-section">
                             <h2 class="section-title">Interacting with the bot</h2>
                             <div id="aliases"  class="section-block">
                                 <h3 class="block-title">Aliases</h3>
@@ -89,6 +90,10 @@
                                     <tr>
                                         <td><code>alive</code></td>
                                         <td>Returns which instance is running for this room. No response means the bot is not active or has crashed. If it has crashed, it should restart automatically. If it doesn't, ping @chade_ (me)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>a</code></td>
+                                        <td>Alias of <code>alive</code></td>
                                     </tr>
                                     <tr>
                                         <td><code>version</code></td>
@@ -124,7 +129,7 @@
                                         <td>Returns a link to the list for all flag ranks.</td>
                                     </tr>
                                     <tr>
-                                        <td><code>ranks next</code></td>
+                                        <td><code>rank next</code></td>
                                         <td>Returns your next flag rank, and how many flags you need to get there.</td>
                                     </tr>
                                     <tr>
@@ -138,6 +143,10 @@
                                     <tr>
                                         <td><code>commands</code></td>
                                         <td>Returns a link to this page.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>kill</code></td>
+                                        <td>Terminate the bot instance in case of an emergency or serious issues. <b>This command is restricted to site moderators, room owners and bot maintainers</b></td>
                                     </tr>
                                     <tr>
                                         <td><code>why</code></td>
@@ -161,7 +170,7 @@
                                     </tr>
                                     <tr>
                                         <td><code>shrug</code></td>
-                                        <td>Returns the shrug emoji.</td>
+                                        <td>Returns the ASCII shrug (¯\_(ツ)_ /¯).</td>
                                     </tr>
                                     <tr>
                                         <td><code>kappa.gif</code></td>
@@ -179,10 +188,17 @@
                         <ul id="doc-menu" class="nav doc-menu" data-spy="affix">
                             <li><a class="scrollto" href="#download-section">About this bot</a></li>
                             <li>
-                                <a class="scrollto" href="#installation-section">Interacting with the bot</a>
+                                <a class="scrollto" href="#command-section">Interacting with the bot</a>
                                 <ul class="nav doc-sub-menu">
                                     <li><a class="scrollto" href="#aliases">Aliases</a></li>
                                     <li><a class="scrollto" href="#commands">Commands</a></li>
+                                </ul><!--//nav-->
+                            </li>
+                            <li>
+                                <a class="scrollto" href="#rank-section">Flag ranks</a>
+                                <ul class="nav doc-sub-menu">
+                                    <li><a class="scrollto" href="#ranks">List of ranks</a></li>
+                                    <li><a class="scrollto" href="#rank-suggest">Suggest a new rank</a></li>
                                 </ul><!--//nav-->
                             </li>
                             <!--<li>
