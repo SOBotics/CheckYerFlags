@@ -15,7 +15,7 @@ def check_own_flags(message, utils):
     try:
         current_flag_rank = get_current_flag_rank(int(flag_count.replace(",", "")))
         next_flag_rank = get_next_flag_rank(current_flag_rank)
-        flag_count_difference = next_flag_rank["count"]  - current_flag_rank["count"]
+        flag_count_difference = next_flag_rank["count"] - int(flag_count.replace(",", ""))
     except ValueError as e:
         if str(e) is "NEF":
             utils.post_message("You have {} helpful flags. Appears that you are not flagging that much.".format(flag_count))
@@ -30,7 +30,7 @@ def check_own_flags_next_rank(message, utils):
     try:
         current_flag_rank = get_current_flag_rank(int(flag_count.replace(",", "")))
         next_flag_rank = get_next_flag_rank(current_flag_rank)
-        flag_count_difference = next_flag_rank["count"]  - int(flag_count.replace(",", ""))
+        flag_count_difference = next_flag_rank["count"] - int(flag_count.replace(",", ""))
     except ValueError as e:
         if str(e) is "NEF":
             utils.post_message("You need {} more flags to get your first flag rank, **{}** ({} flags in total).".format(ranks.ranks[0]["count"] - int(flag_count.replace(",", "")), ranks.ranks[0]["title"], ranks.ranks[0]["count"]))
