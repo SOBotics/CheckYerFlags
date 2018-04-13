@@ -129,6 +129,7 @@ def on_message(message, client):
                 utils.post_message(say_message)
         elif utils.check_aliases(message_val, "welcome"):
             logging.info("welcome command was called")
+            # TODO: Only in SOBotics
             utils.post_message("Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
         elif utils.check_aliases(message_val, "quota"):
             logging.info("quota command was called")
@@ -164,7 +165,7 @@ def on_message(message, client):
             check_flags.check_own_flags_next_rank(message, utils)
         elif utils.check_aliases(message_val, "ranks") or utils.check_aliases(message_val, "r"):
             logging.info("ranks command was called")
-            utils.reply_with(message, "A list of all ranks is available [here](https://github.com/SOBotics/FlaggersHall/issues/11). Feel free to leave a suggestion there!")
+            utils.reply_with(message, "A list of all ranks is available [here](https://checkyerflags.sobotics.org/#ranks).")
         #region Fun commands
         elif message.content.startswith("🚂"):
             logging.info("train command was called")

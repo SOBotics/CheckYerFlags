@@ -65,7 +65,7 @@
                         </section><!--//doc-section-->
                         <section id="command-section" class="doc-section">
                             <h2 class="section-title">Interacting with the bot</h2>
-                            To interact with a bot, write a message to chat with one of the alias listed below, followed by a command (example: <code>cf alive</code>). If the bot doesn't respond after some quickly (give at least 10 seconds) the command is most likely wrong and therefore not recognized, and if that not the case after you double-checked, it is likely dead. In that case, please ping me (@chade_) in chat and I will come and take a look when I got the time.
+                            <p>To interact with a bot, write a message to chat with one of the alias listed below, followed by a command (example: <code>cf alive</code>). If the bot doesn't respond after some quickly (give at least 10 seconds) the command is most likely wrong and therefore not recognized, and if that not the case after you double-checked, it is likely dead. In that case, please ping me (@chade_) in chat and I will come and take a look when I got the time.</p>
                             <div id="aliases"  class="section-block">
                                 <h3 class="block-title">Aliases</h3>
                                 <ul class="list">
@@ -207,137 +207,158 @@
                             </div><!--//section-block-->
                         </section><!--//doc-section-->
                         <section id="rank-section" class="doc-section">
-                            <h2 class="section-title">Ranks</h2>
-                            There are several ranks that can be achieved. Here you will find a complete list of all ranks that are currently implemented and where you can suggest new ones.
+                            <h2 class="section-title">Flag ranks</h2>
+                            <p>There are several ranks that can be achieved. Here you will find a complete list of all ranks that are currently implemented and where you can suggest new ones. Ranks with striked-through text are suject to be implemented, but are not active yet.</p>
                             <div id="ranks"  class="section-block">
-                                <h3 class="block-title">Ranks</h3>
+                                <h3 class="block-title">List of ranks</h3>
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
-                                        <th style="min-width: 14em;">Command</th>
-                                        <th>Function</th>
+                                        <th>Flag count</th>
+                                        <th>Rank name</th>
+                                        <th>Description/Reason</th>
+                                        <th>Credits</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td><code>alive</code></td>
-                                        <td>Returns which instance is running for this room. No response means the bot is not active or has crashed. If it has crashed, it should restart automatically. If it doesn't, ping @chade_ (me)</td>
+                                        <td>365</td>
+                                        <td>A flag a day keeps bad posts away</td>
+                                        <td>one year has 365 days</td>
+                                        <td><a href="https://stackoverflow.com/users/4687348/felixsfd" rel="nofollow">FelixSFD</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>a</code></td>
-                                        <td>Alias of <code>alive</code></td>
+                                        <td><del>811</del></td>
+                                        <td><del>How dare thy!</del></td>
+                                        <td><del>811 is Shog's user id</del></td>
+                                        <td><a href="https://stackoverflow.com/users/4174897/paul-stenne" rel="nofollow">Paul Stenne</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>version</code></td>
-                                        <td>Returns the current version the bot is running.</td>
+                                        <td>1.111</td>
+                                        <td>No badge needed</td>
+                                        <td>A number is prettier than a badge anyway!</td>
+                                        <td>-</td>
                                     </tr>
                                     <tr>
-                                        <td><code>v</code></td>
-                                        <td>Alias of <code>version</code></td>
+                                        <td>1.969</td>
+                                        <td>Moon landing</td>
+                                        <td>I flagged the moon!</td>
+                                        <td><a href="https://stackoverflow.com/users/6375113/bugs" rel="nofollow">Bugs</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>status &lt;mine|user id&gt;</code></td>
-                                        <td><b>mine:</b> Returns the status of your flags and your last flag rank.<br>
-                                            <b>user id:</b> Returns the status of the flags and the last flag rank for the user with the specified user id.</td>
+                                        <td>2.008</td>
+                                        <td>Flag Overflow</td>
+                                        <td>Stack Overflow was created in 2008</td>
+                                        <td><a href="https://stackoverflow.com/users/7347933/paper1111" rel="nofollow">paper1111</a> for where to put it and the flag count</td>
                                     </tr>
                                     <tr>
-                                        <td><code>s m</code></td>
-                                        <td>Alias of <code>status mine</code></td>
+                                        <td>3.456</td>
+                                        <td>&lt;3456</td>
+                                        <td>You &lt;3 flagging too much.</td>
+                                        <td><a href="https://stackoverflow.com/users/6375113/bugs" rel="nofollow">Bugs</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>s &lt;user id&gt;</code></td>
-                                        <td>Alias of <code>status</code></td>
+                                        <td>5.566</td>
+                                        <td><a href="https://en.wikipedia.org/wiki/Long_Time_No_See_(5566_album)" rel="nofollow">Long Time No Flag</a></td>
+                                        <td><a href="https://en.wikipedia.org/wiki/5566" rel="nofollow">Taiwanese boy band, formed under Taiwanese music company, J-Star</a></td>
+                                        <td><a href="https://stackoverflow.com/users/6375113/bugs" rel="nofollow">Bugs</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>quota</code></td>
-                                        <td>Returns remaining StackExchange API quota. Used to validate user IDs before checking their flags to reduce unnecessary requests.</td>
+                                        <td>10.000</td>
+                                        <td>Elite Squad</td>
+                                        <td>At one point of time, there were only 16 of us</td>
+                                        <td><a href="https://stackoverflow.com/users/4099593/bhargav-rao" rel="nofollow">Bhargav Rao</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>welcome</code></td>
-                                        <td>Posts some introduction for new users coming to SOBotics. <i>Right now this feature is enabled for all rooms, but it's planned to disable it for other rooms in the future</i></td>
+                                        <td>11.111</td>
+                                        <td>Game of Flags</td>
+                                        <td>All elevens because the TV show Game of Thrones started in 2011</td>
+                                        <td>-</td>
                                     </tr>
                                     <tr>
-                                        <td><code>ranks</code></td>
-                                        <td>Returns a link to the list for all flag ranks.</td>
+                                        <td>19.679</td>
+                                        <td>Professional Larsonist (Brad Larson)</td>
+                                        <td>19679 is Brad's user id</td>
+                                        <td><a href="https://stackoverflow.com/users/4174897/paul-stenne" rel="nofollow">Paul Stenne</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>rank next</code></td>
-                                        <td>Returns your next flag rank, and how many flags you need to get there.</td>
+                                        <td>22.656</td>
+                                        <td>Almost Jon Skeet</td>
+                                        <td>22656 is his (John's) user ID</td>
+                                        <td><a href="https://stackoverflow.com/users/4687348/felixsfd" rel="nofollow">FelixSFD</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>r</code></td>
-                                        <td>Alias of <code>ranks</code></td>
+                                        <td>33.333</td>
+                                        <td>The Mad Flagger</td>
+                                        <td>Got nothing better to do with your time? ;D</td>
+                                        <td>-</td>
                                     </tr>
                                     <tr>
-                                        <td><code>r n</code></td>
-                                        <td>Alias of <code>ranks next</code></td>
+                                        <td>42.195</td>
+                                        <td>The Marathon</td>
+                                        <td>Marathon's length in meters</td>
+                                        <td><a href="https://stackoverflow.com/users/559745/floern" rel="nofollow">Floern</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>commands</code></td>
-                                        <td>Returns a link to this page.</td>
+                                        <td>65.536</td>
+                                        <td>The two to the sixteen</td>
+                                        <td>-</td>
+                                        <td><a href="https://stackoverflow.com/users/559745/floern" rel="nofollow">Floern</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>why</code></td>
-                                        <td>Returns a link named "Because of you" to Kelly Clarkson's same-named song.</td>
+                                        <td>101.010</td>
+                                        <td>Definitely a robot</td>
+                                        <td>42 in binary code. Also <a href="https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42)" rel="nofollow">42 is the Answer to the Ultimate Question of Life, the Universe, and Everything</a></td>
+                                        <td><a href="https://stackoverflow.com/users/4687348/felixsfd" rel="nofollow">FelixSFD</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>good bot</code></td>
-                                        <td>Thanks you for being nice</td>
+                                        <td>314.159</td>
+                                        <td>π</td>
+                                        <td>Who ate all the Pi?</td>
+                                        <td><a href="https://stackoverflow.com/users/6375113/bugs" rel="nofollow">Bugs</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>thanks</code></td>
-                                        <td>Returns "You're welcome."</td>
+                                        <td><del>874.188</del></td>
+                                        <td><del>tripleee</del></td>
+                                        <td><del>Wheeereee has theee eee goneee?</del></td>
+                                        <td><a href="https://stackoverflow.com/users/4174897/paul-stenne" rel="nofollow">Paul Stenne</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>thank you</code></td>
-                                        <td>Alias of <code>thanks</code></td>
+                                        <td><del>1.849.664</del></td>
+                                        <td><del>Woof woof</del></td>
+                                        <td><del>1849664 is Undo's user id</del></td>
+                                        <td><a href="https://stackoverflow.com/users/4174897/paul-stenne" rel="nofollow">Paul Stenne</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>thx</code></td>
-                                        <td>Alias of <code>thanks</code></td>
+                                        <td><del>3.735.529</del></td>
+                                        <td><del>He just does the pointing job</del></td>
+                                        <td><del>3735529 is Smokey's user id</del></td>
+                                        <td><a href="https://stackoverflow.com/users/4174897/paul-stenne" rel="nofollow">Paul Stenne</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>shrug</code></td>
-                                        <td>Returns the ASCII shrug (¯\_(ツ)_ /¯).</td>
+                                        <td><del>4.733.879</del></td>
+                                        <td><del>Call me flaggy</del></td>
+                                        <td><del>4733879 is chade_'s user id</del></td>
+                                        <td><a href="https://stackoverflow.com/users/4174897/paul-stenne" rel="nofollow">Paul Stenne</a></td>
                                     </tr>
                                     <tr>
-                                        <td><code>kappa.gif</code></td>
-                                        <td>Returns a gif link to a spinning kappa</td>
+                                        <td>2.147.483.647</td>
+                                        <td>The Overflow</td>
+                                        <td><a href="https://stackoverflow.com/a/94608" rel="nofollow">Maximum size of a 32-bit integer</a></td>
+                                        <td><a href="https://stackoverflow.com/users/559745/floern" rel="nofollow">Floern</a></td>
                                     </tr>
-                                    </tbody>
+                                    <tr>
+                                        <td>4.294.967.296</td>
+                                        <td>A <code>long</code> journey</td>
+                                        <td>-</td>
+                                        <td><a href="https://stackoverflow.com/users/559745/floern" rel="nofollow">Floern</a></td>
+                                    </tr></tbody>
                                 </table>
 
                             </div><!--//section-block-->
-                            <div id="privileged-commands"  class="section-block">
-                                <h3 class="block-title">Privileged commands</h3>
-                                This command are only available to site moderators, room owners and bot maintainers.
-                                <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th style="min-width: 14em;">Command</th>
-                                        <th>Function</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td><code>kill</code></td>
-                                        <td>Terminate the bot instance in case of an emergency or serious issues.</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>delete</code></td>
-                                        <td>Deletes the last message of the bot, if possible</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>del</code></td>
-                                        <td>Alias of <code>delete</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>amiprivileged</code></td>
-                                        <td>Checks if are site moderator, room owner and/or bot maintainer</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-
+                            <div id="rank-suggest"  class="section-block">
+                                <h3 class="block-title">Suggest a new rank</h3>
+                                <p>If you have an idea for a new flag rank, please add a comment to <a href="https://github.com/SOBotics/FlaggersHall/issues/11" target="_blank">this issue</a> on GitHub.</p>
                             </div><!--//section-block-->
                         </section><!--//doc-section-->
                     </div><!--//content-inner-->
