@@ -170,6 +170,10 @@
                                         <td><code>kappa.gif</code></td>
                                         <td>Returns a gif link to a spinning kappa</td>
                                     </tr>
+                                    <tr>
+                                        <td><code>amiprivileged</code></td>
+                                        <td>Checks if you are site moderator, room owner and/or bot maintainer and therefore allowed to use privileged commands.</td>
+                                    </tr>
                                     </tbody>
                                 </table>
 
@@ -190,6 +194,10 @@
                                         <td>Terminate the bot instance in case of an emergency or serious issues.</td>
                                     </tr>
                                     <tr>
+                                        <td><code>stop</code></td>
+                                        <td>Alias of <code>kill</code></td>
+                                    </tr>
+                                    <tr>
                                         <td><code>delete</code></td>
                                         <td>Deletes the last message of the bot, if possible</td>
                                     </tr>
@@ -198,8 +206,12 @@
                                         <td>Alias of <code>delete</code></td>
                                     </tr>
                                     <tr>
-                                        <td><code>amiprivileged</code></td>
-                                        <td>Checks if are site moderator, room owner and/or bot maintainer</td>
+                                        <td><code>leave</code></td>
+                                        <td>Request the bot to leave the room</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>bye</code></td>
+                                        <td>Alias of <code>leave</code></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -249,7 +261,7 @@
                                         <td>2.008</td>
                                         <td>Flag Overflow</td>
                                         <td>Stack Overflow was created in 2008</td>
-                                        <td><a href="https://stackoverflow.com/users/7347933/paper1111" rel="nofollow">paper1111</a> for where to put it and the flag count</td>
+                                        <td><a href="https://stackoverflow.com/users/7347933/paper1111" rel="nofollow">paper1111</a></td>
                                     </tr>
                                     <tr>
                                         <td>3.456</td>
@@ -361,6 +373,59 @@
                                 <p>If you have an idea for a new flag rank, please add a comment to <a href="https://github.com/SOBotics/FlaggersHall/issues/11" target="_blank">this issue</a> on GitHub.</p>
                             </div><!--//section-block-->
                         </section><!--//doc-section-->
+                        <section id="own-instance" class="doc-section">
+                            <h2 class="section-title">Running your own instance</h2>
+                            <p>This guide was tested on a Ubuntu 16.04 LTS server. Your experience and installation may vary on other system, especially on not Debian-based ones.</p>
+                            <div id="prerequisites"  class="section-block">
+                                <h3 class="block-title">Install prerequisites</h3>
+                                <p>First, you need to check if your system meets all prerequisites, or if not, install them:</p>
+                                <ul>
+                                    <li>Python 3.5+</li>
+                                    <li>Git CLI</li>
+                                    <li><code>libxml2-dev</code>, <code>libxslt-dev</code> and the <code>python-dev</code> packages</li>
+                                </ul>
+                                Recommended, but not required:
+                                <ul>
+                                    <li><code>vim</code> or <code>nano</code></li>
+                                    <li><code>screen</code></li>
+                                </ul>
+                            </div><!--//section-block-->
+                            <div id="step-1"  class="section-block">
+                                <h3 class="block-title">Step 1 - Downloading the bot</h3>
+                                <p>After you installed the prerequisites, clone the repository:</p>
+                                <code>git clone --recursive https://github.com/SOBotics/FlaggersHall.git</code>
+                                <p>We use the option <code>--recursive</code> here, so that we get any submodules for the repository (in our case ChatExchange)</p>
+                                <p>Then checkout the latest tag (check the <a href="https://github.com/SOBotics/FlaggersHall/releases" target="_blank">releases page on GitHub</a> to see what is the latest tag):</p>
+                                <code>git checkout &lt;bot version&gt;</code> (replace &lt;bot version&gt; with whatever version is the latest, e.g. <code>v0.9.0</code>)
+                                Now we can continue to the configuration.
+
+                            </div><!--//section-block-->
+                            <div id="step-2"  class="section-block">
+                                <h3 class="block-title">Step 2 - Changing the configuration</h3>
+                                <p>Create a copy of the config file from the example config:</p>
+                                <code>cp config.example.py config.py</code>
+                                <p>Then edit the created file (you can use other editors than vi, we just use it here because it's on almost every linux system)</p>
+                                <code>vi config.py</code>
+                                <p>In the file you need to replace several values, but the parameters are self-explaining. Just look careful if you edit the debug or the productive config.</p>
+                            </div><!--//section-block-->
+                            <div id="step-3"  class="section-block">
+                                <h3 class="block-title">Step 3 - Get it up and running</h3>
+                                <p>If you have installed screen, you should create or attach to one now.</p>
+                                <p>Run the bot with the following command:</p>
+                                <code>python3 checkyerflags.py</code> Depending or your system, you may need to change <code>python3</code> to just <code>python</code>.
+                                <p>If you want to load the debug config, use this command instead:</p>
+                                <code>python3 checkyerflags.py --debug</code>
+                                <p>If everything worked out, the console output you have should look something like that:</p>
+                                <pre>Loading debug config...
+['CheckYerFlags', 'chade_']
+Joined room 'CheckYerFlags HQ' on stackoverflow.com
+<<</pre>
+                                <p>And in the set chatroom a message should have been posted:</p>
+                                <pre>[ CheckYerFlags ] started.</pre>
+                                <p>The message differs if you have started in debug mode:</p>
+                                <pre>[ CheckYerFlags ] started in debug mode.</pre>
+                            </div><!--//section-block-->
+                        </section><!--//doc-section-->
                     </div><!--//content-inner-->
                 </div><!--//doc-content-->
                 <div class="doc-sidebar hidden-xs">
@@ -382,19 +447,15 @@
                                     <li><a class="scrollto" href="#rank-suggest">Suggest a new rank</a></li>
                                 </ul><!--//nav-->
                             </li>
-                            <!--<li>
-                                <a class="scrollto" href="#code-section">Code</a>
+                            <li>
+                                <a class="scrollto" href="#own-instance">Running your own instance</a>
                                 <ul class="nav doc-sub-menu">
-                                    <li><a class="scrollto" href="#html">HTML</a></li>
-                                    <li><a class="scrollto" href="#css">CSS</a></li>
-                                    <li><a class="scrollto" href="#less">LESS</a></li>
-                                    <li><a class="scrollto" href="#sass">Sass</a></li>
-                                    <li><a class="scrollto" href="#javascript">JavaScript</a></li>
-                                    <li><a class="scrollto" href="#python">Python</a></li>
-                                    <li><a class="scrollto" href="#php">PHP</a></li>
-                                    <li><a class="scrollto" href="#handlebars">Handlebars</a></li>
+                                    <li><a class="scrollto" href="#prerequisites">Install prerequisites</a></li>
+                                    <li><a class="scrollto" href="#step-1">Step 1 - Downloading the bot</a></li>
+                                    <li><a class="scrollto" href="#step-2">Step 2 - Changing the configuration</a></li>
+                                    <li><a class="scrollto" href="#step-3">Step 3 - Get it up and running</a></li>
                                 </ul>
-                            </li>-->
+                            </li>
                         </ul><!--//doc-menu-->
                     </nav>
                 </div><!--//doc-sidebar-->

@@ -31,7 +31,19 @@ class utils:
         if message is None or command is None:
             return False
 
-        if "@cyf " + command in message or "@cf " + command in message or "@CheckYerFlags " + command in message or "cyf " + command in message or "cf " + command in message:
+        #Supported aliases
+        startswith_at_username = message.startswith("@CheckYerFlags " + command)
+        startswith_cf = message.startswith("cf " + command)
+        startswith_cyf = message.startswith("cyf " + command)
+
+        #Deprecated aliases
+        startswith_at_cf = message.startswith("@cf " + command)
+        startswith_at_cyf = message.startswith("@cyf " + command)
+
+        if startswith_at_username or startswith_cf or startswith_cyf:
+            return True
+        elif startswith_at_cf or startswith_at_cyf:
+            self.post_message("This alias is deprecated and subject to be removed. Please use a [supported alias](https://checkyerflags.sobotics.org/#aliases) in the future.")
             return True
         else:
             return False

@@ -105,6 +105,11 @@ ENV/
 
 # log files
 *.log
+
+# GPG data
 /keyrings/live/pubring.gpg~
 /keyrings/live/pubring.kbx~
 /keyrings/live/secring.gpg
+
+# config file
+config.py
