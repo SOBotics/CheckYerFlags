@@ -1,7 +1,3 @@
-"""
-Is this file are the configurations for debug and production mode defined. In the debug config is also explained for what the properties are for
-"""
-
 debug_config = {
     "botParent": "<YOUR_NAME>", # The person which is responsible for running the instance (at best your SE username, so people know who to ping)
     "botMachine": "<YOUR_MACHINE_NAME>", # The system the bot runs on (example: UbuntuServer).
@@ -15,8 +11,8 @@ debug_config = {
 }
 
 prod_config = {
-    "botParent": "chade_",
-    "botMachine": "UbuntuServer",
+    "botParent": "<YOUR_NAME>",
+    "botMachine": "<YOUR_MACHINE_NAME>",
     "botVersion": "v0.10.0",
     "room": 111347,
     "chatHost": "stackoverflow.com",

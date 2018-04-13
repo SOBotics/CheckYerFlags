@@ -8,7 +8,13 @@ import threading
 import flagbot.flags as check_flags
 import flagbot.redunda as redunda
 import flagbot.flags_auto_check as fac
-import config as config
+
+#Import config file with custom error message
+try:
+    import config as config
+except ModuleNotFoundError:
+    raise Exception("The config module couldn't be imported. Have you renamed config.example.py to config.py?")
+
 
 from flagbot.utils import utils
 from urllib.request import urlopen
@@ -21,7 +27,6 @@ utils = utils()
 def main():
 
     #Get config for the mode (debug/prod)
-
     try:
         if sys.argv[1] == '--debug':
             print("Loading debug config...")
@@ -34,11 +39,9 @@ def main():
 
     #region Login and connection to chat
     utils.room_number = utils.config["room"]
-
     client = Client(utils.config["chatHost"])
     client.login(utils.config["email"], utils.config["password"])
     utils.client = client
-
     room = client.get_room(utils.config["room"])
     room.join()
     room.watch(on_message)
@@ -46,6 +49,7 @@ def main():
     utils.room_owners = room.owners
     #endregion
 
+    #Store current quota as variabke
     quota_obj = json.loads(gzip.GzipFile(fileobj=io.BytesIO(urlopen("https://api.stackexchange.com/2.2/users/1?order=desc&sort=reputation&site=stackoverflow&key={}".format(utils.config["stackExchangeApiKey"])).read())).read().decode("utf-8"))
 
 

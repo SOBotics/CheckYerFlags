@@ -65,13 +65,11 @@
                         </section><!--//doc-section-->
                         <section id="command-section" class="doc-section">
                             <h2 class="section-title">Interacting with the bot</h2>
+                            To interact with a bot, write a message to chat with one of the alias listed below, followed by a command (example: <code>cf alive</code>). If the bot doesn't respond after some quickly (give at least 10 seconds) the command is most likely wrong and therefore not recognized, and if that not the case after you double-checked, it is likely dead. In that case, please ping me (@chade_) in chat and I will come and take a look when I got the time.
                             <div id="aliases"  class="section-block">
                                 <h3 class="block-title">Aliases</h3>
                                 <ul class="list">
                                     <li>@CheckYerFlags</li>
-                                    <li>@cyf</li>
-                                    <li>@cf</li>
-                                    <li>CheckYerFlags</li>
                                     <li>cyf</li>
                                     <li>cf</li>
                                 </ul>
@@ -122,7 +120,7 @@
                                     </tr>
                                     <tr>
                                         <td><code>welcome</code></td>
-                                        <td>Posts some introduction for new users coming to SOBotics. *Right now this feature is enabled for all rooms, but it's planned to disable it for other rooms in the future*</td>
+                                        <td>Posts some introduction for new users coming to SOBotics. <i>Right now this feature is enabled for all rooms, but it's planned to disable it for other rooms in the future</i></td>
                                     </tr>
                                     <tr>
                                         <td><code>ranks</code></td>
@@ -143,10 +141,6 @@
                                     <tr>
                                         <td><code>commands</code></td>
                                         <td>Returns a link to this page.</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>kill</code></td>
-                                        <td>Terminate the bot instance in case of an emergency or serious issues. <b>This command is restricted to site moderators, room owners and bot maintainers</b></td>
                                     </tr>
                                     <tr>
                                         <td><code>why</code></td>
@@ -180,6 +174,171 @@
                                 </table>
 
                             </div><!--//section-block-->
+                            <div id="privileged-commands"  class="section-block">
+                                <h3 class="block-title">Privileged commands</h3>
+                                This command are only available to site moderators, room owners and bot maintainers.
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th style="min-width: 14em;">Command</th>
+                                        <th>Function</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td><code>kill</code></td>
+                                        <td>Terminate the bot instance in case of an emergency or serious issues.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>delete</code></td>
+                                        <td>Deletes the last message of the bot, if possible</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>del</code></td>
+                                        <td>Alias of <code>delete</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>amiprivileged</code></td>
+                                        <td>Checks if are site moderator, room owner and/or bot maintainer</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div><!--//section-block-->
+                        </section><!--//doc-section-->
+                        <section id="rank-section" class="doc-section">
+                            <h2 class="section-title">Ranks</h2>
+                            There are several ranks that can be achieved. Here you will find a complete list of all ranks that are currently implemented and where you can suggest new ones.
+                            <div id="ranks"  class="section-block">
+                                <h3 class="block-title">Ranks</h3>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th style="min-width: 14em;">Command</th>
+                                        <th>Function</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td><code>alive</code></td>
+                                        <td>Returns which instance is running for this room. No response means the bot is not active or has crashed. If it has crashed, it should restart automatically. If it doesn't, ping @chade_ (me)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>a</code></td>
+                                        <td>Alias of <code>alive</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>version</code></td>
+                                        <td>Returns the current version the bot is running.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>v</code></td>
+                                        <td>Alias of <code>version</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>status &lt;mine|user id&gt;</code></td>
+                                        <td><b>mine:</b> Returns the status of your flags and your last flag rank.<br>
+                                            <b>user id:</b> Returns the status of the flags and the last flag rank for the user with the specified user id.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>s m</code></td>
+                                        <td>Alias of <code>status mine</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>s &lt;user id&gt;</code></td>
+                                        <td>Alias of <code>status</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>quota</code></td>
+                                        <td>Returns remaining StackExchange API quota. Used to validate user IDs before checking their flags to reduce unnecessary requests.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>welcome</code></td>
+                                        <td>Posts some introduction for new users coming to SOBotics. <i>Right now this feature is enabled for all rooms, but it's planned to disable it for other rooms in the future</i></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>ranks</code></td>
+                                        <td>Returns a link to the list for all flag ranks.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>rank next</code></td>
+                                        <td>Returns your next flag rank, and how many flags you need to get there.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>r</code></td>
+                                        <td>Alias of <code>ranks</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>r n</code></td>
+                                        <td>Alias of <code>ranks next</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>commands</code></td>
+                                        <td>Returns a link to this page.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>why</code></td>
+                                        <td>Returns a link named "Because of you" to Kelly Clarkson's same-named song.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>good bot</code></td>
+                                        <td>Thanks you for being nice</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>thanks</code></td>
+                                        <td>Returns "You're welcome."</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>thank you</code></td>
+                                        <td>Alias of <code>thanks</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>thx</code></td>
+                                        <td>Alias of <code>thanks</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>shrug</code></td>
+                                        <td>Returns the ASCII shrug (¯\_(ツ)_ /¯).</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>kappa.gif</code></td>
+                                        <td>Returns a gif link to a spinning kappa</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div><!--//section-block-->
+                            <div id="privileged-commands"  class="section-block">
+                                <h3 class="block-title">Privileged commands</h3>
+                                This command are only available to site moderators, room owners and bot maintainers.
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th style="min-width: 14em;">Command</th>
+                                        <th>Function</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td><code>kill</code></td>
+                                        <td>Terminate the bot instance in case of an emergency or serious issues.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>delete</code></td>
+                                        <td>Deletes the last message of the bot, if possible</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>del</code></td>
+                                        <td>Alias of <code>delete</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>amiprivileged</code></td>
+                                        <td>Checks if are site moderator, room owner and/or bot maintainer</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div><!--//section-block-->
                         </section><!--//doc-section-->
                     </div><!--//content-inner-->
                 </div><!--//doc-content-->
@@ -192,6 +351,7 @@
                                 <ul class="nav doc-sub-menu">
                                     <li><a class="scrollto" href="#aliases">Aliases</a></li>
                                     <li><a class="scrollto" href="#commands">Commands</a></li>
+                                    <li><a class="scrollto" href="#privileged-commands">Privileged commands</a></li>
                                 </ul><!--//nav-->
                             </li>
                             <li>
