@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import json
 import io
@@ -145,7 +146,7 @@ def on_message(message, client):
         elif utils.check_aliases(message_val, "welcome"):
             logging.info("welcome command was called")
             #Only run in SOBotics
-            if utils.room_number is 111347:
+            if utils.room_number == 111347:
                 utils.post_message("Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
             else:
                 utils.post_message("This command is not supported in this room")
@@ -222,7 +223,7 @@ def on_message(message, client):
             utils.reply_with(message, "https://i.imgur.com/8TRbWHM.gif")
         #endregion
     except (KeyboardInterrupt, SystemExit):
-        raise
+        os._exit(0)
     except BaseException as e:
         logging.error("CRITICAL ERROR: {}".format(e))
         if message is not None and message.id is not None:
@@ -230,7 +231,7 @@ def on_message(message, client):
             logging.error(traceback.format_exc())
         try:
             utils.post_message("Error on processing the last command ({}); rebooting instance... (cc @chade_)".format(e))
-            utils.post_message("[ [CheckYerFlags](https://stackapps.com/q/7792) ] started.")
+            os._exit(1)
 
         except AttributeError:
             pass
