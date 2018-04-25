@@ -46,7 +46,7 @@ def main():
     utils.client = client
     room = client.get_room(utils.config["room"])
     room.join()
-    room.watch(on_message)
+    room.watch_socket(on_message)
     print(room.get_current_user_names())
     utils.room_owners = room.owners
     #endregion
@@ -58,7 +58,7 @@ def main():
     if quota_obj['quota_remaining'] is not None:
         utils.quota = quota_obj['quota_remaining']
 
-    logging.basicConfig(filename="CheckYerFlags.log", level=logging.INFO, filemode="w")
+    logging.basicConfig(filename="CheckYerFlags.log", level=logging.INFO, filemode="a")
     logging.getLogger("chatexchange").setLevel(logging.WARNING)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
@@ -99,7 +99,11 @@ def main():
 
     while True:
         message = input("<< ")
-        room.send_message(message)
+
+        if message == "restart":
+            os._exit(1)
+        else:
+            room.send_message(message)
 
     #client.logout()
     #stop_redunda.set()
@@ -115,20 +119,19 @@ def on_message(message, client):
         logging.warning(message)
         return
 
+    if message.user.id == 9220325:
+        utils.last_bot_message = message
+
     try:
         #Here are the commands defined
-        if utils.check_aliases(message_val, "amiprivileged"):
+        if utils.check_aliases(message_val, "del") or utils.check_aliases(message_val, "delete"):
+            msg = client.get_message(utils.last_bot_message._message_id)
+            if msg is not None:
+                msg.delete()
+        elif utils.check_aliases(message_val, "amiprivileged"):
             logging.info("amiprivileged command was called")
 
-            room_owner_id_list = []
-            for owner in utils.room_owners:
-                room_owner_id_list.append(owner.id)
-
-            if 4733879 not in room_owner_id_list:
-                room_owner_id_list.append(4733879)
-
-            # Restrict function to (site) moderators, room owners and maintainers
-            if message.user.is_moderator or message.user.id in room_owner_id_list:
+            if utils.is_privileged(message):
                 utils.reply_with(message, "You are privileged.")
             else:
                 utils.reply_with(message, "You are not privileged. Ping chade_ if you believe that's an error.")
@@ -155,37 +158,22 @@ def on_message(message, client):
             utils.post_message("The remaining API quota is {}.".format(utils.quota))
         elif utils.check_aliases(message_val, "kill") or utils.check_aliases(message_val, "stop"):
             logging.info("kill command was called")
+            logging.warning("Termination or stop requested by {}".format(message.user.name))
 
-            room_owner_id_list = []
-            for owner in utils.room_owners:
-                room_owner_id_list.append(owner.id)
-
-            if 4733879 not in room_owner_id_list:
-                room_owner_id_list.append(4733879)
-
-            # Restrict function to (site) moderators, room owners and maintainers
-            if message.user.is_moderator or message.user.id in room_owner_id_list:
-                logging.warning("Termination or stop requested by {}".format(message.user.name))
+            if utils.is_privileged(message):
                 try:
                     utils.client.get_room(utils.room_number).leave()
                 except BaseException:
                     pass
-                raise SystemExit(0)
+                raise os._exit(0)
             else:
                 utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers. (cc @chade_)")
         elif utils.check_aliases(message_val, "leave") or utils.check_aliases(message_val, "bye"):
             logging.info("leave command was called")
-
-            room_owner_id_list = []
-            for owner in utils.room_owners:
-                room_owner_id_list.append(owner.id)
-
-            if 4733879 not in room_owner_id_list:
-                room_owner_id_list.append(4733879)
+            logging.warning("Leave requested by {}".format(message.user.name))
 
             # Restrict function to (site) moderators, room owners and maintainers
-            if message.user.is_moderator or message.user.id in room_owner_id_list:
-                logging.warning("Leave requested by {}".format(message.user.name))
+            if utils.is_privileged(message):
                 utils.post_message("Bye")
                 utils.client.get_room(utils.room_number).leave()
             else:

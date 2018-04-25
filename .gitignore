@@ -113,3 +113,6 @@ ENV/
 
 # config file
 config.py
+
+# Bash scripts
+*.sh

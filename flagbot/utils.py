@@ -48,6 +48,17 @@ class utils:
         else:
             return False
 
+    def is_privileged(self, message):
+        priviledged_users = [4733879]
+        for owner in self.room_owners:
+            priviledged_users.append(owner.id)
+
+        # Restrict function to (site) moderators, room owners and maintainers
+        if  message.user.is_moderator or message.user.id in priviledged_users:
+            return True
+        else:
+            return False
+
     @staticmethod
     def reply_with(message, reply):
         logging.info(message)

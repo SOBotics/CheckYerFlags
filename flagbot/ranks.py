@@ -5,9 +5,19 @@ ranks = [
         "description": "One year has 365 days"
     },
     {
+        "count": 811,
+        "title": "How thare thy?",
+        "description": "I think you know whose user id that is"
+    },
+    {
         "count": 1111,
         "title": "No badge needed",
         "description": "A number is prettier than a badge anyway!"
+    },
+    {
+        "count": 1337,
+        "title": "l337 fl4663r",
+        "description": "[l337 5p34k 15 4w350m3!](https://en.wikipedia.org/wiki/Leet)"
     },
     {
         "count": 1969,
@@ -18,6 +28,11 @@ ranks = [
         "count": 2008,
         "title": "Flag Overflow",
         "description": "Stack Overflow was created in 2008"
+    },
+    {
+        "count": 2395,
+        "title": "Flag me up, Scotty",
+        "description": "[We don't beam, we flag](https://en.wikipedia.org/wiki/Beam_me_up,_Scotty)"
     },
     {
         "count": 3456,
@@ -38,6 +53,11 @@ ranks = [
         "count": 11111,
         "title": "Game of Flags",
         "description": "All elevens because the TV show Game of Thrones started in 2011"
+    },
+    {
+        "count": 19679,
+        "title": "Professional Larnsonist",
+        "description": "19679 is Brad Larnson's user id"
     },
     {
         "count": 22656,
@@ -68,6 +88,26 @@ ranks = [
         "count": 314159,
         "title": "π",
         "description": "Who ate all the Pi?"
+    },
+    {
+        "count": 874188,
+        "title": "tripleee",
+        "description": "Wheeereee has theee eee goneee?"
+    },
+    {
+        "count": 1849664,
+        "title": "Woof woof",
+        "description": "1849664 is Undo's user id"
+    },
+    {
+        "count": 3735529,
+        "title": "He just does the pointing job",
+        "description": "3735529 is Smokey's user id"
+    },
+    {
+        "count": 4733879,
+        "title": "Call me flaggy",
+        "description": "4733879 is chade_'s user id"
     },
     {
         "count": 2147483647,
