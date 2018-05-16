@@ -27,25 +27,17 @@ class utils:
             logging.info(message)
         self.client.get_room(self.room_number).send_message(message)
 
-    def check_aliases(self, message, command):
-        if message is None or command is None:
-            return False
-
-        #Supported aliases
-        startswith_at_username = message.startswith("@CheckYerFlags " + command)
-        startswith_cf = message.startswith("cf " + command)
-        startswith_cyf = message.startswith("cyf " + command)
-
-        #Deprecated aliases
-        startswith_at_cf = message.startswith("@cf " + command)
-        startswith_at_cyf = message.startswith("@cyf " + command)
-
-        if startswith_at_username or startswith_cf or startswith_cyf:
+    def alias_valid(self, alias):
+        """Check if the specified alias is valid"""
+        if alias in ["@Check", "@CheckYerFlags", "cf", "cyf"]:
+            #Alias valid
             return True
-        elif startswith_at_cf or startswith_at_cyf:
+        elif alias in ["@cyf", "@cf"]:
+            #Alias deprecated, post message with deprecation message
             self.post_message("This alias is deprecated and subject to be removed. Please use a [supported alias](https://checkyerflags.sobotics.org/#aliases) in the future.")
             return True
         else:
+            #Alias invalid
             return False
 
     def is_privileged(self, message):

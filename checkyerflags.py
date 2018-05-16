@@ -113,6 +113,7 @@ def on_message(message, client):
         # We ignore non-MessagePosted events.
         return
     message_val = message.content
+    words = message.content.split()
 
     if message is None or message.content is None:
         logging.warning("ChatExchange message object or content property is None.")
@@ -122,41 +123,47 @@ def on_message(message, client):
     if message.user.id == 9220325:
         utils.last_bot_message = message
 
+    #Check if alias is valid
+    if not utils.alias_valid(words[0]):
+        return
+
+    command = words[1]
+
     try:
         #Here are the commands defined
-        if utils.check_aliases(message_val, "del") or utils.check_aliases(message_val, "delete"):
+        if command in ["del", "delete", "poof"]:
             msg = client.get_message(utils.last_bot_message._message_id)
             if msg is not None:
                 msg.delete()
-        elif utils.check_aliases(message_val, "amiprivileged"):
+        elif command in ["amiprivileged"]:
             logging.info("amiprivileged command was called")
 
             if utils.is_privileged(message):
                 utils.reply_with(message, "You are privileged.")
             else:
-                utils.reply_with(message, "You are not privileged. Ping chade_ if you believe that's an error.")
-        elif utils.check_aliases(message_val, "a") or utils.check_aliases(message_val, "alive"):
+                utils.reply_with(message, "You are not privileged. Ping Filnor if you believe that's an error.")
+        elif command in ["a", "alive"]:
             logging.info("alive command was called")
             utils.reply_with(message, "instance of {} is running on **{}/{}**".format(utils.config["botVersion"], utils.config["botParent"], utils.config["botMachine"]))
-        elif utils.check_aliases(message_val, "v") or utils.check_aliases(message_val, "version"):
+        elif command in ["v", "version"]:
             logging.info("version command was called")
             utils.reply_with(message, "Current version is {}".format(utils.config["botVersion"]))
-        elif utils.check_aliases(message_val, "say"):
+        elif command in ["say"]:
             logging.info("say command was called")
             if message.user.id != 9220325: # Don't process commands by the bot account itself
-                say_message = md(message.content.split('say', 1)[1])
+                say_message = md(' '.join(map(str, words[2:])))
                 utils.post_message(say_message)
-        elif utils.check_aliases(message_val, "welcome"):
+        elif command in ["welcome"]:
             logging.info("welcome command was called")
             #Only run in SOBotics
             if utils.room_number == 111347:
                 utils.post_message("Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
             else:
                 utils.post_message("This command is not supported in this room")
-        elif utils.check_aliases(message_val, "quota"):
+        elif command in ["quota"]:
             logging.info("quota command was called")
             utils.post_message("The remaining API quota is {}.".format(utils.quota))
-        elif utils.check_aliases(message_val, "kill") or utils.check_aliases(message_val, "stop"):
+        elif command in ["kill", "stop"]:
             logging.info("kill command was called")
             logging.warning("Termination or stop requested by {}".format(message.user.name))
 
@@ -167,8 +174,8 @@ def on_message(message, client):
                     pass
                 raise os._exit(0)
             else:
-                utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers. (cc @chade_)")
-        elif utils.check_aliases(message_val, "leave") or utils.check_aliases(message_val, "bye"):
+                utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers.")
+        elif command in ["bye"]:
             logging.info("leave command was called")
             logging.warning("Leave requested by {}".format(message.user.name))
 
@@ -177,30 +184,30 @@ def on_message(message, client):
                 utils.post_message("Bye")
                 utils.client.get_room(utils.room_number).leave()
             else:
-                utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers. (cc @chade_)")
-        elif utils.check_aliases(message_val, "command") or utils.check_aliases(message_val, "commands"):
+                utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers.")
+        elif command in ["command", "commands", "help"]:
             logging.info("command list command was called")
             utils.reply_with(message, "You can find a list of my commands [here](http://checkyerflags.sobotics.org/#commands)")
-        elif utils.check_aliases(message_val, "status mine") or utils.check_aliases(message_val, "s m"):
+        elif command in ["s", "status"] and words[2] in ["m", "mine"]:
             logging.info("status mine command was called")
             check_flags.check_own_flags(message, utils)
-        elif utils.check_aliases(message_val, "status") or utils.check_aliases(message_val, "s"):
+        elif command in ["s", "status"] and words[2] not in ["m", "mine"]:
             logging.info("status user id command was called")
-            check_flags.check_flags(message, utils)
-        elif utils.check_aliases(message_val, "rank next") or utils.check_aliases(message_val, "r n"):
-            logging.info("ranks next command was called")
+            check_flags.check_flags(None, utils, None, words[2])
+        elif command in ["r", "rank"] and words[2] in ["n", "next"]:
+            logging.info("rank next command was called")
             check_flags.check_own_flags_next_rank(message, utils)
         #region Fun commands
         elif message.content.startswith("🚂"):
             logging.info("train command was called")
             utils.post_message("🚃")
-        elif utils.check_aliases(message_val, "why"):
+        elif command in ["why"]:
             logging.info("why command was called")
             utils.reply_with(message, "[Because of you](https://www.youtube.com/watch?v=Ra-Om7UMSJc)")
-        elif utils.check_aliases(message_val, "good bot"):
+        elif command in ["good"] and words[2] in ["bot", "job"]:
             logging.info("good bot command was called")
             utils.reply_with(message, "Thank you")
-        elif utils.check_aliases(message_val.lower(), "thanks") or utils.check_aliases(message_val.lower(), "thank you") or utils.check_aliases(message_val.lower(), "thx"):
+        elif command in ["thanks", "thx"] or "{} {}".format(words[1], words[2]) in ["thank you"] :
             logging.info("thanks command was called")
             utils.reply_with(message, "You're welcome.")
         elif "shrug" in message.content:
@@ -218,7 +225,7 @@ def on_message(message, client):
             logging.error("Caused by message id ".format(message.id))
             logging.error(traceback.format_exc())
         try:
-            utils.post_message("Error on processing the last command ({}); rebooting instance... (cc @chade_)".format(e))
+            utils.post_message("Error on processing the last command ({}); rebooting instance... (cc @Filnor)".format(e))
             os._exit(1)
 
         except AttributeError:
