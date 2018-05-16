@@ -58,7 +58,7 @@ def main():
     if quota_obj['quota_remaining'] is not None:
         utils.quota = quota_obj['quota_remaining']
 
-    logging.basicConfig(filename="CheckYerFlags.log", level=logging.INFO, filemode="a")
+    logging.basicConfig(filename="CheckYerFlags.log", level=logging.INFO, filemode="a", format="%(asctime)s [%(levelname)s]: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
     logging.getLogger("chatexchange").setLevel(logging.WARNING)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
@@ -98,7 +98,7 @@ def main():
         room.send_message("[ [CheckYerFlags](https://stackapps.com/q/7792) ] started.")
 
     while True:
-        message = input("<< ")
+        message = input()
 
         if message == "restart":
             os._exit(1)
@@ -136,35 +136,35 @@ def on_message(message, client):
             if msg is not None:
                 msg.delete()
         elif command in ["amiprivileged"]:
-            logging.info("amiprivileged command was called")
+            utils.log_command("amiprivileged")
 
             if utils.is_privileged(message):
                 utils.reply_with(message, "You are privileged.")
             else:
                 utils.reply_with(message, "You are not privileged. Ping Filnor if you believe that's an error.")
         elif command in ["a", "alive"]:
-            logging.info("alive command was called")
-            utils.reply_with(message, "instance of {} is running on **{}/{}**".format(utils.config["botVersion"], utils.config["botParent"], utils.config["botMachine"]))
+            utils.log_command("alive")
+            utils.reply_with(message, "Instance of {} is running on **{}/{}**".format(utils.config["botVersion"], utils.config["botParent"], utils.config["botMachine"]))
         elif command in ["v", "version"]:
-            logging.info("version command was called")
+            utils.log_command("version")
             utils.reply_with(message, "Current version is {}".format(utils.config["botVersion"]))
         elif command in ["say"]:
-            logging.info("say command was called")
+            utils.log_command("say")
             if message.user.id != 9220325: # Don't process commands by the bot account itself
                 say_message = md(' '.join(map(str, words[2:])))
                 utils.post_message(say_message)
         elif command in ["welcome"]:
-            logging.info("welcome command was called")
+            utils.log_command("welcome")
             #Only run in SOBotics
             if utils.room_number == 111347:
                 utils.post_message("Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
             else:
                 utils.post_message("This command is not supported in this room")
         elif command in ["quota"]:
-            logging.info("quota command was called")
+            utils.log_command("quota")
             utils.post_message("The remaining API quota is {}.".format(utils.quota))
         elif command in ["kill", "stop"]:
-            logging.info("kill command was called")
+            utils.log_command("kill")
             logging.warning("Termination or stop requested by {}".format(message.user.name))
 
             if utils.is_privileged(message):
@@ -175,8 +175,8 @@ def on_message(message, client):
                 raise os._exit(0)
             else:
                 utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers.")
-        elif command in ["bye"]:
-            logging.info("leave command was called")
+        elif command in ["leave", "bye"]:
+            utils.log_command("leave")
             logging.warning("Leave requested by {}".format(message.user.name))
 
             # Restrict function to (site) moderators, room owners and maintainers
@@ -186,35 +186,35 @@ def on_message(message, client):
             else:
                 utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers.")
         elif command in ["command", "commands", "help"]:
-            logging.info("command list command was called")
+            utils.log_command("command list")
             utils.reply_with(message, "You can find a list of my commands [here](http://checkyerflags.sobotics.org/#commands)")
         elif command in ["s", "status"] and words[2] in ["m", "mine"]:
-            logging.info("status mine command was called")
+            utils.log_command("status mine")
             check_flags.check_own_flags(message, utils)
         elif command in ["s", "status"] and words[2] not in ["m", "mine"]:
-            logging.info("status user id command was called")
+            utils.log_command("status user id")
             check_flags.check_flags(None, utils, None, words[2])
         elif command in ["r", "rank"] and words[2] in ["n", "next"]:
-            logging.info("rank next command was called")
+            utils.log_command("rank next")
             check_flags.check_own_flags_next_rank(message, utils)
         #region Fun commands
         elif message.content.startswith("🚂"):
-            logging.info("train command was called")
+            utils.log_command("train")
             utils.post_message("🚃")
         elif command in ["why"]:
-            logging.info("why command was called")
+            utils.log_command("why")
             utils.reply_with(message, "[Because of you](https://www.youtube.com/watch?v=Ra-Om7UMSJc)")
         elif command in ["good"] and words[2] in ["bot", "job"]:
-            logging.info("good bot command was called")
+            utils.log_command("good bot")
             utils.reply_with(message, "Thank you")
         elif command in ["thanks", "thx"] or "{} {}".format(words[1], words[2]) in ["thank you"] :
-            logging.info("thanks command was called")
+            utils.log_command("thanks")
             utils.reply_with(message, "You're welcome.")
         elif "shrug" in message.content:
-            logging.info("shrug command was called")
+            utils.log_command("shrug")
             utils.post_message("¯\\ \_(ツ)\_ /¯", True)
         elif "kappa.gif" in message.content:
-            logging.info("kappa.gif command was called")
+            utils.log_command("kappa gif")
             utils.reply_with(message, "https://i.imgur.com/8TRbWHM.gif")
         #endregion
     except (KeyboardInterrupt, SystemExit):

@@ -24,7 +24,7 @@ class utils:
 
     def post_message(self, message, no_logging = False):
         if not no_logging:
-            logging.info(message)
+            utils.log_message(message)
         self.client.get_room(self.room_number).send_message(message)
 
     def alias_valid(self, alias):
@@ -53,8 +53,17 @@ class utils:
 
     @staticmethod
     def reply_with(message, reply):
-        logging.info(message)
+        utils.log_message(message)
         message.message.reply(reply)
+
+    @staticmethod
+    def log_command(command_name):
+        logging.info("Command call of: {}".format(command_name))
+
+    @staticmethod
+    def log_message(message):
+        logging.info("Message #{} was posted by '{}' in room '{}'".format(message._message_id, message.user.name, message.room.name))
+
 
     @staticmethod
     def id_list_without_bots(user_list):
