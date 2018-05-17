@@ -9,7 +9,7 @@ import traceback
 
 import flagbot.flags as check_flags
 import flagbot.redunda as redunda
-import flagbot.flags_auto_check as fac
+#import flagbot.flags_auto_check as fac
 
 #Import config file with custom error message
 try:
@@ -132,6 +132,7 @@ def on_message(message, client):
         return
 
     command = words[1]
+    full_command = ' '.join(words[1:])
 
     try:
         #Here are the commands defined
@@ -192,13 +193,13 @@ def on_message(message, client):
         elif command in ["command", "commands", "help"]:
             utils.log_command("command list")
             utils.reply_with(message, "You can find a list of my commands [here](http://checkyerflags.sobotics.org/#commands)")
-        elif command in ["s", "status"] and words[2] in ["m", "mine"]:
+        elif full_command in ["s m", "status mine"]:
             utils.log_command("status mine")
             check_flags.check_own_flags(message, utils)
-        elif command in ["s", "status"] and words[2] not in ["m", "mine"]:
+        elif command in ["s", "status"] and full_command not in ["s m", "status mine"]:
             utils.log_command("status user id")
             check_flags.check_flags(None, utils, None, words[2])
-        elif command in ["r", "rank"] and words[2] in ["n", "next"]:
+        elif full_command in ["r", "ranks", "r n", "ranks next"]:
             utils.log_command("rank next")
             check_flags.check_own_flags_next_rank(message, utils)
         #region Fun commands
@@ -208,10 +209,10 @@ def on_message(message, client):
         elif command in ["why"]:
             utils.log_command("why")
             utils.reply_with(message, "[Because of you](https://www.youtube.com/watch?v=Ra-Om7UMSJc)")
-        elif command in ["good"] and words[2] in ["bot", "job"]:
+        elif full_command in ["good bot", "good job"]:
             utils.log_command("good bot")
             utils.reply_with(message, "Thank you")
-        elif command in ["thanks", "thx"] or "{} {}".format(words[1], words[2]) in ["thank you"] :
+        elif full_command.lower() in ["ty", "thx", "thanks", "thank you"] :
             utils.log_command("thanks")
             utils.reply_with(message, "You're welcome.")
         elif "shrug" in message.content:
