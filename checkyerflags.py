@@ -100,7 +100,7 @@ def main():
     while True:
         message = input()
 
-        if message == "restart":
+        if message in ["restart", "reboot"]:
             os._exit(1)
         else:
             room.send_message(message)
@@ -119,11 +119,11 @@ def on_message(message, client):
         logging.warning(message)
         return
 
+    #Get message as full string and as single words
     message_val = message.content
     words = message.content.split()
 
-
-
+    #If the bot account posted a message, store it's id
     if message.user.id == 9220325:
         utils.last_bot_message = message
 
@@ -131,6 +131,7 @@ def on_message(message, client):
     if not utils.alias_valid(words[0]):
         return
 
+    #Store command in it's own variable
     command = words[1]
     full_command = ' '.join(words[1:])
 
