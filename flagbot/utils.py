@@ -3,6 +3,9 @@ Helper class to post messages either as reply or as independent message
 """
 import logging
 
+from chatexchange.chatexchange.events import MessagePosted, MessageEdited
+
+
 class utils:
     def __init__(self, room_number = None, client = None, quota = None, config = None, room_owners = None):
         if room_number is not None:
@@ -62,7 +65,8 @@ class utils:
 
     @staticmethod
     def log_message(message):
-        logging.info("Message #{} was posted by '{}' in room '{}'".format(message._message_id, message.user.name, message.room.name))
+        if isinstance(message, MessagePosted) or isinstance(message, MessageEdited):
+            logging.info("Message #{} was posted by '{}' in room '{}'".format(message._message_id, message.user.name, message.room.name))
 
 
     @staticmethod

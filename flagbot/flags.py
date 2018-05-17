@@ -1,8 +1,5 @@
-
-import gzip
-import io
-import json
 import flagbot.ranks as ranks
+import flagbot.se_api as stackexchange_api
 from urllib.request import urlopen
 from pyquery import PyQuery as pq
 
@@ -48,6 +45,9 @@ def check_flags(message, utils, config = None, user_id = 0, verbose = True):
     else:
         userId = str(user_id)
 
+    #Remove preceeding zeroes from the id, if there are any
+    userId = userId.lstrip("0")
+
     #region Validate the specified ID using the Stack Exchange API
     validId = False
     if userId.isdecimal():
@@ -57,12 +57,12 @@ def check_flags(message, utils, config = None, user_id = 0, verbose = True):
         else:
             stack_exchange_api_key = config["stackExchangeApiKey"]
 
-        response = urlopen("https://api.stackexchange.com/2.2/users/{}?order=desc&sort=reputation&site=stackoverflow&key={}".format(userId, stack_exchange_api_key)).read()
-        buffer = io.BytesIO(response)
-        gzipped_file = gzip.GzipFile(fileobj=buffer)
-        content = gzipped_file.read()
-        data = json.loads(content.decode("utf-8"))
+        se_api = stackexchange_api.se_api(stack_exchange_api_key)
+        data = se_api.get_user(userId)
 
+        if data is None:
+            utils.post_message("The specfied user id does not belong to an existing user.")
+            return
         if len(data["items"]) is 1:
             validId = True
             user_name = data["items"][0]["display_name"]

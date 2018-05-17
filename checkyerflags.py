@@ -110,15 +110,19 @@ def main():
 
 def on_message(message, client):
     if not isinstance(message, MessagePosted) and not isinstance(message, MessageEdited):
-        # We ignore non-MessagePosted events.
+        # We ignore events that aren't MessagePosted or MessageEdited events.
         return
-    message_val = message.content
-    words = message.content.split()
 
+    #Check that the message object is defined
     if message is None or message.content is None:
         logging.warning("ChatExchange message object or content property is None.")
         logging.warning(message)
         return
+
+    message_val = message.content
+    words = message.content.split()
+
+
 
     if message.user.id == 9220325:
         utils.last_bot_message = message
