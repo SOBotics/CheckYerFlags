@@ -173,8 +173,14 @@ def on_message(message, client):
         elif command in ["welcome"]:
             utils.log_command("welcome")
             #Only run in SOBotics
-            if utils.room_number == 111347:
-                utils.post_message("Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
+            if utils.room_number >= 111347:
+                message_ping = ""
+                try:
+                    user_to_ping = words[2]
+                    message_ping = "@{} ".format(user_to_ping.replace("@", ""))
+                except IndexError:
+                    pass
+                utils.post_message("{}Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.".format(message_ping))
             else:
                 utils.post_message("This command is not supported in this room")
         elif command in ["quota"]:
