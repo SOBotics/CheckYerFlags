@@ -107,7 +107,7 @@ ranks = [
     {
         "count": 4733879,
         "title": "Call me flaggy",
-        "description": "4733879 is chade_'s user id"
+        "description": "4733879 is Filnor's user id"
     },
     {
         "count": 2147483647,

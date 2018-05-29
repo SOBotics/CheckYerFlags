@@ -25,10 +25,10 @@ class utils:
         if room_owners is not None:
             self.room_owners = room_owners
 
-    def post_message(self, message, no_logging = False):
+    def post_message(self, message, no_logging = False, length_check = True):
         if not no_logging:
             utils.log_message(message)
-        self.client.get_room(self.room_number).send_message(message)
+        self.client.get_room(self.room_number).send_message(message, length_check)
 
     def alias_valid(self, alias):
         """Check if the specified alias is valid"""

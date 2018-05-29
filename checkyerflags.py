@@ -1,14 +1,15 @@
 import logging
 import os
 import sys
-import json
-import io
-import gzip
 import threading
 import traceback
-
+from flagbot.utils import utils
+from markdownify import markdownify as md
+from chatexchange.chatexchange.client import Client
+from chatexchange.chatexchange.events import MessagePosted, MessageEdited
 import flagbot.flags as check_flags
 import flagbot.redunda as redunda
+import flagbot.se_api as stackexchange_api
 #import flagbot.flags_auto_check as fac
 
 #Import config file with custom error message
@@ -16,13 +17,6 @@ try:
     import config as config
 except ModuleNotFoundError:
     raise Exception("The config module couldn't be imported. Have you renamed config.example.py to config.py?")
-
-
-from flagbot.utils import utils
-from urllib.request import urlopen
-from markdownify import markdownify as md
-from chatexchange.chatexchange.client import Client
-from chatexchange.chatexchange.events import MessagePosted, MessageEdited
 
 utils = utils()
 
@@ -52,14 +46,13 @@ def main():
     #endregion
 
     #Store current quota as variabke
-    quota_obj = json.loads(gzip.GzipFile(fileobj=io.BytesIO(urlopen("https://api.stackexchange.com/2.2/users/1?order=desc&sort=reputation&site=stackoverflow&key={}".format(utils.config["stackExchangeApiKey"])).read())).read().decode("utf-8"))
-
-
+    se_api = stackexchange_api.se_api(utils.config["stackExchangeApiKey"])
+    quota_obj = se_api.get_user(1)
     if quota_obj['quota_remaining'] is not None:
         utils.quota = quota_obj['quota_remaining']
 
     logging.basicConfig(filename="CheckYerFlags.log", level=logging.INFO, filemode="a", format="%(asctime)s [%(levelname)s]: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-    logging.getLogger("chatexchange").setLevel(logging.WARNING)
+    logging.getLogger("chatexchange").setLevel(logging.INFO)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     logging.info("Joined room '{}' on {}".format(room.name, utils.config["chatHost"]))
@@ -134,6 +127,12 @@ def on_message(message, client):
     elif "shrug" in message_val:
         utils.log_command("shrug")
         utils.post_message("¯\\ \_(ツ)\_ /¯", True)
+    elif "tableflip" in message_val or "table flip" in message_val:
+        utils.log_command("tableflip")
+        utils.post_message("(╯°□°）╯︵ ┻━┻", True)
+    elif "unflip" in message_val:
+        utils.log_command("unflip")
+        utils.post_message("┬─┬ ノ( ゜-゜ノ)", True)
     elif "kappa.gif" in message_val:
         utils.log_command("kappa gif")
         utils.reply_with(message, "https://i.imgur.com/8TRbWHM.gif")
@@ -173,7 +172,7 @@ def on_message(message, client):
         elif command in ["welcome"]:
             utils.log_command("welcome")
             #Only run in SOBotics
-            if utils.room_number >= 111347:
+            if utils.room_number == 111347:
                 message_ping = ""
                 try:
                     user_to_ping = words[2]
@@ -208,9 +207,25 @@ def on_message(message, client):
                 utils.client.get_room(utils.room_number).leave()
             else:
                 utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers.")
-        elif command in ["command", "commands", "help"]:
+        elif command in ["commands", "help"]:
             utils.log_command("command list")
-            utils.reply_with(message, "You can find a list of my commands [here](http://checkyerflags.sobotics.org/#commands)")
+            utils.post_message("    ### CheckYerFlags commands ###\n" + \
+                "    delete, del, poof            - Deletes the last posted message, if possible. Requires privileges.\n" + \
+                "    amiprivileged                - Checks if you're allowed to run privileged commands\n" + \
+                "    alive, a                     - Returns with the location and the running version of the bot, if it's running. No response likely means the bot is dead/not in this room.\n" + \
+                "    version, v                   - Returns current version\n" + \
+                "    say [message]                - Sends [message] as chat message\n" + \
+                "    welcome [username]           - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also will get pinged.\n" + \
+                "    quota                        - Returns the amount of remaining Stack Exchange API quota\n" + \
+                "    kill, stop                   - Terminates the bot instance. Requires privileges.\n" + \
+                "    leave, bye                   - Tells the bot to leave the chat room. A restart is required to use it again. Requires privileges.\n" + \
+                "    commands, help               - This command. Lists all available commands\n" + \
+                "    status mine, s m             - Gets your own flag rank and status to the next rank\n" + \
+                "    status, s [user id]          - Gets flag rank and status to the next rank for the specified [user id]\n" + \
+                "    ranks, ranks next, r n       - Gets your next flag rank and how much flags you need to get to it\n" + \
+                "    why                          - Gives the answer to everything\n" + \
+                "    good bot, good job           - Thanks you for being nice\n" + \
+                "    ty, thx, thanks, thank you   - Replies \"You're welcome.\"", False, False)
         elif full_command in ["s m", "status mine"]:
             utils.log_command("status mine")
             check_flags.check_own_flags(message, utils)
@@ -223,10 +238,10 @@ def on_message(message, client):
         #region Fun commands
         elif command in ["why"]:
             utils.log_command("why")
-            utils.reply_with(message, "[Because of you](https://www.youtube.com/watch?v=Ra-Om7UMSJc)")
+            utils.reply_with(message, "[42.](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))")
         elif full_command in ["good bot", "good job"]:
             utils.log_command("good bot")
-            utils.reply_with(message, "Thank you")
+            utils.reply_with(message, "Thank you!")
         elif full_command.lower() in ["ty", "thx", "thanks", "thank you"] :
             utils.log_command("thanks")
             utils.reply_with(message, "You're welcome.")
