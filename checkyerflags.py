@@ -52,7 +52,7 @@ def main():
         utils.quota = quota_obj['quota_remaining']
 
     logging.basicConfig(filename="CheckYerFlags.log", level=logging.INFO, filemode="a", format="%(asctime)s [%(levelname)s]: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-    logging.getLogger("chatexchange").setLevel(logging.INFO)
+    logging.getLogger("chatexchange").setLevel(logging.WARNING)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     logging.info("Joined room '{}' on {}".format(room.name, utils.config["chatHost"]))
