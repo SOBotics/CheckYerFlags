@@ -127,6 +127,17 @@ def on_message(message, client):
     if message.user.id == 9220325:
         utils.last_bot_message = message
 
+    #Check for non-alias-command calls
+    if message.content.startswith("🚂"):
+        utils.log_command("train")
+        utils.post_message("🚃")
+    elif "shrug" in message_val:
+        utils.log_command("shrug")
+        utils.post_message("¯\\ \_(ツ)\_ /¯", True)
+    elif "kappa.gif" in message_val:
+        utils.log_command("kappa gif")
+        utils.reply_with(message, "https://i.imgur.com/8TRbWHM.gif")
+
     #Check if alias is valid
     if not utils.alias_valid(words[0]):
         return
@@ -204,9 +215,6 @@ def on_message(message, client):
             utils.log_command("rank next")
             check_flags.check_own_flags_next_rank(message, utils)
         #region Fun commands
-        elif message.content.startswith("🚂"):
-            utils.log_command("train")
-            utils.post_message("🚃")
         elif command in ["why"]:
             utils.log_command("why")
             utils.reply_with(message, "[Because of you](https://www.youtube.com/watch?v=Ra-Om7UMSJc)")
@@ -216,12 +224,6 @@ def on_message(message, client):
         elif full_command.lower() in ["ty", "thx", "thanks", "thank you"] :
             utils.log_command("thanks")
             utils.reply_with(message, "You're welcome.")
-        elif "shrug" in message.content:
-            utils.log_command("shrug")
-            utils.post_message("¯\\ \_(ツ)\_ /¯", True)
-        elif "kappa.gif" in message.content:
-            utils.log_command("kappa gif")
-            utils.reply_with(message, "https://i.imgur.com/8TRbWHM.gif")
         #endregion
     except (KeyboardInterrupt, SystemExit):
         os._exit(0)
