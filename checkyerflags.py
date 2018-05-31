@@ -10,7 +10,7 @@ from chatexchange.chatexchange.events import MessagePosted, MessageEdited
 import flagbot.flags as check_flags
 import flagbot.redunda as redunda
 import flagbot.se_api as stackexchange_api
-#import flagbot.flags_auto_check as fac
+import flagbot.flags_auto_check as fac
 
 #Import config file with custom error message
 try:
@@ -60,21 +60,20 @@ def main():
     #region Background threads
 
     #Auto-Checking (currently disabled)
-    """cu = room.get_current_users()
+    cu = room.get_current_users()
     nb = utils.id_list_without_bots(cu)
 
     thread_list = []
 
     stop_auto_checking_lp = threading.Event()
-    auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, utils.config, logging, 0, nb, thread_list)
+    auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, utils.config, 0, nb, thread_list)
     auto_check_lp_thread.start()
     thread_list.append(auto_check_lp_thread)
 
     stop_auto_checking_hp = threading.Event()
-    auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, utils.config, logging, 1, [], thread_list)
+    auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, utils.config, 1, [], thread_list)
     auto_check_hp_thread.start()
     thread_list.append(auto_check_hp_thread)
-    #auto_check_lp_thread.check_flags_lp()"""
 
     #Redunda pining
     stop_redunda = threading.Event()
@@ -210,22 +209,22 @@ def on_message(message, client):
         elif command in ["commands", "help"]:
             utils.log_command("command list")
             utils.post_message("    ### CheckYerFlags commands ###\n" + \
-                "    delete, del, poof            - Deletes the last posted message, if possible. Requires privileges.\n" + \
-                "    amiprivileged                - Checks if you're allowed to run privileged commands\n" + \
-                "    alive, a                     - Returns with the location and the running version of the bot, if it's running. No response likely means the bot is dead/not in this room.\n" + \
-                "    version, v                   - Returns current version\n" + \
-                "    say [message]                - Sends [message] as chat message\n" + \
-                "    welcome [username]           - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also will get pinged.\n" + \
-                "    quota                        - Returns the amount of remaining Stack Exchange API quota\n" + \
-                "    kill, stop                   - Terminates the bot instance. Requires privileges.\n" + \
-                "    leave, bye                   - Tells the bot to leave the chat room. A restart is required to use it again. Requires privileges.\n" + \
-                "    commands, help               - This command. Lists all available commands\n" + \
-                "    status mine, s m             - Gets your own flag rank and status to the next rank\n" + \
-                "    status, s [user id]          - Gets flag rank and status to the next rank for the specified [user id]\n" + \
-                "    ranks, ranks next, r n       - Gets your next flag rank and how much flags you need to get to it\n" + \
-                "    why                          - Gives the answer to everything\n" + \
-                "    good bot, good job           - Thanks you for being nice\n" + \
-                "    ty, thx, thanks, thank you   - Replies \"You're welcome.\"", False, False)
+                               "    delete, del, poof            - Deletes the last posted message, if possible. Requires privileges.\n" + \
+                               "    amiprivileged                - Checks if you're allowed to run privileged commands\n" + \
+                               "    alive, a                     - Returns with the location and the running version of the bot, if it's running. No response likely means the bot is dead/not in this room.\n" + \
+                               "    version, v                   - Returns current version\n" + \
+                               "    say [message]                - Sends [message] as chat message\n" + \
+                               "    welcome [username]           - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also will get pinged.\n" + \
+                               "    quota                        - Returns the amount of remaining Stack Exchange API quota\n" + \
+                               "    kill, stop                   - Terminates the bot instance. Requires privileges.\n" + \
+                               "    leave, bye                   - Tells the bot to leave the chat room. A restart is required to use it again. Requires privileges.\n" + \
+                               "    commands, help               - This command. Lists all available commands\n" + \
+                               "    status mine, s m             - Gets your own flag rank and status to the next rank\n" + \
+                               "    status, s [user id]          - Gets flag rank and status to the next rank for the specified [user id]\n" + \
+                               "    ranks, ranks next, r n       - Gets your next flag rank and how much flags you need to get to it\n" + \
+                               "    why                          - Gives the answer to everything\n" + \
+                               "    good bot, good job           - Thanks you for being nice\n" + \
+                               "    ty, thx, thanks, thank you   - Replies \"You're welcome.\"", False, False)
         elif full_command in ["s m", "status mine"]:
             utils.log_command("status mine")
             check_flags.check_own_flags(message, utils)

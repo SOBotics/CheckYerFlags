@@ -95,7 +95,7 @@ def check_flags(message, utils, config = None, user_id = 0, verbose = True):
         if verbose:
             utils.post_message("{} has {} helpful flags. Their last achieved rank was **{}** ({}) for {} helpful flags.".format(user_name, flag_count, current_flag_rank["title"], current_flag_rank["description"], current_flag_rank["count"]))
         else:
-            return { "flag_count": int(flag_count.replace(",", "")), "next_rank": next_flag_rank }
+            return { "flag_count": int(flag_count.replace(",", "")), "next_rank": next_flag_rank, "current_rank": current_flag_rank }
     else:
         if utils is not None:
             utils.post_message("The specfied user id does not belong to an existing user.")
