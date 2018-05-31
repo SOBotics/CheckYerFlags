@@ -21,13 +21,11 @@ class AutoFlagThread(Thread):
     def run(self):
         if self.priority == 1:
             #High priority
-            #while not self.stopped.wait(300):
-            while not self.stopped.wait(30):
+            while not self.stopped.wait(300):
                 self.check_flags_hp()
         else:
             self.check_flags_lp()
-            while not self.stopped.wait(10):
-            #while not self.stopped.wait(1800):
+            while not self.stopped.wait(1800):
                 self.check_flags_lp()
 
     def check_flags_lp(self):
@@ -40,7 +38,7 @@ class AutoFlagThread(Thread):
             flagdata = flags.check_flags(None, None, self.config, u.id, False)
             flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
             logging.info("{} needs {} more flags for their next rank.".format(u.name, flags_to_next_rank))
-            if flags_to_next_rank <= 2000:
+            if flags_to_next_rank <= 10:
                 self.swap_priority(u, flagdata["next_rank"])
                 print("{} just needs {} more helpful flags for their next rank, {}".format(u.name, flags_to_next_rank, flagdata["next_rank"]["title"]))
                 logging.info("User {} is {} flags away from their next rank and therefore moved to the high priority queue".format(u.name, flags_to_next_rank))
@@ -53,7 +51,7 @@ class AutoFlagThread(Thread):
                 flagdata = flags.check_flags(None, None, self.config, u.id, False)
                 flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
                 flags_from_current_rank = flagdata["flag_count"] - flagdata["current_rank"]["count"]
-                if flags_to_next_rank <= 600 and flags_from_current_rank > 10:
+                if flags_to_next_rank <= 0 and flags_from_current_rank > 10:
                     self.swap_priority(u, flagdata["next_rank"])
                     self.utils.post_message("{} has reached the rank {} ({}) for {} helpful flags. Congratulations!".format(u.name, flagdata["next_rank"]["title"], flagdata["next_rank"]["description"], flagdata["next_rank"]["count"]))
                     logging.info("User {} has reach their next rank and therefore moved to the low priority queue".format(u.name, flags_to_next_rank))
