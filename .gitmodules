@@ -1,0 +1,3 @@
+[submodule "chatoverflow"]
+	path = chatoverflow
+	url = https://github.com/Filnor/ChatOverflow
