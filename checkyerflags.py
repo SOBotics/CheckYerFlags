@@ -1,12 +1,13 @@
-import logging
 import os
 import sys
 import threading
 import traceback
+
+from flagbot.logger import main_logger
 from flagbot.utils import utils
 from markdownify import markdownify as md
-from chatexchange.chatexchange.client import Client
-from chatexchange.chatexchange.events import MessagePosted, MessageEdited
+from chatoverflow.chatexchange.client import Client
+from chatoverflow.chatexchange.events import MessagePosted, MessageEdited
 import flagbot.flags as check_flags
 import flagbot.redunda as redunda
 import flagbot.se_api as stackexchange_api
@@ -51,11 +52,7 @@ def main():
     if quota_obj['quota_remaining'] is not None:
         utils.quota = quota_obj['quota_remaining']
 
-    logging.basicConfig(filename="CheckYerFlags.log", level=logging.INFO, filemode="a", format="%(asctime)s [%(levelname)s]: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-    logging.getLogger("chatexchange").setLevel(logging.WARNING)
-    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-
-    logging.info("Joined room '{}' on {}".format(room.name, utils.config["chatHost"]))
+    main_logger.info("Joined room '{}' on {}".format(room.name, utils.config["chatHost"]))
 
     #region Background threads
 
@@ -77,7 +74,7 @@ def main():
 
     #Redunda pining
     stop_redunda = threading.Event()
-    redunda_thread = redunda.RedundaThread(stop_redunda, utils.config, logging)
+    redunda_thread = redunda.RedundaThread(stop_redunda, utils.config, main_logger)
     redunda_thread.start()
     #endregion
 
@@ -107,8 +104,8 @@ def on_message(message, client):
 
     #Check that the message object is defined
     if message is None or message.content is None:
-        logging.warning("ChatExchange message object or content property is None.")
-        logging.warning(message)
+        main_logger.warning("ChatExchange message object or content property is None.")
+        main_logger.warning(message)
         return
 
     #Get message as full string and as single words
@@ -186,7 +183,7 @@ def on_message(message, client):
             utils.post_message("The remaining API quota is {}.".format(utils.quota))
         elif command in ["kill", "stop"]:
             utils.log_command("kill")
-            logging.warning("Termination or stop requested by {}".format(message.user.name))
+            main_logger.warning("Termination or stop requested by {}".format(message.user.name))
 
             if utils.is_privileged(message):
                 try:
@@ -198,7 +195,7 @@ def on_message(message, client):
                 utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers.")
         elif command in ["leave", "bye"]:
             utils.log_command("leave")
-            logging.warning("Leave requested by {}".format(message.user.name))
+            main_logger.warning("Leave requested by {}".format(message.user.name))
 
             # Restrict function to (site) moderators, room owners and maintainers
             if utils.is_privileged(message):
@@ -248,10 +245,10 @@ def on_message(message, client):
     except (KeyboardInterrupt, SystemExit):
         os._exit(0)
     except BaseException as e:
-        logging.error("CRITICAL ERROR: {}".format(e))
+        main_logger.error("CRITICAL ERROR: {}".format(e))
         if message is not None and message.id is not None:
-            logging.error("Caused by message id ".format(message.id))
-            logging.error(traceback.format_exc())
+            main_logger.error("Caused by message id ".format(message.id))
+            main_logger.error(traceback.format_exc())
         try:
             utils.post_message("Error on processing the last command ({}); rebooting instance... (cc @Filnor)".format(e))
             os._exit(1)

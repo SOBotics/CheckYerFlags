@@ -1,10 +1,8 @@
 """Background process for checking flag counts"""
-import logging
+
 from threading import Thread
-
-import sys
-
 from flagbot import flags
+from flagbot.logger import auto_logger
 
 
 class AutoFlagThread(Thread):
@@ -29,40 +27,40 @@ class AutoFlagThread(Thread):
                 self.check_flags_lp()
 
     def check_flags_lp(self):
-        logging.basicConfig(filename="AutoFlags.log", level=logging.INFO, filemode="a", format="%(asctime)s [%(levelname)s]: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-        logging.getLogger("chatexchange").setLevel(logging.WARNING)
-        logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+        """auto_logger.basicConfig(filename="AutoFlags.log", level=auto_logger.INFO, filemode="a", format="%(asctime)s [%(levelname)s]: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+        auto_logger.getLogger("chatexchange").setLevel(auto_logger.WARNING)
+        auto_logger.getLogger().addHandler(auto_logger.StreamHandler(sys.stdout))"""
+
 
         for u in self.users:
-            logging.info("Checking user {} low-prio now...".format(u.name))
-            flagdata = flags.check_flags(None, None, self.config, u.id, False)
-            flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
-            logging.info("{} needs {} more flags for their next rank.".format(u.name, flags_to_next_rank))
-            if flags_to_next_rank <= 10:
-                self.swap_priority(u, flagdata["next_rank"])
-                print("{} just needs {} more helpful flags for their next rank, {}".format(u.name, flags_to_next_rank, flagdata["next_rank"]["title"]))
-                logging.info("User {} is {} flags away from their next rank and therefore moved to the high priority queue".format(u.name, flags_to_next_rank))
+            if not u.is_moderator:
+                flagdata = flags.check_flags(None, None, self.config, u.id, False)
+                flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
+                auto_logger.info(f"{u.name} needs {flags_to_next_rank} more flags for their next rank.")
+                if flags_to_next_rank <= 10:
+                    self.swap_priority(u, flagdata["next_rank"])
+                    auto_logger.info("User {} is {} flags away from their next rank and is therefore moved to the high priority queue".format(u.name, flags_to_next_rank))
 
 
     def check_flags_hp(self):
         if len(self.users) > 0:
             for u in self.users:
-                logging.info("Checking user {} high-prio now...".format(u.name))
+                auto_logger.info("Checking user {} high-prio now...".format(u.name))
                 flagdata = flags.check_flags(None, None, self.config, u.id, False)
                 flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
                 flags_from_current_rank = flagdata["flag_count"] - flagdata["current_rank"]["count"]
                 if flags_to_next_rank <= 0 and flags_from_current_rank > 10:
                     self.swap_priority(u, flagdata["next_rank"])
                     self.utils.post_message("{} has reached the rank {} ({}) for {} helpful flags. Congratulations!".format(u.name, flagdata["next_rank"]["title"], flagdata["next_rank"]["description"], flagdata["next_rank"]["count"]))
-                    logging.info("User {} has reach their next rank and therefore moved to the low priority queue".format(u.name, flags_to_next_rank))
-                    logging.warning("Method 'flags_to_next_rank <= 600 and flags_from_current_rank > 10' ran")
+                    self.utils.post_message("@Filnor ^")
+                    auto_logger.info("User {} has reach their next rank and is therefore moved to the low priority queue".format(u.name, flags_to_next_rank))
                 elif flags_from_current_rank <= 10:
                     self.swap_priority(u, flagdata["next_rank"])
                     self.utils.post_message("{} has reached the rank {} ({}) for {} helpful flags. Congratulations!".format(u.name, flagdata["current_rank"]["title"], flagdata["current_rank"]["description"], flagdata["current_rank"]["count"]))
-                    logging.info("User {} has reach their next rank and therefore moved to the low priority queue".format(u.name, flags_to_next_rank))
-                    logging.warning("Method 'flags_from_current_rank <= 10' ran")
+                    auto_logger.info("User {} has reach their next rank and therefore moved to the low priority queue".format(u.name, flags_to_next_rank))
+                    auto_logger.warning("Method 'flags_from_current_rank <= 10' ran")
                 else:
-                    logging.info("{} needs {} more flags for their next rank.".format(u.name, flags_to_next_rank))
+                    auto_logger.info("{} needs {} more flags for their next rank.".format(u.name, flags_to_next_rank))
 
     def swap_priority(self, user, next_rank):
         if self.priority == 1:

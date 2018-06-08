@@ -4,9 +4,9 @@ Class for interacting with the Stack Exchange API
 import gzip
 import io
 import json
-import logging
 import urllib.error
 from urllib.request import urlopen
+from flagbot.logger import main_logger
 
 
 class se_api:
@@ -21,5 +21,5 @@ class se_api:
             content = gzipped_file.read()
             return json.loads(content.decode("utf-8"))
         except urllib.error.HTTPError as e:
-            logging.error("Error calling the SE API: Got repsonse code {} and message {}.".format(e.code, e.reason))
+            main_logger.error("Error calling the SE API: Got repsonse code {} and message {}.".format(e.code, e.reason))
             return None

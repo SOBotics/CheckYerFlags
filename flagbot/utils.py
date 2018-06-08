@@ -1,9 +1,8 @@
 """
 Helper class to post messages either as reply or as independent message
 """
-import logging
-
-from chatexchange.chatexchange.events import MessagePosted, MessageEdited
+from chatoverflow.chatexchange.events import MessagePosted, MessageEdited
+from flagbot.logger import main_logger
 
 
 class utils:
@@ -25,8 +24,8 @@ class utils:
         if room_owners is not None:
             self.room_owners = room_owners
 
-    def post_message(self, message, no_logging = False, length_check = True):
-        if not no_logging:
+    def post_message(self, message, no_main_logger = False, length_check = True):
+        if not no_main_logger:
             utils.log_message(message)
         self.client.get_room(self.room_number).send_message(message, length_check)
 
@@ -61,12 +60,12 @@ class utils:
 
     @staticmethod
     def log_command(command_name):
-        logging.info("Command call of: {}".format(command_name))
+        main_logger.info("Command call of: {}".format(command_name))
 
     @staticmethod
     def log_message(message):
         if isinstance(message, MessagePosted) or isinstance(message, MessageEdited):
-            logging.info("Message #{} was posted by '{}' in room '{}'".format(message._message_id, message.user.name, message.room.name))
+            main_logger.info("Message #{} was posted by '{}' in room '{}'".format(message._message_id, message.user.name, message.room.name))
 
 
     @staticmethod
