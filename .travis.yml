@@ -1,13 +1,13 @@
 language: python
 
 python:
-  - 3.5
+  - 3.
 
 install:
   - pip install -r requirements.txt
 
 script:
-  - pytest --ignore=chatexchange/tests --cov=./tests
+  - pytest --ignore=chatoverflow/tests --cov=./tests
 
 after_success:
   - codecov --token=fafd6cfc-f45b-415f-be84-13389ecc022f
