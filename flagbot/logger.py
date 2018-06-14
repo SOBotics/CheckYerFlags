@@ -1,7 +1,10 @@
 import logging
 import sys
 
-def setup_logger(name, log_file, level=logging.INFO, mode = "a", to_console=False):
+def _setup_logger(name, log_file, level=logging.INFO, mode = "a", to_console=False):
+    """
+    Set up a logger
+    """
     formatter = logging.Formatter(fmt="%(asctime)s [%(levelname)s]: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
     handler = logging.FileHandler(log_file, mode=mode)
     handler.setFormatter(formatter)
@@ -14,6 +17,6 @@ def setup_logger(name, log_file, level=logging.INFO, mode = "a", to_console=Fals
 
     return logger
 
-main_logger = setup_logger('Main', 'CheckYerFlags.log', to_console=True)
-auto_logger = setup_logger('Auto', 'AutoCheck.log', mode="w")
+main_logger = _setup_logger('Main', 'CheckYerFlags.log', to_console=True)
+auto_logger = _setup_logger('Auto', 'AutoCheck.log', mode="w")
 logging.getLogger("chatoverflow").setLevel(logging.WARNING)

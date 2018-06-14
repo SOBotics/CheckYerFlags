@@ -22,10 +22,13 @@ except ModuleNotFoundError:
 utils = utils()
 
 def main():
+    """
+    Main thread of the bot
+    """
 
     #Get config for the mode (debug/prod)
     try:
-        if sys.argv[1] == '--debug':
+        if sys.argv[1] == "--debug":
             print("Loading debug config...")
             utils.config = config.debug_config
         else:
@@ -34,6 +37,7 @@ def main():
         print("Loading productive config... \nIf you wanted to load the debug config, use the '--debug' command line option")
         utils.config = config.prod_config
 
+    print("Logging in and joining chat room...")
     #region Login and connection to chat
     utils.room_number = utils.config["room"]
     client = Client(utils.config["chatHost"])
@@ -52,13 +56,13 @@ def main():
     if quota_obj['quota_remaining'] is not None:
         utils.quota = quota_obj['quota_remaining']
 
-    main_logger.info("Joined room '{}' on {}".format(room.name, utils.config["chatHost"]))
+    main_logger.info(f"Joined room '{room.name}' on {utils.config['chatHost']}")
 
     #region Background threads
 
     #Auto-Checking (currently disabled)
     cu = room.get_current_users()
-    nb = utils.id_list_without_bots(cu)
+    nb = utils.checkable_user_ids(cu)
 
     thread_list = []
 
@@ -98,6 +102,9 @@ def main():
     #stop_redunda.set()
 
 def on_message(message, client):
+    """
+    Handling the event if a message was posted, edited or deleted
+    """
     if not isinstance(message, MessagePosted) and not isinstance(message, MessageEdited):
         # We ignore events that aren't MessagePosted or MessageEdited events.
         return
@@ -131,7 +138,7 @@ def on_message(message, client):
         utils.post_message("┬─┬ ノ( ゜-゜ノ)", True)
     elif "kappa.gif" in message_val:
         utils.log_command("kappa gif")
-        utils.reply_with(message, "https://i.imgur.com/8TRbWHM.gif")
+        utils.reply_to(message, "https://i.imgur.com/8TRbWHM.gif")
 
     #Check if alias is valid
     if not utils.alias_valid(words[0]):
@@ -151,15 +158,15 @@ def on_message(message, client):
             utils.log_command("amiprivileged")
 
             if utils.is_privileged(message):
-                utils.reply_with(message, "You are privileged.")
+                utils.reply_to(message, "You are privileged.")
             else:
-                utils.reply_with(message, "You are not privileged. Ping Filnor if you believe that's an error.")
+                utils.reply_to(message, "You are not privileged. Ping Filnor if you believe that's an error.")
         elif command in ["a", "alive"]:
             utils.log_command("alive")
-            utils.reply_with(message, "Instance of {} is running on **{}/{}**".format(utils.config["botVersion"], utils.config["botParent"], utils.config["botMachine"]))
+            utils.reply_to(message, f"Instance of {utils.config['botVersion']} is running on **{utils.config['botParent']}/{utils.config['botMachine']}**")
         elif command in ["v", "version"]:
             utils.log_command("version")
-            utils.reply_with(message, "Current version is {}".format(utils.config["botVersion"]))
+            utils.reply_to(message, f"Current version is {utils.config['botVersion']}")
         elif command in ["say"]:
             utils.log_command("say")
             if message.user.id != 9220325: # Don't process commands by the bot account itself
@@ -172,18 +179,18 @@ def on_message(message, client):
                 message_ping = ""
                 try:
                     user_to_ping = words[2]
-                    message_ping = "@{} ".format(user_to_ping.replace("@", ""))
+                    message_ping = f"@{user_to_ping.replace('@', '')} "
                 except IndexError:
                     pass
-                utils.post_message("{}Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.".format(message_ping))
+                utils.post_message(f"{message_ping}Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
             else:
                 utils.post_message("This command is not supported in this room")
         elif command in ["quota"]:
             utils.log_command("quota")
-            utils.post_message("The remaining API quota is {}.".format(utils.quota))
+            utils.post_message(f"The remaining API quota is {utils.quota}.")
         elif command in ["kill", "stop"]:
             utils.log_command("kill")
-            main_logger.warning("Termination or stop requested by {}".format(message.user.name))
+            main_logger.warning(f"Termination or stop requested by {message.user.name}")
 
             if utils.is_privileged(message):
                 try:
@@ -192,17 +199,17 @@ def on_message(message, client):
                     pass
                 raise os._exit(0)
             else:
-                utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers.")
+                utils.reply_to(message, "This command is restricted to moderators, room owners and maintainers.")
         elif command in ["leave", "bye"]:
             utils.log_command("leave")
-            main_logger.warning("Leave requested by {}".format(message.user.name))
+            main_logger.warning(f"Leave requested by {message.user.name}")
 
             # Restrict function to (site) moderators, room owners and maintainers
             if utils.is_privileged(message):
                 utils.post_message("Bye")
                 utils.client.get_room(utils.room_number).leave()
             else:
-                utils.reply_with(message, "This command is restricted to moderators, room owners and maintainers.")
+                utils.reply_to(message, "This command is restricted to moderators, room owners and maintainers.")
         elif command in ["commands", "help"]:
             utils.log_command("command list")
             utils.post_message("    ### CheckYerFlags commands ###\n" + \
@@ -234,26 +241,30 @@ def on_message(message, client):
         #region Fun commands
         elif command in ["why"]:
             utils.log_command("why")
-            utils.reply_with(message, "[42.](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))")
+            utils.reply_to(message, "[42.](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))")
         elif full_command in ["good bot", "good job"]:
             utils.log_command("good bot")
-            utils.reply_with(message, "Thank you!")
+            utils.reply_to(message, "Thank you!")
         elif full_command.lower() in ["ty", "thx", "thanks", "thank you"] :
             utils.log_command("thanks")
-            utils.reply_with(message, "You're welcome.")
+            utils.reply_to(message, "You're welcome.")
+        elif full_command.lower() in ["code", "github", "source"] :
+            utils.log_command("code")
+            utils.reply_to(message, "My code is on GitHub [here](https://github.com/SOBotics/FlaggersHall).")
         #endregion
     except (KeyboardInterrupt, SystemExit):
         os._exit(0)
     except BaseException as e:
-        main_logger.error("CRITICAL ERROR: {}".format(e))
+        main_logger.error(f"CRITICAL ERROR: {e}")
         if message is not None and message.id is not None:
-            main_logger.error("Caused by message id ".format(message.id))
+            main_logger.error(f"Caused by message id {message.id}")
             main_logger.error(traceback.format_exc())
         try:
-            utils.post_message("Error on processing the last command ({}); rebooting instance... (cc @Filnor)".format(e))
+            utils.post_message(f"Error on processing the last command ({e}); rebooting instance... (cc @Filnor)")
             os._exit(1)
 
         except AttributeError:
+            os._exit(1)
             pass
 
 

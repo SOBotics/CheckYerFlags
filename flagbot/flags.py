@@ -5,7 +5,10 @@ from pyquery import PyQuery as pq
 
 
 def check_own_flags(message, utils):
-    page = urlopen("https://stackoverflow.com/users/{}?tab=topactivity".format(message.user.id))
+    """
+    Check the flags of the user who posted the message
+    """
+    page = urlopen(f"https://stackoverflow.com/users/{message.user.id}?tab=topactivity")
     html = page.read().decode("utf-8")
     jQuery = pq(html)
     flag_count = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '').strip().strip(" helpful flags")
@@ -15,12 +18,15 @@ def check_own_flags(message, utils):
         flag_count_difference = next_flag_rank["count"] - int(flag_count.replace(",", ""))
     except ValueError as e:
         if str(e) is "NEF":
-            utils.post_message("You have {} helpful flags. Appears that you are not flagging that much.".format(flag_count))
+            utils.post_message(f"You have {flag_count} helpful flags. Appears that you are not flagging that much.")
         return
-    utils.reply_with(message, "You have {} helpful flags. Your last achieved rank was **{}** ({}) for {} helpful flags. You need {} more flags for your next rank, *{}*.".format(flag_count, current_flag_rank["title"], current_flag_rank["description"], current_flag_rank["count"], flag_count_difference, next_flag_rank["title"]))
+    utils.reply_to(message, f"You have {flag_count} helpful flags. Your last achieved rank was **{current_flag_rank['title']}** ({current_flag_rank['description']}) for {current_flag_rank['count']} helpful flags. You need {flag_count_difference} more flags for your next rank, *{next_flag_rank['title']}*.")
 
 def check_own_flags_next_rank(message, utils):
-    page = urlopen("https://stackoverflow.com/users/{}?tab=topactivity".format(message.user.id))
+    """
+    Get the next rank for the user who posted the message
+    """
+    page = urlopen(f"https://stackoverflow.com/users/{message.user.id}?tab=topactivity")
     html = page.read().decode("utf-8")
     jQuery = pq(html)
     flag_count = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '').strip().strip(" helpful flags")
@@ -30,11 +36,14 @@ def check_own_flags_next_rank(message, utils):
         flag_count_difference = next_flag_rank["count"] - int(flag_count.replace(",", ""))
     except ValueError as e:
         if str(e) is "NEF":
-            utils.post_message("You need {} more flags to get your first flag rank, **{}** ({} flags in total).".format(ranks.ranks[0]["count"] - int(flag_count.replace(",", "")), ranks.ranks[0]["title"], ranks.ranks[0]["count"]))
+            utils.post_message(f"You need {ranks.ranks[0]['count'] - int(flag_count.replace(',', ''))} more flags to get your first flag rank, **{ranks.ranks[0]['title']}** ({ranks.ranks[0]['count']} flags in total).")
         return
-    utils.reply_with(message, "You need {} more flags to get your next flag rank, **{}** ({} flags in total).".format(flag_count_difference, next_flag_rank["title"], next_flag_rank["count"]))
+    utils.reply_to(message, f"You need {flag_count_difference} more flags to get your next flag rank, **{ next_flag_rank['title']}** ({next_flag_rank['count']} flags in total).")
 
 def check_flags(message, utils, config = None, user_id = 0, verbose = True):
+    """
+    Check the flags for the specified user
+    """
     userId = ""
     user_name = ""
     if user_id == 0:
@@ -68,7 +77,7 @@ def check_flags(message, utils, config = None, user_id = 0, verbose = True):
             user_name = data["items"][0]["display_name"]
         if data['quota_remaining'] is not None and utils is not None:
             if data['quota_remaining'] >= utils.quota:
-                utils.post_message("API quota rolled over at {}".format(utils.quota))
+                utils.post_message(f"API quota rolled over at {utils.quota} remaining requests")
 
             utils.quota = data['quota_remaining']
     else:
@@ -77,7 +86,7 @@ def check_flags(message, utils, config = None, user_id = 0, verbose = True):
     #endregion
 
     if validId:
-        page = urlopen("https://stackoverflow.com/users/{}?tab=topactivity".format(userId))
+        page = urlopen(f"https://stackoverflow.com/users/{userId}?tab=topactivity")
         html = page.read().decode("utf-8")
         jQuery = pq(html)
         flag_count = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '').strip().strip(" helpful flags")
@@ -88,12 +97,12 @@ def check_flags(message, utils, config = None, user_id = 0, verbose = True):
         except ValueError as e:
             if str(e) is "NEF":
                 if verbose:
-                    utils.post_message("{} has {} helpful flags. Appears that they're not flagging so much".format(user_name, flag_count))
+                    utils.post_message(f"{user_name} has {flag_count} helpful flags. Appears that they're not flagging so much")
                 else:
                     return { "flag_count": int(flag_count.replace(",", "")), "next_rank": ranks.ranks[0] }
             return
         if verbose:
-            utils.post_message("{} has {} helpful flags. Their last achieved rank was **{}** ({}) for {} helpful flags.".format(user_name, flag_count, current_flag_rank["title"], current_flag_rank["description"], current_flag_rank["count"]))
+            utils.post_message(f"{user_name} has {flag_count} helpful flags. Their last achieved rank was **{current_flag_rank['title']}** ({current_flag_rank['description']}) for {current_flag_rank['count']} helpful flags.")
         else:
             return { "flag_count": int(flag_count.replace(",", "")), "next_rank": next_flag_rank, "current_rank": current_flag_rank }
     else:
@@ -101,6 +110,9 @@ def check_flags(message, utils, config = None, user_id = 0, verbose = True):
             utils.post_message("The specfied user id does not belong to an existing user.")
 
 def get_current_flag_rank(flag_count):
+    """
+    Get the current flag rank for the specified amount of flags
+    """
     differences = []
     for rank in ranks.ranks:
         differences.append(flag_count - rank["count"])
@@ -116,6 +128,9 @@ def get_current_flag_rank(flag_count):
     return ranks.ranks[differences.index(min(positive_differences))]
 
 def get_next_flag_rank(current_rank):
+    """
+    Get the next flag rank for the specified rank
+    """
     current_rank_index = ranks.ranks.index(current_rank)
 
     return  ranks.ranks[current_rank_index + 1]

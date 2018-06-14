@@ -14,12 +14,15 @@ class se_api:
         self.api_key = se_api_key
 
     def get_user(self, user_id):
+        """
+        Get an user object for the specified user id from the API
+        """
         try:
-            response = urlopen("https://api.stackexchange.com/2.2/users/{}?order=desc&sort=reputation&site=stackoverflow&key={}".format(user_id, self.api_key)).read()
+            response = urlopen(f"https://api.stackexchange.com/2.2/users/{user_id}?order=desc&sort=reputation&site=stackoverflow&key={self.api_key}").read()
             buffer = io.BytesIO(response)
             gzipped_file = gzip.GzipFile(fileobj=buffer)
             content = gzipped_file.read()
             return json.loads(content.decode("utf-8"))
         except urllib.error.HTTPError as e:
-            main_logger.error("Error calling the SE API: Got repsonse code {} and message {}.".format(e.code, e.reason))
+            main_logger.error(f"Error calling the SE API: Got repsonse code {e.code} and message {e.reason}.")
             return None

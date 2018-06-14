@@ -172,6 +172,18 @@
                                         <td><code>ty</code></td>
                                         <td>Alias of <code>thanks</code></td>
                                     </tr>
+                                    <tr>
+                                        <td><code>code</code></td>
+                                        <td>Provides a link to the GitHub repository</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>github</code></td>
+                                        <td>Alias of <code>code</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>source</code></td>
+                                        <td>Alias of <code>code</code></td>
+                                    </tr>
                                     </tbody>
                                 </table>
 
@@ -201,7 +213,7 @@
                                     </tr>
                                     <tr>
                                         <td><code>kill</code></td>
-                                        <td>Terminate the bot instance in case of an emergency or serious issues.</td>
+                                        <td><b>Please try the <code>leave</code> command first</b> Terminate the bot instance in case of an emergency or serious issues.</td>
                                     </tr>
                                     <tr>
                                         <td><code>stop</code></td>
@@ -209,7 +221,7 @@
                                     </tr>
                                     <tr>
                                         <td><code>leave</code></td>
-                                        <td>Request the bot to leave the room</td>
+                                        <td>Request the bot to leave the room. A reboot of the instance is required in order to let the bot rejoin</td>
                                     </tr>
                                     <tr>
                                         <td><code>bye</code></td>
@@ -394,7 +406,7 @@
                                 <h3 class="block-title">Install prerequisites</h3>
                                 <p>First, you need to check if your system meets all prerequisites, or if not, install them:</p>
                                 <ul>
-                                    <li>Python 3.5+</li>
+                                    <li>Python 3.6+</li>
                                     <li>Git CLI</li>
                                     <li><code>libxml2-dev</code>, <code>libxslt-dev</code> and the <code>python-dev</code> packages</li>
                                 </ul>
@@ -426,9 +438,9 @@
                                 <h3 class="block-title">Step 3 - Get it up and running</h3>
                                 <p>If you have installed screen, you should create or attach to one now.</p>
                                 <p>Run the bot with the following command:</p>
-                                <code>python3 checkyerflags.py</code> Depending or your system, you may need to change <code>python3</code> to just <code>python</code>.
+                                <code>python3.6 checkyerflags.py</code> Depending or your system, you may need to change <code>python3.6</code> to just <code>python</code>.
                                 <p>If you want to load the debug config, use this command instead:</p>
-                                <code>python3 checkyerflags.py --debug</code>
+                                <code>python3.6 checkyerflags.py --debug</code>
                                 <p>If everything worked out, the console output you have should look something like that:</p>
                                 <pre>Loading debug config...
 ['CheckYerFlags', 'Filnor']

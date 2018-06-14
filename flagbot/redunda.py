@@ -15,11 +15,17 @@ class RedundaThread(Thread):
         self.logging = logging
 
     def run(self):
+        """
+        Start the one minute interval
+        """
         self.ping_redunda()
         while not self.stopped.wait(60):
             self.ping_redunda()
 
     def ping_redunda(self):
+        """
+        Ping the Redunda API
+        """
         try:
             if self.config["redundaKey"] is not "":
                 data = parse.urlencode({"key": self.config["redundaKey"], "version": self.config["botVersion"]}).encode()
@@ -27,7 +33,7 @@ class RedundaThread(Thread):
 
                 response = request.urlopen(req)
 
-                json_returned = json.loads(response.read().decode("utf-8"))
+                json.loads(response.read().decode("utf-8"))
             else:
                 self.logging.warning("No Redunda key specified. Disabling Redunda pinging.")
                 self.stopped.set()
@@ -35,5 +41,5 @@ class RedundaThread(Thread):
         except (OSError, URLError) as e:
             current_timestamp = strftime("%Y-%m-%d %H:%M:%S", localtime())
             if self.logging is not None:
-                self.logging.warning("Pinging Redunda failed at {} UTC".format(current_timestamp))
+                self.logging.warning(f"Pinging Redunda failed at {current_timestamp} UTC")
             return False
