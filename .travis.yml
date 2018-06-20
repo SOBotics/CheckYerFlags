@@ -11,3 +11,6 @@ script:
 
 after_success:
   - codecov --token=fafd6cfc-f45b-415f-be84-13389ecc022f
+
+notifications:
+  email: false

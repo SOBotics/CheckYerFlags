@@ -60,19 +60,16 @@ def main():
 
     #region Background threads
 
-    #Auto-Checking (currently disabled)
-    cu = room.get_current_users()
-    nb = utils.checkable_user_ids(cu)
-
+    #Automated flag checking
     thread_list = []
 
     stop_auto_checking_lp = threading.Event()
-    auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, utils.config, 0, nb, thread_list)
+    auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, utils.config, 0, room, thread_list)
     auto_check_lp_thread.start()
     thread_list.append(auto_check_lp_thread)
 
     stop_auto_checking_hp = threading.Event()
-    auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, utils.config, 1, [], thread_list)
+    auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, utils.config, 1, None, thread_list)
     auto_check_hp_thread.start()
     thread_list.append(auto_check_hp_thread)
 
@@ -251,6 +248,8 @@ def on_message(message, client):
         elif full_command.lower() in ["code", "github", "source"] :
             utils.log_command("code")
             utils.reply_to(message, "My code is on GitHub [here](https://github.com/SOBotics/FlaggersHall).")
+        else:
+            utils.reply_to(message, f"Unrecognized command '`{full_command}`'.")
         #endregion
     except (KeyboardInterrupt, SystemExit):
         os._exit(0)

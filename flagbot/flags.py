@@ -18,7 +18,7 @@ def check_own_flags(message, utils):
         flag_count_difference = next_flag_rank["count"] - int(flag_count.replace(",", ""))
     except ValueError as e:
         if str(e) is "NEF":
-            utils.post_message(f"You have {flag_count} helpful flags. Appears that you are not flagging that much.")
+            utils.reply_to(message, f"You have {flag_count} helpful flags. Appears that you are not flagging that much.")
         return
     utils.reply_to(message, f"You have {flag_count} helpful flags. Your last achieved rank was **{current_flag_rank['title']}** ({current_flag_rank['description']}) for {current_flag_rank['count']} helpful flags. You need {flag_count_difference} more flags for your next rank, *{next_flag_rank['title']}*.")
 

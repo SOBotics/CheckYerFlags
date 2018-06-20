@@ -89,9 +89,9 @@ class utils:
         """
         Exclude moderators and bots from the checkable user list (Except Natty and Smokey) to reduce the amount of requests
         """
-        normal_user_list = []
+        checkable_users = []
         bot_id_list = [6373379, 9220325, 7240793, 7481043, 8149646, 6294609, 7829893, 7418352, 5675570, 3671802, 5519396, 5675570, 8292957]
         for u in user_list:
             if u.id not in bot_id_list and not u.is_moderator:
-                normal_user_list.append(u)
-        return  normal_user_list
+                checkable_users.append(u)
+        return checkable_users
