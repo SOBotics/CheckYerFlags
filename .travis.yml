@@ -7,7 +7,8 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - pytest --ignore=chatoverflow/tests --cov=./tests
+  - cd /home/travis/build/SOBotics/FlaggersHall/
+  - pytest --ignore=chatoverflow/tests --cov=./tests --include 'flagbot/*'
 
 after_success:
   - codecov --token=fafd6cfc-f45b-415f-be84-13389ecc022f
