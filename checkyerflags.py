@@ -25,78 +25,78 @@ def main():
     """
     Main thread of the bot
     """
+    debug_mode = False
 
     #Get config for the mode (debug/prod)
     try:
         if sys.argv[1] == "--debug":
             print("Loading debug config...")
             utils.config = config.debug_config
+            debug_mode = True
         else:
             raise IndexError
     except IndexError:
         print("Loading productive config... \nIf you wanted to load the debug config, use the '--debug' command line option")
         utils.config = config.prod_config
 
-    print("Logging in and joining chat room...")
-    #region Login and connection to chat
-    utils.room_number = utils.config["room"]
-    client = Client(utils.config["chatHost"])
-    client.login(utils.config["email"], utils.config["password"])
-    utils.client = client
-    room = client.get_room(utils.config["room"])
-    room.join()
-    room.watch_socket(on_message)
-    print(room.get_current_user_names())
-    utils.room_owners = room.owners
-    #endregion
-
-    #Store current quota as variabke
-    se_api = stackexchange_api.se_api(utils.config["stackExchangeApiKey"])
-    quota_obj = se_api.get_user(1)
-    if quota_obj['quota_remaining'] is not None:
-        utils.quota = quota_obj['quota_remaining']
-
-    main_logger.info(f"Joined room '{room.name}' on {utils.config['chatHost']}")
-
-    #region Background threads
-
-    #Automated flag checking
-    thread_list = []
-
-    stop_auto_checking_lp = threading.Event()
-    auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, utils.config, 0, room, thread_list)
-    auto_check_lp_thread.start()
-    thread_list.append(auto_check_lp_thread)
-
-    stop_auto_checking_hp = threading.Event()
-    auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, utils.config, 1, None, thread_list)
-    auto_check_hp_thread.start()
-    thread_list.append(auto_check_hp_thread)
-
-    #Redunda pining
-    stop_redunda = threading.Event()
-    redunda_thread = redunda.RedundaThread(stop_redunda, utils.config, main_logger)
-    redunda_thread.start()
-    #endregion
-
     try:
-        if sys.argv[1] == '--debug':
+        #Login and connection to chat
+        print("Logging in and joining chat room...")
+        utils.room_number = utils.config["room"]
+        client = Client(utils.config["chatHost"])
+        client.login(utils.config["email"], utils.config["password"])
+        utils.client = client
+        room = client.get_room(utils.config["room"])
+        room.join()
+        room.watch_socket(on_message)
+        print(room.get_current_user_names())
+        utils.room_owners = room.owners
+
+        #Store current quota as variable
+        se_api = stackexchange_api.se_api(utils.config["stackExchangeApiKey"])
+        quota_obj = se_api.get_user(1)
+        if quota_obj['quota_remaining'] is not None:
+            utils.quota = quota_obj['quota_remaining']
+
+        main_logger.info(f"Joined room '{room.name}' on {utils.config['chatHost']}")
+
+        #Automated flag checking
+        thread_list = []
+
+        stop_auto_checking_lp = threading.Event()
+        auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, utils.config, 0, room, thread_list)
+        auto_check_lp_thread.start()
+        thread_list.append(auto_check_lp_thread)
+
+        stop_auto_checking_hp = threading.Event()
+        auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, utils.config, 1, None, thread_list)
+        auto_check_hp_thread.start()
+        thread_list.append(auto_check_hp_thread)
+
+        #Redunda pining
+        stop_redunda = threading.Event()
+        redunda_thread = redunda.RedundaThread(stop_redunda, utils.config, main_logger)
+        redunda_thread.start()
+
+        if debug_mode:
             room.send_message("[ [CheckYerFlags](https://stackapps.com/q/7792) ] started in debug mode.")
         else:
-            raise IndexError
-    except IndexError:
-        room.send_message("[ [CheckYerFlags](https://stackapps.com/q/7792) ] started.")
+            room.send_message("[ [CheckYerFlags](https://stackapps.com/q/7792) ] started.")
 
-    while True:
-        message = input()
 
-        if message in ["restart", "reboot"]:
-            os._exit(1)
-        else:
-            room.send_message(message)
+        while True:
+            message = input()
 
-    #client.logout()
-    #stop_redunda.set()
+            if message in ["restart", "reboot"]:
+                os._exit(1)
+            else:
+                room.send_message(message)
+
+    except KeyboardInterrupt:
+        os._exit(0)
+    except BaseException as e:
+        print(e)
+        os._exit(1)
 
 def on_message(message, client):
     """
@@ -235,7 +235,6 @@ def on_message(message, client):
         elif full_command in ["r", "ranks", "r n", "ranks next"]:
             utils.log_command("rank next")
             check_flags.check_own_flags_next_rank(message, utils)
-        #region Fun commands
         elif command in ["why"]:
             utils.log_command("why")
             utils.reply_to(message, "[42.](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))")
@@ -250,9 +249,6 @@ def on_message(message, client):
             utils.reply_to(message, "My code is on GitHub [here](https://github.com/SOBotics/FlaggersHall).")
         else:
             utils.reply_to(message, f"Unrecognized command '`{full_command}`'.")
-        #endregion
-    except (KeyboardInterrupt, SystemExit):
-        os._exit(0)
     except BaseException as e:
         main_logger.error(f"CRITICAL ERROR: {e}")
         if message is not None and message.id is not None:
