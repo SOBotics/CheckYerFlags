@@ -30,12 +30,17 @@ class AutoFlagThread(Thread):
         cu = self.room.get_current_users()
         self.users = self.utils.checkable_user_ids(cu)
         for u in self.users:
-            flagdata = flags.check_flags(None, None, self.config, u.id, False)
-            flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
-            auto_logger.info(f"[LP] {u.name} needs {flags_to_next_rank} more flags for their next rank.")
-            if flags_to_next_rank <= 10:
-                self.swap_priority(u, flagdata["next_rank"])
-                auto_logger.info(f"[Moved] User {u.name} is {flags_to_next_rank} flags away from their next rank and is therefore moved to the high priority queue")
+            try:
+                flagdata = flags.check_flags(None, None, self.config, u.id, False)
+                flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
+                if flags_to_next_rank <= 10 and u.id not in (u.id for o in self.thread_list[1].users):
+                    self.swap_priority(u, flagdata["next_rank"])
+                    auto_logger.info(f"[Moved] User {u.name} is {flags_to_next_rank} flags away from their next rank and is therefore moved to the high priority queue")
+                elif u.id not in (u.id for o in self.thread_list[1].users):
+                    auto_logger.info(f"[LP] {u.name} needs {flags_to_next_rank} more flags for their next rank.")
+            except TypeError:
+                auto_logger.info(f"[LP] Checking flags for user {u.name} failed.")
+
 
     def check_flags_hp(self):
         if len(self.users) > 0:
@@ -59,13 +64,11 @@ class AutoFlagThread(Thread):
             #From high priority to low priority
             try:
                 self.users.remove(user)
-                self.thread_list[0].users.append(user)
             except ValueError:
                 pass
         else:
             #From low priority to high priority
             try:
-                self.users.remove(user)
                 self.thread_list[1].users.append(user)
                 self.thread_list[0].next_rank = next_rank
             except ValueError:

@@ -124,16 +124,16 @@ def on_message(message, client):
     if message.content.startswith("🚂"):
         utils.log_command("train")
         utils.post_message("🚃")
-    elif "shrug" in message_val:
+    elif "/shrug" in message_val:
         utils.log_command("shrug")
         utils.post_message("¯\\ \_(ツ)\_ /¯", True)
-    elif "tableflip" in message_val or "table flip" in message_val:
+    elif "/tableflip" in message_val:
         utils.log_command("tableflip")
         utils.post_message("(╯°□°）╯︵ ┻━┻", True)
-    elif "unflip" in message_val:
+    elif "/unflip" in message_val:
         utils.log_command("unflip")
         utils.post_message("┬─┬ ノ( ゜-゜ノ)", True)
-    elif "kappa.gif" in message_val:
+    elif "/kappa.gif" in message_val:
         utils.log_command("kappa gif")
         utils.reply_to(message, "https://i.imgur.com/8TRbWHM.gif")
 
@@ -247,6 +247,9 @@ def on_message(message, client):
         elif full_command.lower() in ["code", "github", "source"] :
             utils.log_command("code")
             utils.reply_to(message, "My code is on GitHub [here](https://github.com/SOBotics/FlaggersHall).")
+        elif full_command.lower() in ["leaderboard", "scoreboard", "sb"] :
+            utils.log_command("code")
+            utils.reply_to(message, "The leaderboard will come soon.")
         else:
             utils.reply_to(message, f"Unrecognized command '`{full_command}`'.")
     except BaseException as e:
