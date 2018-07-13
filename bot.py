@@ -3,6 +3,7 @@ import sys
 import threading
 import traceback
 
+import chatoverflow
 from flagbot.logger import main_logger
 from flagbot.utils import utils
 from markdownify import markdownify as md
@@ -47,7 +48,12 @@ def main():
         client.login(utils.config["email"], utils.config["password"])
         utils.client = client
         room = client.get_room(utils.config["room"])
-        room.join()
+        try:
+            room.join()
+        except ValueError as e:
+            if str(e).startswith("invalid literal for int() with base 10: 'login?returnurl=http%3a%2f%2fchat.stackoverflow.com%2fchats%2fjoin%2ffavorite"):
+                raise chatoverflow.chatexchange.browser.LoginError("To many recent logins. Please wait a bit and try again.")
+
         room.watch_socket(on_message)
         print(room.get_current_user_names())
         utils.room_owners = room.owners
@@ -61,7 +67,7 @@ def main():
         main_logger.info(f"Joined room '{room.name}' on {utils.config['chatHost']}")
 
         #Automated flag checking
-        thread_list = []
+        """thread_list = []
 
         stop_auto_checking_lp = threading.Event()
         auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, utils.config, 0, room, thread_list)
@@ -71,7 +77,7 @@ def main():
         stop_auto_checking_hp = threading.Event()
         auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, utils.config, 1, None, thread_list)
         auto_check_hp_thread.start()
-        thread_list.append(auto_check_hp_thread)
+        thread_list.append(auto_check_hp_thread)"""
 
         #Redunda pining
         stop_redunda = threading.Event()
@@ -79,9 +85,9 @@ def main():
         redunda_thread.start()
 
         if debug_mode:
-            room.send_message("[ [CheckYerFlags](https://stackapps.com/q/7792) ] started in debug mode.")
+            room.send_message(f"[ [CheckYerFlags](https://stackapps.com/q/7792) ] {utils.config['botVersion']} started in debug mode on {utils.config['botParent']}/{utils.config['botMachine']}.")
         else:
-            room.send_message("[ [CheckYerFlags](https://stackapps.com/q/7792) ] started.")
+            room.send_message(f"[ [CheckYerFlags](https://stackapps.com/q/7792) ] {utils.config['botVersion']} started on {utils.config['botParent']}/{utils.config['botMachine']}.")
 
 
         while True:
@@ -124,6 +130,9 @@ def on_message(message, client):
     if message.content.startswith("🚂"):
         utils.log_command("train")
         utils.post_message("🚃")
+    elif message.content.lower().startswith("@bots alive"):
+        utils.log_command("@bots alive")
+        utils.post_message("You doubt me?")
     elif "/shrug" in message_val:
         utils.log_command("shrug")
         utils.post_message("¯\\ \_(ツ)\_ /¯", True)
@@ -139,6 +148,11 @@ def on_message(message, client):
 
     #Check if alias is valid
     if not utils.alias_valid(words[0]):
+        return
+
+    #Check if command is not set
+    if len(words) <= 1:
+        utils.reply_to(message, "Huh?")
         return
 
     #Store command in it's own variable
@@ -160,10 +174,13 @@ def on_message(message, client):
                 utils.reply_to(message, "You are not privileged. Ping Filnor if you believe that's an error.")
         elif command in ["a", "alive"]:
             utils.log_command("alive")
-            utils.reply_to(message, f"Instance of {utils.config['botVersion']} is running on **{utils.config['botParent']}/{utils.config['botMachine']}**")
+            utils.reply_to(message, "You doubt me?")
         elif command in ["v", "version"]:
             utils.log_command("version")
             utils.reply_to(message, f"Current version is {utils.config['botVersion']}")
+        elif command in ["loc", "location"]:
+            utils.log_command("location")
+            utils.reply_to(message, f"This instance is running on {utils.config['botParent']}/{utils.config['botMachine']}")
         elif command in ["say"]:
             utils.log_command("say")
             if message.user.id != 9220325: # Don't process commands by the bot account itself
@@ -207,17 +224,40 @@ def on_message(message, client):
                 utils.client.get_room(utils.room_number).leave()
             else:
                 utils.reply_to(message, "This command is restricted to moderators, room owners and maintainers.")
+        elif command in ["update"]:
+            utils.log_command("update")
+
+            # Restrict function to (site) moderators, room owners and maintainers
+            if message.user.id is 4733879:
+                utils.post_message("Pulling from GitHub...")
+                os.system("git config core.fileMode false")
+                os.system("git pull")
+            else:
+                utils.reply_to(message, "This command is restricted to bot maintainers.")
+        elif command in ["reboot"]:
+            utils.log_command("reboot")
+            main_logger.warning(f"Reboot requested by {message.user.name}")
+
+            if utils.is_privileged(message):
+                try:
+                    utils.post_message("Rebooting now...")
+                    utils.client.get_room(utils.room_number).leave()
+                except BaseException:
+                    pass
+                raise os._exit(1)
+            else:
+                utils.reply_to(message, "This command is restricted to moderators, room owners and maintainers.")
         elif command in ["commands", "help"]:
             utils.log_command("command list")
             utils.post_message("    ### CheckYerFlags commands ###\n" + \
                                "    delete, del, poof            - Deletes the last posted message, if possible. Requires privileges.\n" + \
                                "    amiprivileged                - Checks if you're allowed to run privileged commands\n" + \
-                               "    alive, a                     - Returns with the location and the running version of the bot, if it's running. No response likely means the bot is dead/not in this room.\n" + \
+                               "    alive, a                     - Replies with a message if the bot.\n" + \
                                "    version, v                   - Returns current version\n" + \
                                "    say [message]                - Sends [message] as chat message\n" + \
                                "    welcome [username]           - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also will get pinged.\n" + \
                                "    quota                        - Returns the amount of remaining Stack Exchange API quota\n" + \
-                               "    kill, stop                   - Terminates the bot instance. Requires privileges.\n" + \
+                               "    kill, stop                   - Stops the bot. Requires privileges.\n" + \
                                "    leave, bye                   - Tells the bot to leave the chat room. A restart is required to use it again. Requires privileges.\n" + \
                                "    commands, help               - This command. Lists all available commands\n" + \
                                "    status mine, s m             - Gets your own flag rank and status to the next rank\n" + \
@@ -250,8 +290,6 @@ def on_message(message, client):
         elif full_command.lower() in ["leaderboard", "scoreboard", "sb"] :
             utils.log_command("code")
             utils.reply_to(message, "The leaderboard will come soon.")
-        else:
-            utils.reply_to(message, f"Unrecognized command '`{full_command}`'.")
     except BaseException as e:
         main_logger.error(f"CRITICAL ERROR: {e}")
         if message is not None and message.id is not None:

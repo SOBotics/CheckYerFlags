@@ -1,6 +1,8 @@
 """
 Helper class for regularly used functions
 """
+import re
+
 from chatoverflow.chatexchange.events import MessagePosted, MessageEdited
 from flagbot.logger import main_logger
 
@@ -36,12 +38,12 @@ class utils:
         """
         Check if the specified alias is valid
         """
-        if alias in ["@Check", "@CheckYerFlags", "cf", "cyf"]:
+        if re.match(r"@[Cc]he?[c]?[k]?[Yy]?[e]?[r]?[Ff]?[l]?[a]?[g]?[s]?", alias):
             #Alias valid
             return True
-        elif alias in ["@cyf", "@cf"]:
+        elif alias in ["@cyf", "@cf", "cf", "cyf"]:
             #Alias deprecated, post message with deprecation message
-            self.post_message("This alias is deprecated and subject to be removed. Please use a [supported alias](https://checkyerflags.sobotics.org/#aliases) in the future.")
+            self.post_message("This alias is deprecated and subject to be removed. Please use a @CheckYerFlags in the future.")
             return True
         else:
             #Alias invalid
@@ -90,7 +92,7 @@ class utils:
         Exclude moderators and bots from the checkable user list (Except Natty and Smokey) to reduce the amount of requests
         """
         checkable_users = []
-        bot_id_list = [6373379, 9220325, 7240793, 7481043, 8149646, 6294609, 7829893, 7418352, 5675570, 3671802, 5519396, 5675570, 8292957]
+        bot_id_list = [6373379, 9220325, 7240793, 7481043, 8149646, 6294609, 7829893, 7418352, 5675570, 3671802, 5519396, 5675570, 8292957, 5269493, 8300708]
         for u in user_list:
             if u.id not in bot_id_list and not u.is_moderator:
                 checkable_users.append(u)
