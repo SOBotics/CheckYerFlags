@@ -67,7 +67,7 @@ def main():
         main_logger.info(f"Joined room '{room.name}' on {utils.config['chatHost']}")
 
         #Automated flag checking
-        """thread_list = []
+        thread_list = []
 
         stop_auto_checking_lp = threading.Event()
         auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, utils.config, 0, room, thread_list)
@@ -77,7 +77,7 @@ def main():
         stop_auto_checking_hp = threading.Event()
         auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, utils.config, 1, None, thread_list)
         auto_check_hp_thread.start()
-        thread_list.append(auto_check_hp_thread)"""
+        thread_list.append(auto_check_hp_thread)
 
         #Redunda pining
         stop_redunda = threading.Event()
@@ -145,6 +145,9 @@ def on_message(message, client):
     elif "/kappa.gif" in message_val:
         utils.log_command("kappa gif")
         utils.reply_to(message, "https://i.imgur.com/8TRbWHM.gif")
+    elif "@bots alive" in message_val:
+        utils.log_command("@bots alive")
+        utils.reply_to(message, "Yep, I'm fine.")
 
     #Check if alias is valid
     if not utils.alias_valid(words[0]):
@@ -165,13 +168,13 @@ def on_message(message, client):
             msg = client.get_message(utils.last_bot_message._message_id)
             if msg is not None:
                 msg.delete()
-        elif command in ["amiprivileged"]:
+        elif command in ["amiprivileged", "aip", "privs"]:
             utils.log_command("amiprivileged")
 
             if utils.is_privileged(message):
                 utils.reply_to(message, "You are privileged.")
             else:
-                utils.reply_to(message, "You are not privileged. Ping Filnor if you believe that's an error.")
+                utils.reply_to(message, "You are not privileged. Ping Filnor if that doesn't makes sense to you.")
         elif command in ["a", "alive"]:
             utils.log_command("alive")
             utils.reply_to(message, "You doubt me?")
@@ -198,7 +201,7 @@ def on_message(message, client):
                     pass
                 utils.post_message(f"{message_ping}Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
             else:
-                utils.post_message("This command is not supported in this room")
+                utils.post_message("This command is not supported in this room.")
         elif command in ["quota"]:
             utils.log_command("quota")
             utils.post_message(f"The remaining API quota is {utils.quota}.")

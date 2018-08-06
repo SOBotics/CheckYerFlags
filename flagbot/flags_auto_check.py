@@ -19,11 +19,11 @@ class AutoFlagThread(Thread):
     def run(self):
         if self.priority == 1:
             #High priority
-            while not self.stopped.wait(10): #300
+            while not self.stopped.wait(300):
                 self.check_flags_hp()
         else:
             self.check_flags_lp()
-            while not self.stopped.wait(10): #1800
+            while not self.stopped.wait(1800):
                 self.check_flags_lp()
 
     def check_flags_lp(self):
@@ -33,7 +33,7 @@ class AutoFlagThread(Thread):
             try:
                 flagdata = flags.check_flags(None, None, self.config, u.id, False)
                 flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
-                if flags_to_next_rank <= 50 and u.id not in (u.id for o in self.thread_list[1].users):
+                if flags_to_next_rank <= 20 and u.id not in (u.id for o in self.thread_list[1].users):
                     self.swap_priority(u, flagdata["next_rank"])
                     auto_logger.info(f"[Moved] User {u.name} is {flags_to_next_rank} flags away from their next rank and is therefore moved to the high priority queue")
                 elif u.id not in (u.id for o in self.thread_list[1].users):
@@ -46,10 +46,14 @@ class AutoFlagThread(Thread):
         if len(self.users) > 0:
             for u in self.users:
                 flagdata = flags.check_flags(None, None, self.config, u.id, False)
-                flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
-                if flags_to_next_rank <= 50:
+                flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"] #This is used as fallback, but under normal circumstances, this value should overwritten
+                for next_rank in self.next_ranks:
+                    if next_rank[0] is u.id:
+                        flags_to_next_rank = next_rank[1]["count"] - flagdata["flag_count"]
+
+                if flags_to_next_rank <= 0:
                     self.swap_priority(u, flagdata["next_rank"])
-                    self.utils.post_message(f"{u.name} has reached the rank {flagdata['next_rank']['title']} ({flagdata['next_rank']['description']}) for {flagdata['next_rank']['count']} helpful flags. Congratulations!")
+                    self.utils.post_message(f"Congratulations to @{u.name} for reaching the rank {next_rank[1]['title']} ({next_rank[1]['description']}) by surpassing {next_rank[1]['count']} helpful flags!")
                     auto_logger.info(f"[Moved] User {u.name} has reached their next rank and is therefore moved to the low priority queue")
                 else:
                     auto_logger.info(f"[HP] {u.name} needs {flags_to_next_rank} more flags for their next rank.")

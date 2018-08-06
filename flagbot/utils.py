@@ -43,7 +43,7 @@ class utils:
             return True
         elif alias in ["@cyf", "@cf", "cf", "cyf"]:
             #Alias deprecated, post message with deprecation message
-            self.post_message("This alias is deprecated and subject to be removed. Please use a @CheckYerFlags in the future.")
+            self.post_message("This alias is deprecated and subject to be removed. Please use @Che, @Check or @CheckYerFlags in the future. ")
             return True
         else:
             #Alias invalid
@@ -53,12 +53,12 @@ class utils:
         """
         Check if a user is allowed to use privileged commands (usally restricted to bot owners, room owners and moderators)
         """
-        priviledged_users = [4733879]
+        privileged_users = [4733879]
         for owner in self.room_owners:
-            priviledged_users.append(owner.id)
+            privileged_users.append(owner.id)
 
         # Restrict function to (site) moderators, room owners and maintainers
-        if  message.user.is_moderator or message.user.id in priviledged_users:
+        if  message.user.is_moderator or message.user.id in privileged_users:
             return True
         else:
             return False
@@ -84,7 +84,7 @@ class utils:
         Log a chat message with the message id
         """
         if isinstance(message, MessagePosted) or isinstance(message, MessageEdited):
-            main_logger.info(f"Message #{message._message_id} was posted by '{message.user.name}' in room '{message.room.name}'")
+            main_logger.info(f"Message #{message._message_id} was posted by '{message.user.name}' (in room '{message.room.name}')")
 
     @staticmethod
     def checkable_user_ids(user_list):
