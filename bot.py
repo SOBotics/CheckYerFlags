@@ -132,7 +132,7 @@ def on_message(message, client):
         utils.post_message("🚃")
     elif message.content.lower().startswith("@bots alive"):
         utils.log_command("@bots alive")
-        utils.post_message("You doubt me?")
+        utils.post_message("Yep, I'm fine.")
     elif "/shrug" in message_val:
         utils.log_command("shrug")
         utils.post_message("¯\\ \_(ツ)\_ /¯", True)
@@ -145,9 +145,6 @@ def on_message(message, client):
     elif "/kappa.gif" in message_val:
         utils.log_command("kappa gif")
         utils.reply_to(message, "https://i.imgur.com/8TRbWHM.gif")
-    elif "@bots alive" in message_val:
-        utils.log_command("@bots alive")
-        utils.reply_to(message, "Yep, I'm fine.")
 
     #Check if alias is valid
     if not utils.alias_valid(words[0]):
@@ -165,9 +162,12 @@ def on_message(message, client):
     try:
         #Here are the commands defined
         if command in ["del", "delete", "poof"]:
-            msg = client.get_message(utils.last_bot_message._message_id)
+            msg = client.get_message(message.parent_message_id)
             if msg is not None:
-                msg.delete()
+                if utils.is_privileged(message):
+                    msg.delete()
+                else:
+                    utils.reply_to(message, "This command is restricted to moderators, room owners and maintainers.")
         elif command in ["amiprivileged", "aip", "privs"]:
             utils.log_command("amiprivileged")
 
@@ -291,7 +291,7 @@ def on_message(message, client):
             utils.log_command("code")
             utils.reply_to(message, "My code is on GitHub [here](https://github.com/SOBotics/FlaggersHall).")
         elif full_command.lower() in ["leaderboard", "scoreboard", "sb"] :
-            utils.log_command("code")
+            utils.log_command("leaderboard")
             utils.reply_to(message, "The leaderboard will come soon.")
     except BaseException as e:
         main_logger.error(f"CRITICAL ERROR: {e}")
