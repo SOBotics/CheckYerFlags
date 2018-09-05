@@ -1,5 +1,7 @@
 """Background process for checking flag counts"""
 from threading import Thread
+import requests
+from requests import HTTPError
 from flagbot import flags
 from flagbot.logger import auto_logger
 
@@ -38,6 +40,14 @@ class AutoFlagThread(Thread):
                     auto_logger.info(f"[Moved] User {u.name} is {flags_to_next_rank} flags away from their next rank and is therefore moved to the high priority queue")
                 elif u.id not in (u.id for o in self.thread_list[1].users):
                     auto_logger.info(f"[LP] {u.name} needs {flags_to_next_rank} more flags for their next rank.")
+
+                if flagdata["flag_count"] >= 500 and self.config["score_board_fkey"] != "":
+                    try:
+                        r = requests.post("https://rankoverflow.philnet.ch/api/scoreboard/add", json={"fkey": self.config["score_board_fkey"], "username": u.name, "flag_count": flagdata["flag_count"]})
+                        if r.status_code != 200:
+                            auto_logger.warn(f"Couldn't send flag data to scoreboard for user {u.name}")
+                    except HTTPError:
+                        auto_logger.warn(f"Couldn't send flag data to scoreboard for user {u.name}")
             except TypeError:
                 auto_logger.info(f"[LP] Checking flags for user {u.name} failed.")
 
@@ -57,6 +67,13 @@ class AutoFlagThread(Thread):
                     auto_logger.info(f"[Moved] User {u.name} has reached their next rank and is therefore moved to the low priority queue")
                 else:
                     auto_logger.info(f"[HP] {u.name} needs {flags_to_next_rank} more flags for their next rank.")
+                if flagdata["flag_count"] >= 500 and self.config["score_board_fkey"] != "":
+                    try:
+                        r = requests.post("https://rankoverflow.philnet.ch/api/scoreboard/add", json={"fkey": self.config["score_board_fkey"], "username": u.name, "flag_count": flagdata["flag_count"]})
+                        if r.status_code != 200:
+                            auto_logger.warn(f"Couldn't send flag data to scoreboard for user {u.name}")
+                    except HTTPError:
+                        auto_logger.warn(f"Couldn't send flag data to scoreboard for user {u.name}")
 
     def swap_priority(self, user, next_rank):
         if self.priority == 1:

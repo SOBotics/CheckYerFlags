@@ -2,7 +2,6 @@ import os
 import sys
 import threading
 import traceback
-
 import chatoverflow
 from flagbot.logger import main_logger
 from flagbot.utils import utils
@@ -108,6 +107,7 @@ def on_message(message, client):
     """
     Handling the event if a message was posted, edited or deleted
     """
+
     if not isinstance(message, MessagePosted) and not isinstance(message, MessageEdited):
         # We ignore events that aren't MessagePosted or MessageEdited events.
         return
@@ -235,6 +235,7 @@ def on_message(message, client):
                 utils.post_message("Pulling from GitHub...")
                 os.system("git config core.fileMode false")
                 os.system("git pull")
+                raise os._exit(1)
             else:
                 utils.reply_to(message, "This command is restricted to bot maintainers.")
         elif command in ["reboot"]:
@@ -290,9 +291,27 @@ def on_message(message, client):
         elif full_command.lower() in ["code", "github", "source"] :
             utils.log_command("code")
             utils.reply_to(message, "My code is on GitHub [here](https://github.com/SOBotics/FlaggersHall).")
-        elif full_command.lower() in ["leaderboard", "scoreboard", "sb"] :
-            utils.log_command("leaderboard")
-            utils.reply_to(message, "The leaderboard will come soon.")
+        elif command in ["leaderboard", "scoreboard", "sb"] :
+            utils.log_command("scoreboard")
+            utils.reply_to(message, "You can find the scoreboard [here](https://rankoverflow.philnet.ch/scoreboard).")
+        """elif command in ["goal"]:
+            utils.log_command("goal")
+            goal_flag_count = 0
+            try:
+                goal_flag_count = int(words[2])
+            except IndexError:
+                #TODO: Try to read goal from file
+                utils.reply_to(message, "Try to read goal from file")
+                return
+            except ValueError:
+                if words[2] in ["del", "delete"]:
+                    #TODO: Delete goal
+                    utils.reply_to(message, "Delete goal")
+                    return
+                return
+
+            utils.reply_to(message, f"Set goal to {goal_flag_count}")"""
+
     except BaseException as e:
         main_logger.error(f"CRITICAL ERROR: {e}")
         if message is not None and message.id is not None:

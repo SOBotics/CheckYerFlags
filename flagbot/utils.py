@@ -38,27 +38,35 @@ class utils:
         """
         Check if the specified alias is valid
         """
-        if re.match(r"@[Cc]he?[c]?[k]?[Yy]?[e]?[r]?[Ff]?[l]?[a]?[g]?[s]?", alias):
+        if re.match(r"@[Cc]he[c]?[k]?[Yy]?[e]?[r]?[Ff]?[l]?[a]?[g]?[s]?", alias):
             #Alias valid
             return True
         elif alias in ["@cyf", "@cf", "cf", "cyf"]:
-            #Alias deprecated, post message with deprecation message
-            self.post_message("This alias is deprecated and subject to be removed. Please use @Che, @Check or @CheckYerFlags in the future. ")
-            return True
+            #Alias removed
+            #TODO: Remove this handling entirely
+            self.post_message("This alias has been removed. Please use `@Che`, `@Check` or `@CheckYerFlags`.")
+            return False
         else:
             #Alias invalid
             return False
 
-    def is_privileged(self, message):
+    def is_privileged(self, message, owners_only=False):
         """
         Check if a user is allowed to use privileged commands (usally restricted to bot owners, room owners and moderators)
         """
+
         privileged_users = [4733879]
+        if owners_only:
+            if message.user.id in privileged_users:
+                return True
+            else:
+                return False
+
         for owner in self.room_owners:
             privileged_users.append(owner.id)
 
         # Restrict function to (site) moderators, room owners and maintainers
-        if  message.user.is_moderator or message.user.id in privileged_users:
+        if message.user.is_moderator or message.user.id in privileged_users:
             return True
         else:
             return False
