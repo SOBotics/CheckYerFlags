@@ -102,6 +102,6 @@ class utils:
         checkable_users = []
         bot_id_list = [6373379, 9220325, 7240793, 7481043, 8149646, 6294609, 7829893, 7418352, 5675570, 3671802, 5519396, 5675570, 8292957, 5269493, 8300708]
         for u in user_list:
-            if u.id not in bot_id_list and not u.is_moderator:
+            if u.id not in bot_id_list:
                 checkable_users.append(u)
         return checkable_users
