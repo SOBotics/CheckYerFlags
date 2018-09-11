@@ -43,7 +43,7 @@ class AutoFlagThread(Thread):
 
                 if flagdata["flag_count"] >= 500 and self.config["score_board_fkey"] != "":
                     try:
-                        r = requests.post("https://rankoverflow.philnet.ch/api/scoreboard/add", json={"fkey": self.config["score_board_fkey"], "username": u.name, "flag_count": flagdata["flag_count"]})
+                        r = requests.post("https://rankoverflow.philnet.ch/api/scoreboard/add", json={"fkey": self.config["score_board_fkey"], "user_id": u.id, "flag_count": flagdata["flag_count"]})
                         if r.status_code != 200:
                             auto_logger.warn(f"Couldn't send flag data to scoreboard for user {u.name}")
                     except HTTPError:
@@ -69,7 +69,7 @@ class AutoFlagThread(Thread):
                     auto_logger.info(f"[HP] {u.name} needs {flags_to_next_rank} more flags for their next rank.")
                 if flagdata["flag_count"] >= 500 and self.config["score_board_fkey"] != "":
                     try:
-                        r = requests.post("https://rankoverflow.philnet.ch/api/scoreboard/add", json={"fkey": self.config["score_board_fkey"], "username": u.name, "flag_count": flagdata["flag_count"]})
+                        r = requests.post("https://rankoverflow.philnet.ch/api/scoreboard/add", json={"fkey": self.config["score_board_fkey"], "user_id": u.id, "flag_count": flagdata["flag_count"]})
                         if r.status_code != 200:
                             auto_logger.warn(f"Couldn't send flag data to scoreboard for user {u.name}")
                     except HTTPError:
