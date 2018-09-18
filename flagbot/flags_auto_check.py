@@ -2,7 +2,7 @@
 from threading import Thread
 import requests
 from requests import HTTPError
-from flagbot import flags
+from flagbot import flags, custom_goals
 from flagbot.logger import auto_logger
 
 
@@ -35,6 +35,9 @@ class AutoFlagThread(Thread):
             try:
                 flagdata = flags.check_flags(None, None, self.config, u.id, False)
                 flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
+                custom_goal = custom_goals.get_custom_goal_for_user(u.id)
+                if custom_goals < flags_to_next_rank:
+                    flags_to_next_rank = custom_goal - flagdata["flag_count"]
                 if flags_to_next_rank <= 20 and u.id not in (u.id for o in self.thread_list[1].users):
                     self.swap_priority(u, flagdata["next_rank"])
                     auto_logger.info(f"[Moved] User {u.name} is {flags_to_next_rank} flags away from their next rank and is therefore moved to the high priority queue")
@@ -55,15 +58,27 @@ class AutoFlagThread(Thread):
     def check_flags_hp(self):
         if len(self.users) > 0:
             for u in self.users:
+                custom_rank = False
                 flagdata = flags.check_flags(None, None, self.config, u.id, False)
-                flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"] #This is used as fallback, but under normal circumstances, this value should overwritten
+                flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"] # This is used as fallback, but under normal circumstances, this value should overwritten
                 for next_rank in self.next_ranks:
                     if next_rank[0] is u.id:
                         flags_to_next_rank = next_rank[1]["count"] - flagdata["flag_count"]
 
+                custom_goal = custom_goals.get_custom_goal_for_user(u.id)
+                if custom_goals < flags_to_next_rank:
+                    flags_to_next_rank = custom_goal - flagdata["flag_count"]
+                    custom_rank = True
+
                 if flags_to_next_rank <= 0:
+                    next_rank_desc = ""
+                    if next_rank[1]['description'] is not None:
+                        next_rank_desc = f" ({next_rank[1]['description']})"
                     self.swap_priority(u, flagdata["next_rank"])
-                    self.utils.post_message(f"Congratulations to @{u.name} for reaching the rank {next_rank[1]['title']} ({next_rank[1]['description']}) by surpassing {next_rank[1]['count']} helpful flags!")
+                    if custom_rank:
+                        self.utils.post_message(f"Congratulations to @{u.name} for reaching their custom goal of {custom_goal} helpful flags!")
+                    else:
+                        self.utils.post_message(f"Congratulations to @{u.name} for reaching the rank {next_rank[1]['title']}{next_rank_desc} by surpassing {next_rank[1]['count']} helpful flags!")
                     auto_logger.info(f"[Moved] User {u.name} has reached their next rank and is therefore moved to the low priority queue")
                 else:
                     auto_logger.info(f"[HP] {u.name} needs {flags_to_next_rank} more flags for their next rank.")

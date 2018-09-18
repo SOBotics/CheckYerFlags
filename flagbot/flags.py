@@ -18,9 +18,9 @@ def check_own_flags(message, utils):
         flag_count_difference = next_flag_rank["count"] - int(flag_count.replace(",", ""))
     except ValueError as e:
         if str(e) is "NEF":
-            utils.reply_to(message, f"You have {flag_count} helpful flags. Appears that you are not flagging that much.")
+            message.reply_to(f"You have {flag_count} helpful flags. Appears that you are not flagging that much.")
         return
-    utils.reply_to(message, f"You have {flag_count} helpful flags. Your last achieved rank was **{current_flag_rank['title']}** ({current_flag_rank['description']}) for {current_flag_rank['count']} helpful flags. You need {flag_count_difference} more flags for your next rank, *{next_flag_rank['title']}*.")
+    message.reply_to(f"You have {flag_count} helpful flags. Your last achieved rank was **{current_flag_rank['title']}** ({current_flag_rank['description']}) for {current_flag_rank['count']} helpful flags. You need {flag_count_difference} more flags for your next rank, *{next_flag_rank['title']}*.")
 
 def check_own_flags_next_rank(message, utils):
     """
@@ -38,7 +38,7 @@ def check_own_flags_next_rank(message, utils):
         if str(e) is "NEF":
             utils.post_message(f"You need {ranks.ranks[0]['count'] - int(flag_count.replace(',', ''))} more flags to get your first flag rank, **{ranks.ranks[0]['title']}** ({ranks.ranks[0]['count']} flags in total).")
         return
-    utils.reply_to(message, f"You need {flag_count_difference} more flags to get your next flag rank, **{ next_flag_rank['title']}** ({next_flag_rank['count']} flags in total).")
+    message.reply_to(f"You need {flag_count_difference} more flags to get your next flag rank, **{ next_flag_rank['title']}** ({next_flag_rank['count']} flags in total).")
 
 def check_flags(message, utils, config = None, user_id = 0, verbose = True):
     """

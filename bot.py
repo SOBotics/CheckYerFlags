@@ -3,7 +3,9 @@ import sys
 import threading
 import traceback
 import chatoverflow
+import flagbot.custom_goals as custom_goals
 from flagbot.logger import main_logger
+import flagbot.utils
 from flagbot.utils import utils
 from markdownify import markdownify as md
 from chatoverflow.chatexchange.client import Client
@@ -30,13 +32,13 @@ def main():
     #Get config for the mode (debug/prod)
     try:
         if sys.argv[1] == "--debug":
-            print("Loading debug config...")
+            print("Using debug config.")
             utils.config = config.debug_config
             debug_mode = True
         else:
             raise IndexError
     except IndexError:
-        print("Loading productive config... \nIf you wanted to load the debug config, use the '--debug' command line option")
+        print("Using productive config. \nIf you intended to use the debug config, use the '--debug' command line option")
         utils.config = config.prod_config
 
     try:
@@ -51,7 +53,7 @@ def main():
             room.join()
         except ValueError as e:
             if str(e).startswith("invalid literal for int() with base 10: 'login?returnurl=http%3a%2f%2fchat.stackoverflow.com%2fchats%2fjoin%2ffavorite"):
-                raise chatoverflow.chatexchange.browser.LoginError("To many recent logins. Please wait a bit and try again.")
+                raise chatoverflow.chatexchange.browser.LoginError("Too many recent logins. Please wait a bit and try again.")
 
         room.watch_socket(on_message)
         print(room.get_current_user_names())
@@ -114,8 +116,12 @@ def on_message(message, client):
 
     #Check that the message object is defined
     if message is None or message.content is None:
-        main_logger.warning("ChatExchange message object or content property is None.")
-        main_logger.warning(message)
+        try:
+            if message.user.id is 6294609:
+                return
+        except AttributeError:
+            main_logger.warning("ChatExchange message object or content property is None.")
+            main_logger.warning(message)
         return
 
     #Get message as full string and as single words
@@ -129,7 +135,7 @@ def on_message(message, client):
     #Check for non-alias-command calls
     if message.content.startswith("🚂"):
         utils.log_command("train")
-        utils.post_message("🚃")
+        utils.post_message("[🚃](https://youtu.be/943gMyU5-PQ)")
     elif message.content.lower().startswith("@bots alive"):
         utils.log_command("@bots alive")
         utils.post_message("Yep, I'm fine.")
@@ -144,7 +150,7 @@ def on_message(message, client):
         utils.post_message("┬─┬ ノ( ゜-゜ノ)", True)
     elif "/kappa.gif" in message_val:
         utils.log_command("kappa gif")
-        utils.reply_to(message, "https://i.imgur.com/8TRbWHM.gif")
+        message.reply_to("https://i.imgur.com/8TRbWHM.gif")
 
     #Check if alias is valid
     if not utils.alias_valid(words[0]):
@@ -152,7 +158,7 @@ def on_message(message, client):
 
     #Check if command is not set
     if len(words) <= 1:
-        utils.reply_to(message, "Huh?")
+        message.reply_to("Huh?")
         return
 
     #Store command in it's own variable
@@ -167,23 +173,24 @@ def on_message(message, client):
                 if utils.is_privileged(message):
                     msg.delete()
                 else:
-                    utils.reply_to(message, "This command is restricted to moderators, room owners and maintainers.")
+                    message.reply_to("This command is restricted to moderators, room owners and maintainers.")
         elif command in ["amiprivileged", "aip", "privs"]:
             utils.log_command("amiprivileged")
 
             if utils.is_privileged(message):
-                utils.reply_to(message, "You are privileged.")
+                message.reply_to("You are privileged.")
             else:
-                utils.reply_to(message, "You are not privileged. Ping Filnor if that doesn't makes sense to you.")
+                message.reply_to("You are not privileged. Ping Filnor if that doesn't makes sense to you.")
         elif command in ["a", "alive"]:
             utils.log_command("alive")
-            utils.reply_to(message, "You doubt me?")
+            message.reply_to("You doubt me?")
         elif command in ["v", "version"]:
             utils.log_command("version")
-            utils.reply_to(message, f"Current version is {utils.config['botVersion']}")
+            #message.reply_to(f"Current version is {utils.config['botVersion']}")
+            message.reply_to(f"Current version is {utils.config['botVersion']}")
         elif command in ["loc", "location"]:
             utils.log_command("location")
-            utils.reply_to(message, f"This instance is running on {utils.config['botParent']}/{utils.config['botMachine']}")
+            message.reply_to(f"This instance is running on {utils.config['botParent']}/{utils.config['botMachine']}")
         elif command in ["say"]:
             utils.log_command("say")
             if message.user.id != 9220325: # Don't process commands by the bot account itself
@@ -216,7 +223,7 @@ def on_message(message, client):
                     pass
                 raise os._exit(0)
             else:
-                utils.reply_to(message, "This command is restricted to moderators, room owners and maintainers.")
+                message.reply_to("This command is restricted to moderators, room owners and maintainers.")
         elif command in ["leave", "bye"]:
             utils.log_command("leave")
             main_logger.warning(f"Leave requested by {message.user.name}")
@@ -226,18 +233,19 @@ def on_message(message, client):
                 utils.post_message("Bye")
                 utils.client.get_room(utils.room_number).leave()
             else:
-                utils.reply_to(message, "This command is restricted to moderators, room owners and maintainers.")
+                message.reply_to("This command is restricted to moderators, room owners and maintainers.")
         elif command in ["update"]:
             utils.log_command("update")
 
             # Restrict function to (site) moderators, room owners and maintainers
-            if message.user.id is 4733879:
+            if message.user.id == 4733879:
                 utils.post_message("Pulling from GitHub...")
                 os.system("git config core.fileMode false")
+                os.system("git reset --hard origin/master")
                 os.system("git pull")
                 raise os._exit(1)
             else:
-                utils.reply_to(message, "This command is restricted to bot maintainers.")
+                message.reply_to("This command is restricted to bot maintainers.")
         elif command in ["reboot"]:
             utils.log_command("reboot")
             main_logger.warning(f"Reboot requested by {message.user.name}")
@@ -250,23 +258,28 @@ def on_message(message, client):
                     pass
                 raise os._exit(1)
             else:
-                utils.reply_to(message, "This command is restricted to moderators, room owners and maintainers.")
+                message.reply_to("This command is restricted to moderators, room owners and maintainers.")
         elif command in ["commands", "help"]:
             utils.log_command("command list")
             utils.post_message("    ### CheckYerFlags commands ###\n" + \
-                               "    delete, del, poof            - Deletes the last posted message, if possible. Requires privileges.\n" + \
+                               "    del[ete], poof               - Deletes the last posted message, if possible. Requires privileges.\n" + \
                                "    amiprivileged                - Checks if you're allowed to run privileged commands\n" + \
-                               "    alive, a                     - Replies with a message if the bot.\n" + \
-                               "    version, v                   - Returns current version\n" + \
-                               "    say [message]                - Sends [message] as chat message\n" + \
-                               "    welcome [username]           - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also will get pinged.\n" + \
+                               "    a[live]                      - Replies with a message if the bot.\n" + \
+                               "    v[ersion]                    - Returns current version\n" + \
+                               "    loc[ation]                   - Returns current location where the bot is running\n" + \
+                               "    say <message>                - Sends [message] as chat message\n" + \
+                               "    welcome <username>           - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also will get pinged.\n" + \
                                "    quota                        - Returns the amount of remaining Stack Exchange API quota\n" + \
                                "    kill, stop                   - Stops the bot. Requires privileges.\n" + \
                                "    leave, bye                   - Tells the bot to leave the chat room. A restart is required to use it again. Requires privileges.\n" + \
                                "    commands, help               - This command. Lists all available commands\n" + \
-                               "    status mine, s m             - Gets your own flag rank and status to the next rank\n" + \
-                               "    status, s [user id]          - Gets flag rank and status to the next rank for the specified [user id]\n" + \
+                               "    s[tatus] m[ine]              - Gets your own flag rank and status to the next rank\n" + \
+                               "    s[tatus] <user id>           - Gets flag rank and status to the next rank for the specified <user id>\n" + \
+                               "    goal                         - Returns the value for the custom goal you have set\n" + \
+                               "    goal <flag count>            - Set your custom goal to <flag count> flags\n" + \
+                               "    goal del[ete]                - Deletes our custom goal\n" + \
                                "    ranks, ranks next, r n       - Gets your next flag rank and how much flags you need to get to it\n" + \
+                               "    update                       - Updates the bot and restarts it. Requires bot maintainer privileges.\n" + \
                                "    why                          - Gives the answer to everything\n" + \
                                "    good bot, good job           - Thanks you for being nice\n" + \
                                "    ty, thx, thanks, thank you   - Replies \"You're welcome.\"", False, False)
@@ -281,36 +294,70 @@ def on_message(message, client):
             check_flags.check_own_flags_next_rank(message, utils)
         elif command in ["why"]:
             utils.log_command("why")
-            utils.reply_to(message, "[42.](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))")
+            message.reply_to("[42.](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))")
         elif full_command in ["good bot", "good job"]:
             utils.log_command("good bot")
-            utils.reply_to(message, "Thank you!")
+            message.reply_to("Thank you!")
         elif full_command.lower() in ["ty", "thx", "thanks", "thank you"] :
             utils.log_command("thanks")
-            utils.reply_to(message, "You're welcome.")
+            message.reply_to("You're welcome.")
         elif full_command.lower() in ["code", "github", "source"] :
             utils.log_command("code")
-            utils.reply_to(message, "My code is on GitHub [here](https://github.com/SOBotics/FlaggersHall).")
+            message.reply_to("My code is on GitHub [here](https://github.com/SOBotics/FlaggersHall).")
         elif command in ["leaderboard", "scoreboard", "sb"] :
             utils.log_command("scoreboard")
-            utils.reply_to(message, "You can find the scoreboard [here](https://rankoverflow.philnet.ch/scoreboard).")
-        """elif command in ["goal"]:
+            message.reply_to("You can find the scoreboard [here](https://rankoverflow.philnet.ch/scoreboard).")
+        elif command in ["goal"]:
             utils.log_command("goal")
             goal_flag_count = 0
+            user_id = message.user.id
+            overwrite = False
+
             try:
-                goal_flag_count = int(words[2])
+                if words[3] in ["--force", "--overwrite"]:
+                    overwrite = True
+            except IndexError: pass
+
+            try:
+                goal_flag_count = words[2]
+
+                #Validate if given parameter als
+                if goal_flag_count.isdigit() or goal_flag_count in ["del", "delete"]:
+                    goal_flag_count = int(goal_flag_count)
+
+                else:
+                    message.reply_to("Please pass an integer number as parameter")
+                    return
+
+                #Check if the user has not already reached this amount of flags
+                flag_data = flagbot.flags.check_flags(None, None, utils.config, user_id, False)
+                current_flag_count = flag_data["flag_count"]
+                if goal_flag_count <= current_flag_count:
+                    message.reply_to(f"Your custom goal must be higher than your current flag count, which is {current_flag_count}.")
+                    return
+
+                #Add or overwrite
+                add_result = custom_goals.add_custom_goal(user_id, goal_flag_count, overwrite)
+                if add_result[0]:
+                    message.reply_to(f"Set custom goal to {goal_flag_count} helpful flags.")
+                else:
+                    message.reply_to(f"You already have a custom rank set to {add_result[1]} helpful flags. Append the `--force` parameter to overwrite the rank")
+
             except IndexError:
-                #TODO: Try to read goal from file
-                utils.reply_to(message, "Try to read goal from file")
+                goal_flag_count = custom_goals.get_custom_goal_for_user(user_id)
+                if goal_flag_count is not None:
+                    message.reply_to(f"Your custom goal is set to {goal_flag_count} helpful flags.")
+                else:
+                    message.reply_to("You haven't set a custom goal currently.")
                 return
             except ValueError:
                 if words[2] in ["del", "delete"]:
-                    #TODO: Delete goal
-                    utils.reply_to(message, "Delete goal")
+                    if custom_goals.delete_custom_goal(user_id):
+                        message.reply_to("Your custom goal was deleted.")
+                    else:
+                        message.reply_to("Your custom goal couldn't be deleted. Please try again later.")
                     return
                 return
-
-            utils.reply_to(message, f"Set goal to {goal_flag_count}")"""
 
     except BaseException as e:
         main_logger.error(f"CRITICAL ERROR: {e}")

@@ -41,11 +41,6 @@ class utils:
         if re.match(r"@[Cc]he[c]?[k]?[Yy]?[e]?[r]?[Ff]?[l]?[a]?[g]?[s]?", alias):
             #Alias valid
             return True
-        elif alias in ["@cyf", "@cf", "cf", "cyf"]:
-            #Alias removed
-            #TODO: Remove this handling entirely
-            self.post_message("This alias has been removed. Please use `@Che`, `@Check` or `@CheckYerFlags`.")
-            return False
         else:
             #Alias invalid
             return False
@@ -70,14 +65,6 @@ class utils:
             return True
         else:
             return False
-
-    @staticmethod
-    def reply_to(message, reply):
-        """
-        Reply to the specified message
-        """
-        utils.log_message(message)
-        message.message.reply(reply)
 
     @staticmethod
     def log_command(command_name):
@@ -105,3 +92,6 @@ class utils:
             if u.id not in bot_id_list:
                 checkable_users.append(u)
         return checkable_users
+
+MessagePosted.reply_to = lambda self, reply: self.message.reply(reply)
+MessageEdited.reply_to = lambda self, reply: self.message.reply(reply)
