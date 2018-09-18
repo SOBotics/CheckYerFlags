@@ -117,3 +117,6 @@ config.py
 
 # Bash scripts
 *.sh
+
+# CSV files
+*.csv
