@@ -36,7 +36,7 @@ class AutoFlagThread(Thread):
                 flagdata = flags.check_flags(None, None, self.config, u.id, False)
                 flags_to_next_rank = flagdata["next_rank"]["count"] - flagdata["flag_count"]
                 custom_goal = custom_goals.get_custom_goal_for_user(u.id)
-                if custom_goals < flags_to_next_rank:
+                if custom_goal is not None and custom_goal < flags_to_next_rank:
                     flags_to_next_rank = custom_goal - flagdata["flag_count"]
                 if flags_to_next_rank <= 20 and u.id not in (u.id for o in self.thread_list[1].users):
                     self.swap_priority(u, flagdata["next_rank"])
@@ -51,7 +51,8 @@ class AutoFlagThread(Thread):
                             auto_logger.warn(f"Couldn't send flag data to scoreboard for user {u.name}")
                     except HTTPError:
                         auto_logger.warn(f"Couldn't send flag data to scoreboard for user {u.name}")
-            except TypeError:
+            except TypeError as e:
+                auto_logger.error(e)
                 auto_logger.info(f"[LP] Checking flags for user {u.name} failed.")
 
 
@@ -66,7 +67,7 @@ class AutoFlagThread(Thread):
                         flags_to_next_rank = next_rank[1]["count"] - flagdata["flag_count"]
 
                 custom_goal = custom_goals.get_custom_goal_for_user(u.id)
-                if custom_goals < flags_to_next_rank:
+                if custom_goal is not None and custom_goal < flags_to_next_rank:
                     flags_to_next_rank = custom_goal - flagdata["flag_count"]
                     custom_rank = True
 
