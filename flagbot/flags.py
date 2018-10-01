@@ -11,7 +11,7 @@ def check_own_flags(message, utils):
     page = urlopen(f"https://stackoverflow.com/users/{message.user.id}?tab=topactivity")
     html = page.read().decode("utf-8")
     jQuery = pq(html)
-    flag_count = str(pq(jQuery(".g-col.g-row.fl-none").children()[6]).html()).replace('\n', ' ').replace('\r', '').strip().strip(" helpful flags")
+    flag_count = str(pq(pq(pq(jQuery(".grid--cell.mt-auto.fc-black-350.fs-caption.lh-sm .grid.gs4.fd-column").children()[1]).children()[0]).children()[1]).html()).replace(',', '').strip().strip(" helpful flags")
     try:
         current_flag_rank = get_current_flag_rank(int(flag_count.replace(",", "")))
         next_flag_rank = get_next_flag_rank(current_flag_rank)
