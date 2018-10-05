@@ -27,8 +27,8 @@ class RedundaThread(Thread):
 		Ping the Redunda API
 		"""
 		try:
-			if self.config["redundaKey"] is not "":
-				data = parse.urlencode({"key": self.config["redundaKey"], "version": self.config["botVersion"]}).encode()
+			if self.config.redundaKey is not "":
+				data = parse.urlencode({"key": self.config.redundaKey, "version": self.config.botVersion}).encode()
 				req = request.Request("https://redunda.sobotics.org/status.json", data)
 
 				response = request.urlopen(req)

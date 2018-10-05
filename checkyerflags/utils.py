@@ -2,9 +2,10 @@
 Helper class for regularly used functions
 """
 import re
+from datetime import datetime, timedelta
 
 from chatoverflow.chatexchange.events import MessagePosted, MessageEdited
-from flagbot.logger import main_logger
+from checkyerflags.logger import main_logger
 
 
 class utils:
@@ -26,11 +27,14 @@ class utils:
         if room_owners is not None:
             self.room_owners = room_owners
 
-    def post_message(self, message, no_main_logger = False, length_check = True):
+        self.start_time = datetime.now()
+        self.se_api = None
+
+    def post_message(self, message, log_message = True, length_check = True):
         """
         Post a chat message
         """
-        if not no_main_logger:
+        if log_message:
             utils.log_message(message)
         self.client.get_room(self.room_number).send_message(message, length_check)
 
@@ -66,6 +70,18 @@ class utils:
         else:
             return False
 
+    def get_uptime(self):
+        """
+        Returns the time since the bot was started
+        """
+        td = datetime.now() - self.start_time
+        sec = timedelta(seconds=td.total_seconds())
+        d = datetime(1,1,1) + sec
+        return f"{d.day-1:02}d {d.hour:02}h {d.minute:02}m {d.second:02}s"
+
+    def get_current_room(self):
+        return self.client.get_room(self.room_number)
+
     @staticmethod
     def log_command(command_name):
         """
@@ -84,7 +100,7 @@ class utils:
     @staticmethod
     def checkable_user_ids(user_list):
         """
-        Exclude moderators and bots from the checkable user list (Except Natty and Smokey) to reduce the amount of requests
+        Exclude bots from the checkable user list (Except Natty and Smokey) to reduce the amount of requests (as they don't flag, there's no need to check them)
         """
         checkable_users = []
         bot_id_list = [6373379, 9220325, 7240793, 7481043, 8149646, 6294609, 7829893, 7418352, 5675570, 3671802, 5519396, 5675570, 8292957, 5269493, 8300708, 10042414]
@@ -95,3 +111,7 @@ class utils:
 
 MessagePosted.reply_to = lambda self, reply: self.message.reply(reply)
 MessageEdited.reply_to = lambda self, reply: self.message.reply(reply)
+
+class Struct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
