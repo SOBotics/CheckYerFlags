@@ -61,9 +61,9 @@ class AutoFlagThread(Thread):
                 #flags
 
                 #Replace flags to next rank with custom goal if its flag count is lower than the next rank
-                """custom_goal = custom_goals.get_custom_goal_for_user(u.id)
-                if custom_goal is not None and custom_goal < flags_to_next_rank:
-                    flags_to_next_rank = custom_goal - flag_count"""
+                custom_goal = custom_goals.get_custom_goal_for_user(u.id)
+                if custom_goal[0] is not None and custom_goal[0] < next_flag_rank.count:
+                    flags_to_next_rank = custom_goal[0] - flag_count
 
                 #If the user is closer than 20 flags to his next rank, move him to the high priority queue
                 hp_users = []
@@ -113,10 +113,10 @@ class AutoFlagThread(Thread):
 
                     #Replace flags to next rank with custom goal if its flag count is lower than the next rank
                     is_custom_goal = False
-                    """custom_goal = custom_goals.get_custom_goal_for_user(u.id)
-                    if custom_goal is not None and custom_goal < flags_to_next_rank:
-                        flags_to_next_rank = custom_goal - flag_count
-                        is_custom_goal = True"""
+                    custom_goal = custom_goals.get_custom_goal_for_user(u.id)
+                    if custom_goal[0] is not None and custom_goal[0] < next_flag_rank.count:
+                        flags_to_next_rank = custom_goal[0] - flag_count
+                        is_custom_goal = True
 
                     #If the user has reached the flags to their next or custom rank, move them to the low priority queue
                     if flags_to_next_rank <= 0:
@@ -125,7 +125,13 @@ class AutoFlagThread(Thread):
                             next_rank_desc = f" ({next_flag_rank.description})"
                         self.swap_priority(u, check_flags.get_next_flag_rank(next_flag_rank))
                         if is_custom_goal:
-                            self.utils.post_message(f"Congratulations to @{u.name} for reaching their custom goal of {custom_goal} helpful flags!")
+                            custom_msg = ""
+                            if custom_goal[1] is not None:
+                                custom_msg = f" They set a custom message for this event: {custom_goal[1]}"
+
+
+                            self.utils.post_message(f"Congratulations to @{u.name} for reaching their custom goal of {custom_goal[0]} helpful flags!{custom_msg}")
+                            custom_goals.delete_custom_goal(u.id)
                             auto_logger.info(f"[HP->LP] User {u.name} has reached their custom rank and is therefore moved to the low priority queue")
                         else:
                             self.utils.post_message(f"Congratulations to @{u.name} for reaching the rank {next_flag_rank.title}{next_rank_desc} by surpassing {next_flag_rank.count} helpful flags!")

@@ -11,7 +11,7 @@ import checkyerflags.flags_auto_check as fac
 import checkyerflags.se_api as stackexchange_api
 from chatoverflow.chatexchange.client import Client
 from chatoverflow.chatexchange.events import MessagePosted, MessageEdited
-from checkyerflags import redunda
+from checkyerflags import redunda, custom_goals
 from checkyerflags.check_flags import InvalidUserIdError, NoApiKeyError, NonExistentUserIdError, NotEnoughFlagsError
 from checkyerflags.logger import main_logger
 from checkyerflags.utils import utils, Struct
@@ -43,7 +43,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v1.4.0"
+    utils.config.botVersion = "v1.5.0"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -353,7 +353,6 @@ def on_message(message, client):
                 current_flag_rank = Struct(**current_flag_rank)
                 flag_count_difference = next_flag_rank.count - flag_count
             except NotEnoughFlagsError:
-                #utils.post_message(f"You need {ranks.ranks[0]['count'] - int(flag_count.replace(',', ''))} more flags to get your first flag rank, **{ranks.ranks[0]['title']}** ({ranks.ranks[0]['count']} flags in total).")
                 first_flag_rank = Struct(**check_flags.get_current_flag_rank(365))
                 if flag_count_difference is None:
                     flag_count_difference = first_flag_rank.count
@@ -363,7 +362,6 @@ def on_message(message, client):
             next_rank_description = ""
             if current_flag_rank.description is not None:
                 next_rank_description = f" ({next_flag_rank.description})"
-            #message.reply_to(f"You need {flag_count_difference} more flags to get your next flag rank, **{ next_flag_rank['title']}** ({next_flag_rank['count']} flags in total).")
             message.reply_to(f"You need {flag_count_difference} more flags to get your next flag rank, **{next_flag_rank.title}**{next_rank_description} ({next_flag_rank.count} flags in total).")
         elif command in ["why"]:
             message.reply_to("[42.](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))")
@@ -376,7 +374,7 @@ def on_message(message, client):
         elif command in ["leaderboard", "scoreboard", "sb"] :
             message.reply_to("You can find the scoreboard [here](https://rankoverflow.philnet.ch/scoreboard). Note that loading the data takes about 15 seconds.")
         elif command in ["goal"]:
-            """goal_flag_count = 0
+            goal_flag_count = 0
             user_id = message.user.id
             overwrite = False
 
@@ -387,6 +385,14 @@ def on_message(message, client):
 
             try:
                 goal_flag_count = words[2]
+                custom_message = None
+                try:
+                    msg = ""
+                    for word in words[3:]:
+                        msg = f"{message} {word}"
+                    custom_message = msg.lstrip()
+                except IndexError:
+                    pass
 
                 #Validate if given parameter als
                 if goal_flag_count.isdigit() or goal_flag_count in ["del", "delete"]:
@@ -403,16 +409,19 @@ def on_message(message, client):
                     return
 
                 #Add or overwrite
-                add_result = custom_goals.add_custom_goal(user_id, goal_flag_count, overwrite)
+                add_result = custom_goals.add_custom_goal(user_id, goal_flag_count, custom_message, overwrite)
                 if add_result[0]:
                     message.reply_to(f"Set custom goal to {goal_flag_count} helpful flags.")
                 else:
                     message.reply_to(f"You already have a custom rank set to {add_result[1]} helpful flags. Append the `--force` parameter to overwrite the rank")
 
             except IndexError:
+                current_flag_count = check_flags.get_flag_count_for_user(user_id, utils)
                 goal_flag_count = custom_goals.get_custom_goal_for_user(user_id)
+                flags_to_goal = goal_flag_count - current_flag_count
+
                 if goal_flag_count is not None:
-                    message.reply_to(f"Your custom goal is set to {goal_flag_count} helpful flags.")
+                    message.reply_to(f"Your custom goal is set to {goal_flag_count} helpful flags. You need {flags_to_goal} more flags to reach it.")
                 else:
                     message.reply_to("You haven't set a custom goal currently.")
                 return
@@ -423,8 +432,7 @@ def on_message(message, client):
                     else:
                         message.reply_to("Your custom goal couldn't be deleted. Please try again later.")
                     return
-                return"""
-            message.reply_to("Sorry, but this function is temporarily disabled due to instability.")
+                return
         elif command in ["uptime"]:
             message.reply_to(f"Running since {utils.get_uptime()}")
         elif command in ["system"]:
@@ -434,8 +442,12 @@ def on_message(message, client):
 
     except BaseException as e:
         main_logger.error(f"CRITICAL ERROR: {e}")
-        if message is not None and message.id is not None:
-            main_logger.error(f"Caused by message id {message.id}")
+        if message is not None:
+            try:
+                if message.îd is not None:
+                    main_logger.error(f"Caused by message id {message.id}")
+            except AttributeError:
+                pass
             main_logger.error(traceback.format_exc())
         try:
             utils.post_message(f"Error on processing the last command ({e}); rebooting instance... (cc @{utils.config.botOwner})")

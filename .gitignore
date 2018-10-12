@@ -119,4 +119,4 @@ config.py
 *.sh
 
 # CSV files
-*.csv
+custom_goals.csv
