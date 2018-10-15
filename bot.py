@@ -43,7 +43,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v1.5.0"
+    utils.config.botVersion = "v1.5.1"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -152,6 +152,9 @@ def on_message(message, client):
     elif "/kappa" in message_val:
         utils.log_command("kappa")
         message.reply_to("https://i.imgur.com/8TRbWHM.gif")
+    elif "After a happy meal, feeds @PaulStenne now" in message_val:
+        utils.log_command("ping war")
+        utils.post_message("@BhargavRao, it's your turn to wash the dishes.")
 
     #Check if alias is valid
     if not utils.alias_valid(words[0]):
