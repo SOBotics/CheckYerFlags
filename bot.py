@@ -43,7 +43,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v1.5.2"
+    utils.config.botVersion = "v1.5.3"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -206,7 +206,7 @@ def on_message(message, client):
                     message_ping = f"@{user_to_ping.replace('@', '')} "
                 except IndexError:
                     pass
-                utils.post_message(f"{message_ping}Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work.")
+                utils.post_message(f"{message_ping}Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work. Also make sure to check out [our GitHub page](https://github.com/sobotics).")
             else:
                 utils.post_message("This command is not supported in this room.")
         elif command in ["quota"]:
