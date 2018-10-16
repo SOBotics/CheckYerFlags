@@ -43,7 +43,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v1.5.1"
+    utils.config.botVersion = "v1.5.2"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -155,6 +155,9 @@ def on_message(message, client):
     elif "After a happy meal, feeds @PaulStenne now" in message_val:
         utils.log_command("ping war")
         utils.post_message("@BhargavRao, it's your turn to wash the dishes.")
+    elif "I think it is better to wait till @Filnor and @PaulStenne finishes their meals." in message_val:
+        utils.log_command("ping war")
+        utils.post_message("Hey, don't stress them @BhargavRao. You can prepare the dessert with @PetterFriberg if you can't wait.")
 
     #Check if alias is valid
     if not utils.alias_valid(words[0]):
@@ -392,7 +395,7 @@ def on_message(message, client):
                 try:
                     msg = ""
                     for word in words[3:]:
-                        msg = f"{message} {word}"
+                        msg = f"{msg} {word}"
                     custom_message = msg.lstrip()
                 except IndexError:
                     pass
@@ -420,11 +423,19 @@ def on_message(message, client):
 
             except IndexError:
                 current_flag_count = check_flags.get_flag_count_for_user(user_id, utils)
-                goal_flag_count = custom_goals.get_custom_goal_for_user(user_id)
+                custom_goal = custom_goals.get_custom_goal_for_user(user_id)
+                if custom_goal is None:
+                    message.reply_to("You haven't set a custom goal currently.")
+                    return
+                goal_flag_count = custom_goal[0]
                 flags_to_goal = goal_flag_count - current_flag_count
 
+                goal_message = ""
+                if custom_goal[1] not in ['', 'None']:
+                    goal_message = f" You set '{custom_goal[1]}' as your custom message."
+
                 if goal_flag_count is not None:
-                    message.reply_to(f"Your custom goal is set to {goal_flag_count} helpful flags. You need {flags_to_goal} more flags to reach it.")
+                    message.reply_to(f"Your custom goal is set to {goal_flag_count} helpful flags. You need {flags_to_goal} more flags to reach it.{goal_message}")
                 else:
                     message.reply_to("You haven't set a custom goal currently.")
                 return

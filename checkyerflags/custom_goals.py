@@ -1,4 +1,6 @@
 import csv
+import os
+
 
 def add_custom_goal(user_id, flag_count, custom_message, overwrite):
     custom_goal_current = get_custom_goal_for_user(user_id)
@@ -15,12 +17,16 @@ def add_custom_goal(user_id, flag_count, custom_message, overwrite):
 def get_custom_goal_for_user(user_id):
     custom_goals = []
 
+    if not os.path.exists("custom_goals.csv"):
+        file = open("custom_goals.csv", "w+")
+        file.close()
+
     with open("custom_goals.csv") as f:
         csv_reader = csv.reader(f, delimiter=";")
         for row in csv_reader:
             msg = None
             try:
-                msg = row[3]
+                msg = row[2]
             except IndexError:
                 pass
 

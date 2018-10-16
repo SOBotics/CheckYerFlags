@@ -112,11 +112,11 @@ ENV/
 /keyrings/live/pubring.kbx~
 /keyrings/live/secring.gpg
 
-# config file
+# Config file
 config.py
 
-# Bash scripts
+# Shell scripts
 *.sh
 
 # CSV files
-custom_goals.csv
+*.csv
