@@ -157,7 +157,7 @@ def on_message(message, client):
         utils.post_message("@BhargavRao, it's your turn to wash the dishes.")
     elif "I think it is better to wait till @Filnor and @PaulStenne finishes their meals." in message_val:
         utils.log_command("ping war")
-        utils.post_message("Hey, don't stress them @BhargavRao. You can prepare the dessert with @PetterFriberg if you can't wait.")
+        utils.post_message("We will be changing plates for dessert, so get @BhargavRao working! Maybe @PetterFriberg wants to help you?")
 
     #Check if alias is valid
     if not utils.alias_valid(words[0]):
