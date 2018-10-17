@@ -213,7 +213,7 @@ def on_message(message, client):
         elif command in ["quota"]:
             utils.post_message(f"The remaining API quota is {utils.se_api.check_quota()}.")
         elif command in ["kill", "stop"]:
-            main_logger.warning(f"Termination or stop requested by {message.user.name}")
+            main_logger.warning(f"Stop requested by {message.user.name}")
 
             if utils.is_privileged(message):
                 try:
@@ -233,7 +233,7 @@ def on_message(message, client):
                 utils.client.get_room(utils.room_number).leave()
             else:
                 message.reply_to("This command is restricted to moderators, room owners and maintainers.")
-        elif command in ["reboot"]:
+        elif command in ["reboot", "restart"]:
             main_logger.warning(f"Reboot requested by {message.user.name}")
 
             if utils.is_privileged(message):
@@ -266,6 +266,7 @@ def on_message(message, client):
                                "    goal del[ete]                - Deletes our custom goal\n" + \
                                "    ranks, ranks next, r n       - Gets your next flag rank and how much flags you need to get to it\n" + \
                                "    uptime                       - Returns how long the bot is running\n" + \
+                               "    update                       - Updates the bot to the latest commit git and restart it. Requires owner privileges.\n" + \
                                "    system                       - Returns uptime, location and api quota\n" + \
                                "    why                          - Gives the answer to everything\n" + \
                                "    good bot, good job           - Thanks you for being nice\n" + \
@@ -377,7 +378,7 @@ def on_message(message, client):
         elif full_command.lower() in ["ty", "thx", "thanks", "thank you"] :
             message.reply_to("You're welcome.")
         elif full_command.lower() in ["code", "github", "source"] :
-            message.reply_to("My code is on GitHub [here](https://github.com/SOBotics/FlaggersHall).")
+            message.reply_to("My code is on GitHub [here](https://github.com/SOBotics/CheckYerFlags).")
         elif command in ["leaderboard", "scoreboard", "sb"] :
             message.reply_to("You can find the scoreboard [here](https://rankoverflow.philnet.ch/scoreboard). Note that loading the data takes about 15 seconds.")
         elif command in ["goal"]:
@@ -455,10 +456,19 @@ def on_message(message, client):
                                f"    location       {utils.config.botOwner}/{utils.config.botMachine}\n" + \
                                f"    api quota      {utils.se_api.check_quota()}", log_message=False, length_check=False)
         elif command in ["update"]:
-            repo = git.Repo(".")
-            repo.git.reset("--hard","origin/master")
-            g = git.cmd.Git(".")
-            g.pull()
+            if utils.is_privileged(message, owners_only=True):
+                try:
+                    repo = git.Repo(".")
+                    repo.git.reset("--hard","origin/master")
+                    g = git.cmd.Git(".")
+                    g.pull()
+                    main_logger.info("Update completed, restarting now.")
+                    raise os._exit(1)
+                except BaseException as e:
+                    main_logger.error(f"Error while updating: {e}")
+                    pass
+            else:
+                message.reply_to("This command is restricted to bot maintainerers.")
 
 
 

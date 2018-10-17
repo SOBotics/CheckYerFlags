@@ -51,10 +51,10 @@ class utils:
 
     def is_privileged(self, message, owners_only=False):
         """
-        Check if a user is allowed to use privileged commands (usally restricted to bot owners, room owners and moderators)
+        Check if a user is allowed to use privileged commands (usually restricted to bot owners, room owners and moderators)
         """
 
-        privileged_users = [4733879]
+        privileged_users = [4733879] #Replace this value with your SE/SO user id
         if owners_only:
             if message.user.id in privileged_users:
                 return True
