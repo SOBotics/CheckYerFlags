@@ -463,12 +463,13 @@ def on_message(message, client):
                     g = git.cmd.Git(".")
                     g.pull()
                     main_logger.info("Update completed, restarting now.")
-                    raise os._exit(1)
+                    os._exit(1)
                 except BaseException as e:
                     main_logger.error(f"Error while updating: {e}")
                     pass
+                os._exit(1)
             else:
-                message.reply_to("This command is restricted to bot maintainerers.")
+                message.reply_to("This command is restricted to bot owners.")
 
 
 
