@@ -8,3 +8,4 @@ urllib3==1.22
 websocket-client==0.46.0
 pyquery==1.4.0
 requests=2.18.4
+GitPython==2.1.11

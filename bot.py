@@ -3,6 +3,7 @@ import sys
 import threading
 import traceback
 
+import git
 from markdownify import markdownify as md
 
 import chatoverflow
@@ -43,7 +44,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v1.5.3"
+    utils.config.botVersion = "v1.6.0"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -453,6 +454,13 @@ def on_message(message, client):
             utils.post_message(f"    uptime         {utils.get_uptime()}\n" + \
                                f"    location       {utils.config.botOwner}/{utils.config.botMachine}\n" + \
                                f"    api quota      {utils.se_api.check_quota()}", log_message=False, length_check=False)
+        elif command in ["update"]:
+            repo = git.Repo(".")
+            repo.git.reset("--hard","origin/master")
+            g = git.cmd.Git(".")
+            g.pull()
+
+
 
     except BaseException as e:
         main_logger.error(f"CRITICAL ERROR: {e}")
