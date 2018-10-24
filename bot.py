@@ -247,29 +247,29 @@ def on_message(message, client):
                 message.reply_to("This command is restricted to moderators, room owners and maintainers.")
         elif command in ["commands", "help"]:
             utils.post_message("    ### CheckYerFlags commands ###\n" + \
-                               "    del[ete], poof               - Deletes the last posted message, if possible. Requires privileges.\n" + \
-                               "    amiprivileged                - Checks if you're allowed to run privileged commands\n" + \
-                               "    a[live]                      - Replies with a message if the bot.\n" + \
-                               "    v[ersion]                    - Returns current version\n" + \
-                               "    loc[ation]                   - Returns current location where the bot is running\n" + \
-                               "    say <message>                - Sends [message] as chat message\n" + \
-                               "    welcome <username>           - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also will get pinged.\n" + \
-                               "    quota                        - Returns the amount of remaining Stack Exchange API quota\n" + \
+                               "    del[ete], poof               - Deletes the message replied to, if possible. Requires privileges.\n" + \
+                               "    amiprivileged                - Checks if you're allowed to run privileged commands.\n" + \
+                               "    a[live]                      - Replies with a message if the bot is running.\n" + \
+                               "    v[ersion]                    - Returns current version.\n" + \
+                               "    loc[ation]                   - Returns current location where the bot is running.\n" + \
+                               "    say <message>                - Sends [message] as a chat message.\n" + \
+                               "    welcome <username>           - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also get pinged.\n" + \
+                               "    quota                        - Returns the amount of remaining Stack Exchange API quota.\n" + \
                                "    kill, stop                   - Stops the bot. Requires privileges.\n" + \
-                               "    standby, sb                  - Tells the bot to go to standby mode. That means it leaves the chat room and a bot maintainer need to issue a restart manually. Requires privileges.\n" + \
+                               "    standby, sb                  - Tells the bot to go to standby mode. That means it leaves the chat room and a bot maintainer needs to issue a restart manually. Requires privileges.\n" + \
                                "    restart, reboot              - Restarts the bot. Requires privileges.\n" + \
-                               "    commands, help               - This command. Lists all available commands\n" + \
-                               "    s[tatus] m[ine]              - Gets your own flag rank and status to the next rank\n" + \
-                               "    s[tatus] <user id>           - Gets flag rank and status to the next rank for the specified <user id>\n" + \
-                               "    goal                         - Returns the value for the custom goal you have set\n" + \
+                               "    commands, help               - This command. Lists all available commands.\n" + \
+                               "    s[tatus] m[ine]              - Gets your own flag rank and status to the next rank.\n" + \
+                               "    s[tatus] <user id>           - Gets flag rank and status to the next rank for the specified <user id>.\n" + \
+                               "    goal                         - Returns the value for the custom goal you have set.\n" + \
                                "    goal <flag count>            - Set your custom goal to <flag count> flags\n" + \
                                "    goal del[ete]                - Deletes our custom goal\n" + \
                                "    ranks, ranks next, r n       - Gets your next flag rank and how much flags you need to get to it\n" + \
                                "    uptime                       - Returns how long the bot is running\n" + \
-                               "    update                       - Updates the bot to the latest commit git and restart it. Requires owner privileges.\n" + \
-                               "    system                       - Returns uptime, location and api quota\n" + \
-                               "    why                          - Gives the answer to everything\n" + \
-                               "    good bot, good job           - Thanks you for being nice\n" + \
+                               "    update                       - Updates the bot to the latest git commit and restarts it. Requires owner privileges.\n" + \
+                               "    system                       - Returns uptime, location and api quota.\n" + \
+                               "    why                          - Gives the answer to everything.\n" + \
+                               "    good bot, good job           - Thanks you for being nice.\n" + \
                                "    ty, thx, thanks, thank you   - Replies \"You're welcome.\"", log_message=False, length_check=False)
         elif full_command in ["s m", "status mine"]:
             flag_count = 0
