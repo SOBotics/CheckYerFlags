@@ -62,8 +62,9 @@ class AutoFlagThread(Thread):
 
                 #Replace flags to next rank with custom goal if its flag count is lower than the next rank
                 custom_goal = custom_goals.get_custom_goal_for_user(u.id)
-                if custom_goal[0] is not None and custom_goal[0] < next_flag_rank.count:
-                    flags_to_next_rank = custom_goal[0] - flag_count
+                if custom_goal is not None:
+                    if custom_goal[0] is not None and custom_goal[0] < next_flag_rank.count:
+                        flags_to_next_rank = custom_goal[0] - flag_count
 
                 #If the user is closer than 20 flags to his next rank, move him to the high priority queue
                 hp_users = []
@@ -114,9 +115,10 @@ class AutoFlagThread(Thread):
                     #Replace flags to next rank with custom goal if its flag count is lower than the next rank
                     is_custom_goal = False
                     custom_goal = custom_goals.get_custom_goal_for_user(u.id)
-                    if custom_goal[0] is not None and custom_goal[0] < next_flag_rank.count:
-                        flags_to_next_rank = custom_goal[0] - flag_count
-                        is_custom_goal = True
+                    if custom_goal is not None:
+                        if custom_goal[0] is not None and custom_goal[0] < next_flag_rank.count:
+                            flags_to_next_rank = custom_goal[0] - flag_count
+                            is_custom_goal = True
 
                     #If the user has reached the flags to their next or custom rank, move them to the low priority queue
                     if flags_to_next_rank <= 0:
