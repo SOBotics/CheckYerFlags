@@ -44,7 +44,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v1.6.0"
+    utils.config.botVersion = "v2.0.0"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -83,9 +83,10 @@ def main():
         thread_list.append(auto_check_hp_thread)
 
         #Redunda pining
-        stop_redunda = threading.Event()
-        redunda_thread = redunda.RedundaThread(stop_redunda, utils.config, main_logger)
-        redunda_thread.start()
+        if not debug_mode:
+            stop_redunda = threading.Event()
+            redunda_thread = redunda.RedundaThread(stop_redunda, utils.config, main_logger)
+            redunda_thread.start()
 
         if debug_mode:
             room.send_message(f"[ [CheckYerFlags](https://stackapps.com/q/7792) ] {utils.config.botVersion} started in debug mode on {utils.config.botOwner}/{utils.config.botMachine}.")
@@ -113,7 +114,7 @@ def on_message(message, client):
     """
 
     if not isinstance(message, MessagePosted) and not isinstance(message, MessageEdited):
-        # We ignore events that aren't MessagePosted or MessageEdited events.
+        #We ignore events that aren't MessagePosted or MessageEdited events.
         return
 
     #Check that the message object is defined

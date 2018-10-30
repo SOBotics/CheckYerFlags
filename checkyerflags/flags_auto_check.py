@@ -25,9 +25,9 @@ class AutoFlagThread(Thread):
             while not self.stopped.wait(300):
                 self.check_flags_hp()
         else:
-            #Low priority, check every 30 minutes
+            #Low priority, check every 15 minutes
             self.check_flags_lp()
-            while not self.stopped.wait(1800):
+            while not self.stopped.wait(900):
                 self.check_flags_lp()
 
     def check_flags_lp(self):
@@ -82,6 +82,9 @@ class AutoFlagThread(Thread):
             except TypeError as e:
                 auto_logger.error(e)
                 auto_logger.info(f"[LP] Checking flags for user {u.name} failed.")
+            except BaseException as e:
+                auto_logger.error("[LP]] Critical Error while checking flags:")
+                auto_logger.error(e)
 
 
     def check_flags_hp(self):
@@ -147,6 +150,9 @@ class AutoFlagThread(Thread):
                 except TypeError as e:
                     auto_logger.error(e)
                     auto_logger.info(f"[LP] Checking flags for user {u.name} failed.")
+                except BaseException as e:
+                    auto_logger.error("[HP]] Critical Error while checking flags:")
+                    auto_logger.error(e)
 
     def swap_priority(self, user, next_rank):
         """
