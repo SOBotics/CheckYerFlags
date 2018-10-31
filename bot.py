@@ -72,10 +72,14 @@ def main():
         #Automated flag checking
         thread_list = []
 
-        stop_auto_checking_lp = threading.Event()
-        auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, 0, room, thread_list)
-        auto_check_lp_thread.start()
-        thread_list.append(auto_check_lp_thread)
+        try:
+            stop_auto_checking_lp = threading.Event()
+            auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, 0, room, thread_list)
+            auto_check_lp_thread.start()
+            thread_list.append(auto_check_lp_thread)
+        except BaseException as e:
+            print(e)
+            main_logger.error(f"CRITICAL ERROR: {e}")
 
         stop_auto_checking_hp = threading.Event()
         auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, 1, None, thread_list)
