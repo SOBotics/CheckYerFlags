@@ -44,7 +44,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v2.0.0"
+    utils.config.botVersion = "v2.0.1"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -205,14 +205,8 @@ def on_message(message, client):
                 utils.post_message(say_message)
         elif command in ["welcome"]:
             #Only run in SOBotics
-            if utils.room_number == 111347:
-                message_ping = ""
-                try:
-                    user_to_ping = words[2]
-                    message_ping = f"@{user_to_ping.replace('@', '')} "
-                except IndexError:
-                    pass
-                utils.post_message(f"{message_ping}Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](https://sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](https://sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work. Also make sure to check out [our GitHub page](https://github.com/sobotics).")
+            if utils.room_number == 111347 or True:
+                utils.post_message(f"Welcome to SOBotics! You can learn more about SOBotics and what we and [all the bots](//sobotics.org/all-bots/) are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of [userscripts](//sobotics.org/userscripts/) to make things easier, and you'll always find someone around who will help you to install them and explain how they work. Also make sure to check out [our GitHub page](//github.com/sobotics).")
             else:
                 utils.post_message("This command is not supported in this room.")
         elif command in ["quota"]:
