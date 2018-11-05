@@ -1,6 +1,6 @@
 """Background process for checking flag counts"""
+import time
 from threading import Thread
-
 from checkyerflags import custom_goals, check_flags
 from checkyerflags.check_flags import NoApiKeyError, InvalidUserIdError, NonExistentUserIdError, NotEnoughFlagsError
 from checkyerflags.logger import auto_logger
@@ -78,6 +78,7 @@ class AutoFlagThread(Thread):
 
                 #Update scoreboard
                 update_scoreboard(flag_count, self.utils.config.score_board_fkey, u)
+                time.sleep(5)
 
             except TypeError as e:
                 auto_logger.error(e)
