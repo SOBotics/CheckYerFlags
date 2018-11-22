@@ -63,7 +63,13 @@ def main():
             if str(e).startswith("invalid literal for int() with base 10: 'login?returnurl=http%3a%2f%2fchat.stackoverflow.com%2fchats%2fjoin%2ffavorite"):
                 raise chatoverflow.chatexchange.browser.LoginError("Too many recent logins. Please wait a bit and try again.")
 
-        room.watch_socket(on_message)
+        try:
+            room.watch_socket(on_message)
+        except BaseException as e:
+            main_logger.error(e)
+            main_logger.error("Recovered from above exception, trying to reboot...")
+            os._exit(1)
+
         print(room.get_current_user_names())
         utils.room_owners = room.owners
 
@@ -415,12 +421,8 @@ def on_message(message, client):
                     message.reply_to(f"Your custom goal must be higher than your current flag count, which is {current_flag_count}.")
                     return
 
-                #Add or overwrite
-                add_result = custom_goals.add_custom_goal(user_id, goal_flag_count, custom_message, overwrite)
-                if add_result[0]:
+                if custom_goals.add_custom_goal(user_id, goal_flag_count, custom_message):
                     message.reply_to(f"Set custom goal to {goal_flag_count} helpful flags.")
-                else:
-                    message.reply_to(f"You already have a custom rank set to {add_result[1]} helpful flags. Append the `--force` parameter to overwrite the rank")
 
             except IndexError:
                 current_flag_count = check_flags.get_flag_count_for_user(user_id, utils)
