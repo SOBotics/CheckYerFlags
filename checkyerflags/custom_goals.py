@@ -2,13 +2,8 @@ import csv
 import os
 
 
-def add_custom_goal(user_id, flag_count, custom_message, overwrite):
-    custom_goal_current = get_custom_goal_for_user(user_id)
-    if custom_goal_current is not None and not overwrite:
-        return False, custom_goal_current
-
-    if overwrite:
-        delete_custom_goal(user_id)
+def add_custom_goal(user_id, flag_count, custom_message):
+    delete_custom_goal(user_id)
 
     with open("custom_goals.csv", "a") as f:
         f.write(f"{user_id};{flag_count};{custom_message}\n")
@@ -34,7 +29,10 @@ def get_custom_goal_for_user(user_id):
 
     for rank in custom_goals:
         if int(rank[0]) == user_id:
-            return int(rank[1]), str(rank[2])
+            if int(rank[1]) <= -1:
+                delete_custom_goal(user_id)
+            else:
+                return int(rank[1]), str(rank[2])
 
     return None
 
