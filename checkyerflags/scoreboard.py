@@ -29,20 +29,15 @@ def update_scoreboard(flag_count, user):
         docs = db.collection(u"scores").get()
         for doc in docs:
             db_data = doc.to_dict()
-            print(f"{user.id} == {db_data['user_id']}")
             if user.id == db_data['user_id']:
                 existing_record = True
-                print(f"found existing recond for {user.id}")
                 if flag_count == db_data['flag_count']:
-                    print("flag count unchanged")
                     return
                 else:
-                    print("flag count changed")
                     doc_id = doc.id
                     break
 
         # Update record
-        print(existing_record)
         if existing_record:
             db.collection(u"scores").document(doc_id).update({u"user_id": user.id, u"flag_count": flag_count})
         # Add new record
