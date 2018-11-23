@@ -44,7 +44,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v2.0.1"
+    utils.config.botVersion = "v2.1.0"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -389,12 +389,6 @@ def on_message(message, client):
         elif command in ["goal"]:
             goal_flag_count = 0
             user_id = message.user.id
-            overwrite = False
-
-            try:
-                if words[3] in ["--force", "--overwrite"]:
-                    overwrite = True
-            except IndexError: pass
 
             try:
                 goal_flag_count = words[2]

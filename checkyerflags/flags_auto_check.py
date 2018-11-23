@@ -1,5 +1,4 @@
 """Background process for checking flag counts"""
-import time
 from threading import Thread
 from checkyerflags import custom_goals, check_flags
 from checkyerflags.check_flags import NoApiKeyError, InvalidUserIdError, NonExistentUserIdError, NotEnoughFlagsError
@@ -77,8 +76,7 @@ class AutoFlagThread(Thread):
                     auto_logger.info(f"[LP] {u.name} needs {flags_to_next_rank} more flags for their next rank.")
 
                 #Update scoreboard
-                update_scoreboard(flag_count, self.utils.config.score_board_fkey, u)
-                time.sleep(5)
+                update_scoreboard(flag_count, u)
 
             except TypeError as e:
                 auto_logger.error(e)
@@ -147,7 +145,7 @@ class AutoFlagThread(Thread):
 
 
                     #Update scoreboard
-                    update_scoreboard(flag_count, self.utils.config.score_board_fkey, u)
+                    update_scoreboard(flag_count, u.id)
                 except TypeError as e:
                     auto_logger.error(e)
                     auto_logger.info(f"[LP] Checking flags for user {u.name} failed.")

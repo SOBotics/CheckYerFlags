@@ -6,7 +6,6 @@ debug_config = {
     "email": "", # The credentials to log in to an account which posts the messages
     "password": "",
     "stackExchangeApiKey": "K8pani4F)SeUn0QlbHQsbA((", # We shouldn't run out of quota, as they key usages are IP based. Required.
-    "score_board_fkey": "" # Not required, key for the SOBotics scoreboard.
 }
 
 prod_config = {
@@ -18,5 +17,4 @@ prod_config = {
     "password": "",
     "stackExchangeApiKey": "K8pani4F)SeUn0QlbHQsbA((",
     "redundaKey": "", # Not required, key for Redunda. This is not in the debug config since it does make little sense to ping Redunda while developing
-    "score_board_fkey": ""
 }

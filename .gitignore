@@ -120,3 +120,4 @@ config.py
 
 # CSV files
 *.csv
+service_account_key.json
