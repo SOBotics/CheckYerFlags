@@ -8,13 +8,14 @@ from checkyerflags.utils import Struct
 
 
 class AutoFlagThread(Thread):
-    def __init__(self, event, utils, priority, room, thread_list, next_ranks = []):
+    def __init__(self, event, utils, priority, room, fb, thread_list, next_ranks = []):
         Thread.__init__(self)
         self.stopped = event
         self.utils = utils
         self.priority = priority
         self.users = []
         self.room = room
+        self.fb = fb
         self.thread_list = thread_list
         self.next_ranks = next_ranks
 
@@ -76,7 +77,7 @@ class AutoFlagThread(Thread):
                     auto_logger.info(f"[LP] {u.name} needs {flags_to_next_rank} more flags for their next rank.")
 
                 #Update scoreboard
-                update_scoreboard(flag_count, u)
+                update_scoreboard(flag_count, u, self.fb)
 
             except TypeError as e:
                 auto_logger.error(e)
@@ -145,7 +146,7 @@ class AutoFlagThread(Thread):
 
 
                     #Update scoreboard
-                    update_scoreboard(flag_count, u.id)
+                    update_scoreboard(flag_count, u.id, self.fb)
                 except TypeError as e:
                     auto_logger.error(e)
                     auto_logger.info(f"[LP] Checking flags for user {u.name} failed.")

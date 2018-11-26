@@ -3,19 +3,21 @@ import sys
 import threading
 import traceback
 
+import firebase_admin
 import git
-from markdownify import markdownify as md
-
 import chatoverflow
 import checkyerflags.check_flags as check_flags
 import checkyerflags.flags_auto_check as fac
 import checkyerflags.se_api as stackexchange_api
+from markdownify import markdownify as md
 from chatoverflow.chatexchange.client import Client
 from chatoverflow.chatexchange.events import MessagePosted, MessageEdited
 from checkyerflags import redunda, custom_goals
 from checkyerflags.check_flags import InvalidUserIdError, NoApiKeyError, NonExistentUserIdError, NotEnoughFlagsError
 from checkyerflags.logger import main_logger
 from checkyerflags.utils import utils, Struct
+from firebase_admin import credentials
+from firebase_admin import firestore
 
 #Import config file with custom error message
 try:
@@ -75,32 +77,43 @@ def main():
 
         main_logger.info(f"Joined room '{room.name}' on {utils.config.chatHost}")
 
+        #Initialize Firestore
+        fb = None
+        if os.path.isfile("./service_account_key.json"):
+            cred = credentials.Certificate("./service_account_key.json")
+            firebase_admin.initialize_app(cred, {
+                'projectId': u"rankoverflow-56959",
+            })
+            fb = firestore.client()
+
         #Automated flag checking
         thread_list = []
 
         try:
             stop_auto_checking_lp = threading.Event()
-            auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, 0, room, thread_list)
+            auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, 0, room, fb, thread_list)
             auto_check_lp_thread.start()
             thread_list.append(auto_check_lp_thread)
         except BaseException as e:
             print(e)
             main_logger.error(f"CRITICAL ERROR: {e}")
 
-        stop_auto_checking_hp = threading.Event()
-        auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, 1, None, thread_list)
-        auto_check_hp_thread.start()
-        thread_list.append(auto_check_hp_thread)
+        try:
+            stop_auto_checking_hp = threading.Event()
+            auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, 1, None, fb, thread_list)
+            auto_check_hp_thread.start()
+            thread_list.append(auto_check_hp_thread)
+        except BaseException as e:
+            print(e)
+            main_logger.error(f"CRITICAL ERROR: {e}")
 
-        #Redunda pining
-        if not debug_mode:
-            stop_redunda = threading.Event()
-            redunda_thread = redunda.RedundaThread(stop_redunda, utils.config, main_logger)
-            redunda_thread.start()
-
+        #Redunda pinging
         if debug_mode:
             room.send_message(f"[ [CheckYerFlags](https://stackapps.com/q/7792) ] {utils.config.botVersion} started in debug mode on {utils.config.botOwner}/{utils.config.botMachine}.")
         else:
+            stop_redunda = threading.Event()
+            redunda_thread = redunda.RedundaThread(stop_redunda, utils.config, main_logger)
+            redunda_thread.start()
             room.send_message(f"[ [CheckYerFlags](https://stackapps.com/q/7792) ] {utils.config.botVersion} started on {utils.config.botOwner}/{utils.config.botMachine}.")
 
 
@@ -252,30 +265,29 @@ def on_message(message, client):
                 message.reply_to("This command is restricted to moderators, room owners and maintainers.")
         elif command in ["commands", "help"]:
             utils.post_message("    ### CheckYerFlags commands ###\n" + \
-                               "    del[ete], poof               - Deletes the message replied to, if possible. Requires privileges.\n" + \
-                               "    amiprivileged                - Checks if you're allowed to run privileged commands.\n" + \
-                               "    a[live]                      - Replies with a message if the bot is running.\n" + \
-                               "    v[ersion]                    - Returns current version.\n" + \
-                               "    loc[ation]                   - Returns current location where the bot is running.\n" + \
-                               "    say <message>                - Sends [message] as a chat message.\n" + \
-                               "    welcome <username>           - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also get pinged.\n" + \
-                               "    quota                        - Returns the amount of remaining Stack Exchange API quota.\n" + \
-                               "    kill, stop                   - Stops the bot. Requires privileges.\n" + \
-                               "    standby, sb                  - Tells the bot to go to standby mode. That means it leaves the chat room and a bot maintainer needs to issue a restart manually. Requires privileges.\n" + \
-                               "    restart, reboot              - Restarts the bot. Requires privileges.\n" + \
-                               "    commands, help               - This command. Lists all available commands.\n" + \
-                               "    s[tatus] m[ine]              - Gets your own flag rank and status to the next rank.\n" + \
-                               "    s[tatus] <user id>           - Gets flag rank and status to the next rank for the specified <user id>.\n" + \
-                               "    goal                         - Returns the value for the custom goal you have set.\n" + \
-                               "    goal <flag count>            - Set your custom goal to <flag count> flags\n" + \
-                               "    goal del[ete]                - Deletes our custom goal\n" + \
-                               "    ranks, ranks next, r n       - Gets your next flag rank and how much flags you need to get to it\n" + \
-                               "    uptime                       - Returns how long the bot is running\n" + \
-                               "    update                       - Updates the bot to the latest git commit and restarts it. Requires owner privileges.\n" + \
-                               "    system                       - Returns uptime, location and api quota.\n" + \
-                               "    why                          - Gives the answer to everything.\n" + \
-                               "    good bot, good job           - Thanks you for being nice.\n" + \
-                               "    ty, thx, thanks, thank you   - Replies \"You're welcome.\"", log_message=False, length_check=False)
+                               "    del[ete], poof                - Deletes the message replied to, if possible. Requires privileges.\n" + \
+                               "    amiprivileged                 - Checks if you're allowed to run privileged commands.\n" + \
+                               "    a[live]                       - Replies with a message if the bot is running.\n" + \
+                               "    v[ersion]                     - Returns current version.\n" + \
+                               "    loc[ation]                    - Returns current location where the bot is running.\n" + \
+                               "    say <message>                 - Sends [message] as a chat message.\n" + \
+                               "    welcome <username>            - Post a chat room introduction message (only in SOBotics). If the username is specified, the user will also get pinged.\n" + \
+                               "    quota                         - Returns the amount of remaining Stack Exchange API quota.\n" + \
+                               "    kill, stop                    - Stops the bot. Requires privileges.\n" + \
+                               "    standby, sb                   - Tells the bot to go to standby mode. That means it leaves the chat room and a bot maintainer needs to issue a restart manually. Requires privileges.\n" + \
+                               "    restart, reboot               - Restarts the bot. Requires privileges.\n" + \
+                               "    commands, help                - This command. Lists all available commands.\n" + \
+                               "    s[tatus] m[ine]               - Gets your own flag rank and status to the next rank.\n" + \
+                               "    s[tatus] <user id>            - Gets flag rank and status to the next rank for the specified <user id>.\n" + \
+                               "    goal <flag count> [message]   - Set your custom goal to <flag count> flags. Displays an optional message once you reach your custom rank.\n" + \
+                               "    goal del[ete]                 - Deletes our custom goal\n" + \
+                               "    ranks, ranks next, r n        - Gets your next flag rank and how much flags you need to get to it. Returns your custom goal if it's closer than the next rank.\n" + \
+                               "    uptime                        - Returns how long the bot is running\n" + \
+                               "    update                        - Updates the bot to the latest git commit and restarts it. Requires owner privileges.\n" + \
+                               "    system                        - Returns uptime, location and api quota.\n" + \
+                               "    why                           - Gives the answer to everything.\n" + \
+                               "    good bot, good job            - Thanks you for being nice.\n" + \
+                               "    ty, thx, thanks, thank you    - Replies \"You're welcome.\"", log_message=False, length_check=False)
         elif full_command in ["s m", "status mine"]:
             flag_count = 0
             try:
@@ -372,10 +384,27 @@ def on_message(message, client):
 
                 message.reply_to(f"You need {flag_count_difference} more flags to get your first flag rank, **{first_flag_rank.title}** ({first_flag_rank.count} flags in total).")
                 return
+
+
+            #Try to check for custom goal
+            custom_goal_closer = False
+            custom_goal = custom_goals.get_custom_goal_for_user(message.user.id)
+            if custom_goal is not None:
+                if custom_goal[0] is not None and (custom_goal[0] - flag_count) < flag_count_difference:
+                    flag_count_difference = custom_goal[0] - flag_count
+                    custom_goal_closer = True
+
             next_rank_description = ""
             if current_flag_rank.description is not None:
                 next_rank_description = f" ({next_flag_rank.description})"
-            message.reply_to(f"You need {flag_count_difference} more flags to get your next flag rank, **{next_flag_rank.title}**{next_rank_description} ({next_flag_rank.count} flags in total).")
+            if custom_goal_closer:
+                custom_msg = ""
+                if custom_goal[1] is not "":
+                    custom_msg = f" You set the following custom message: {custom_goal[1]}"
+
+                message.reply_to(f"You need {flag_count_difference} more flags to reach your custom goal ({custom_goal[0]} flags in total).{custom_msg}")
+            else:
+                message.reply_to(f"You need {flag_count_difference} more flags to get your next flag rank, **{next_flag_rank.title}**{next_rank_description} ({next_flag_rank.count} flags in total).")
         elif command in ["why"]:
             message.reply_to("[42.](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))")
         elif full_command in ["good bot", "good job"]:
@@ -419,22 +448,7 @@ def on_message(message, client):
                     message.reply_to(f"Set custom goal to {goal_flag_count} helpful flags.")
 
             except IndexError:
-                current_flag_count = check_flags.get_flag_count_for_user(user_id, utils)
-                custom_goal = custom_goals.get_custom_goal_for_user(user_id)
-                if custom_goal is None:
-                    message.reply_to("You haven't set a custom goal currently.")
-                    return
-                goal_flag_count = custom_goal[0]
-                flags_to_goal = goal_flag_count - current_flag_count
-
-                goal_message = ""
-                if custom_goal[1] not in ['', 'None']:
-                    goal_message = f" You set '{custom_goal[1]}' as your custom message."
-
-                if goal_flag_count is not None:
-                    message.reply_to(f"Your custom goal is set to {goal_flag_count} helpful flags. You need {flags_to_goal} more flags to reach it.{goal_message}")
-                else:
-                    message.reply_to("You haven't set a custom goal currently.")
+                utils.post_message("Usage: `@CheckYerFlags goal <flag count> [message]`")
                 return
             except ValueError:
                 if words[2] in ["del", "delete"]:
