@@ -11,6 +11,10 @@ def update_scoreboard(flag_count, user, fb):
         if not os.path.isfile("./service_account_key.json"):
             return
 
+        #Only add users with 500 flags or more
+        if flag_count <= 499:
+            return
+
         existing_record = False
         doc_id = None
 
