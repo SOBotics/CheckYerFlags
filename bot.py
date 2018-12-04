@@ -18,6 +18,8 @@ from checkyerflags.logger import main_logger
 from checkyerflags.utils import utils, Struct
 from firebase_admin import credentials
 from firebase_admin import firestore
+from websocket._exceptions import WebSocketConnectionClosedException
+from requests.exceptions import HTTPError
 
 #Import config file with custom error message
 try:
@@ -67,7 +69,7 @@ def main():
 
         try:
             room.watch_socket(on_message)
-        except BaseException as e:
+        except (BaseException, WebSocketConnectionClosedException, HTTPError)  as e:
             main_logger.error(e)
             main_logger.error("Recovered from above exception, trying to reboot...")
             os._exit(1)
