@@ -10,8 +10,8 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
-- Run chat command '...'
-4. See error
+1. Run chat command '...'
+2. See error
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
