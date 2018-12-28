@@ -5,13 +5,13 @@ import traceback
 
 import firebase_admin
 import git
-import chatoverflow
+import chatexchange
 import checkyerflags.check_flags as check_flags
 import checkyerflags.flags_auto_check as fac
 import checkyerflags.se_api as stackexchange_api
 from markdownify import markdownify as md
-from chatoverflow.chatexchange.client import Client
-from chatoverflow.chatexchange.events import MessagePosted, MessageEdited
+from chatexchange.client import Client
+from chatexchange.events import MessagePosted, MessageEdited
 from checkyerflags import redunda, custom_goals
 from checkyerflags.check_flags import InvalidUserIdError, NoApiKeyError, NonExistentUserIdError, NotEnoughFlagsError
 from checkyerflags.logger import main_logger
@@ -65,7 +65,7 @@ def main():
             room.join()
         except ValueError as e:
             if str(e).startswith("invalid literal for int() with base 10: 'login?returnurl=http%3a%2f%2fchat.stackoverflow.com%2fchats%2fjoin%2ffavorite"):
-                raise chatoverflow.chatexchange.browser.LoginError("Too many recent logins. Please wait a bit and try again.")
+                raise chatexchange.browser.LoginError("Too many recent logins. Please wait a bit and try again.")
 
         try:
             room.watch_socket(on_message)

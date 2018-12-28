@@ -4,7 +4,7 @@ Helper class for regularly used functions
 import re
 from datetime import datetime, timedelta
 
-from chatoverflow.chatexchange.events import MessagePosted, MessageEdited
+from chatexchange.events import MessagePosted, MessageEdited
 from checkyerflags.logger import main_logger
 
 

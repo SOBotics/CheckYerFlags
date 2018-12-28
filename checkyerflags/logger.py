@@ -19,4 +19,4 @@ def _setup_logger(name, log_file, level=logging.INFO, to_console=False):
 
 main_logger = _setup_logger('Main', 'CheckYerFlags.log', to_console=True)
 auto_logger = _setup_logger('Auto', 'AutoCheck.log')
-logging.getLogger("chatoverflow").setLevel(logging.WARNING)
+logging.getLogger("chatexchange").setLevel(logging.WARNING)
