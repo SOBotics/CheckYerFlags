@@ -17,7 +17,6 @@ from checkyerflags.check_flags import InvalidUserIdError, NoApiKeyError, NonExis
 from checkyerflags.logger import main_logger
 from checkyerflags.utils import utils, Struct
 from firebase_admin import credentials
-from firebase_admin import firestore
 from websocket._exceptions import WebSocketConnectionClosedException
 from requests.exceptions import HTTPError
 
@@ -48,7 +47,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v2.1.1"
+    utils.config.botVersion = "v2.2.0"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -79,21 +78,19 @@ def main():
 
         main_logger.info(f"Joined room '{room.name}' on {utils.config.chatHost}")
 
-        #Initialize Firestore
-        fb = None
+        #Initialize Firebase database
         if os.path.isfile("./service_account_key.json"):
             cred = credentials.Certificate("./service_account_key.json")
             firebase_admin.initialize_app(cred, {
-                'projectId': u"rankoverflow-56959",
+                'databaseURL': "https://rankoverflow-56959.firebaseio.com/",
             })
-            fb = firestore.client()
 
         #Automated flag checking
         thread_list = []
 
         try:
             stop_auto_checking_lp = threading.Event()
-            auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, 0, room, fb, thread_list)
+            auto_check_lp_thread = fac.AutoFlagThread(stop_auto_checking_lp, utils, 0, room, thread_list)
             auto_check_lp_thread.start()
             thread_list.append(auto_check_lp_thread)
         except BaseException as e:
@@ -102,7 +99,7 @@ def main():
 
         try:
             stop_auto_checking_hp = threading.Event()
-            auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, 1, None, fb, thread_list)
+            auto_check_hp_thread = fac.AutoFlagThread(stop_auto_checking_hp, utils, 1, None, thread_list)
             auto_check_hp_thread.start()
             thread_list.append(auto_check_hp_thread)
         except BaseException as e:
