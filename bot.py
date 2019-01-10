@@ -397,8 +397,8 @@ def on_message(message, client):
             custom_goal_closer = False
             custom_goal = custom_goals.get_custom_goal_for_user(message.user.id)
             if custom_goal is not None:
-                if custom_goal[0] is not None and (custom_goal[0] - flag_count) < flag_count_difference:
-                    flag_count_difference = custom_goal[0] - flag_count
+                if custom_goal['flag_count'] is not None and (custom_goal['flag_count'] - flag_count) < flag_count_difference:
+                    flag_count_difference = custom_goal['flag_count'] - flag_count
                     custom_goal_closer = True
 
             next_rank_description = ""
@@ -406,10 +406,10 @@ def on_message(message, client):
                 next_rank_description = f" ({next_flag_rank.description})"
             if custom_goal_closer:
                 custom_msg = ""
-                if custom_goal[1] is not "":
-                    custom_msg = f" You set the following custom message: {custom_goal[1]}"
+                if custom_goal['custom_message'] is not "":
+                    custom_msg = f" You set the following custom message: {custom_goal['custom_message']}"
 
-                message.reply_to(f"You need {flag_count_difference} more flags to reach your custom goal ({custom_goal[0]} flags in total).{custom_msg}")
+                message.reply_to(f"You need {flag_count_difference} more flags to reach your custom goal ({custom_goal['flag_count']} flags in total).{custom_msg}")
             else:
                 message.reply_to(f"You need {flag_count_difference} more flags to get your next flag rank, **{next_flag_rank.title}**{next_rank_description} ({next_flag_rank.count} flags in total).")
         elif command in ["why"]:
