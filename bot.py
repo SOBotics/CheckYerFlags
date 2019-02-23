@@ -47,7 +47,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v2.2.0"
+    utils.config.botVersion = "v2.3.0"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -205,7 +205,7 @@ def on_message(message, client):
                 if utils.is_privileged(message):
                     msg.delete()
                 else:
-                    message.reply_to("This command is restricted to moderators, room owners and maintainers.")
+                    message.reply_to("This command is restricted to moderators and room owners.")
         elif command in ["amiprivileged", "aip", "privs"]:
             if utils.is_privileged(message):
                 message.reply_to("You are privileged.")
@@ -218,12 +218,21 @@ def on_message(message, client):
         elif command in ["loc", "location"]:
             message.reply_to(f"This instance is running on {utils.config.botOwner}/{utils.config.botMachine}")
         elif command in ["say"]:
-            if message.user.id != 9220325: # Don't process commands by the bot account itself to prevent abuse of the say command
+            main_logger.warning(f"Leave requested by {message.user.name}")
+
+            #Don't process commands by the bot account itself (to prevent abuse) of the say command
+            if message.user.id == 9220325:
+                return
+
+            #Restrict function to (site) moderators, room owners and maintainers
+            if utils.is_privileged(message):
                 say_message = md(' '.join(map(str, words[2:])))
                 utils.post_message(say_message)
+            else:
+                message.reply_to("This command is restricted to moderators and room owners.")
         elif command in ["welcome"]:
             #Only run in SOBotics
-            if utils.room_number == 111347:
+            if utils.room_number == 111347 and utils.is_privileged(message):
                 message_ping = ""
 
                 try:
@@ -234,7 +243,10 @@ def on_message(message, client):
                 utils.post_message(f"{message_ping}Welcome to SOBotics! You can learn more about SOBotics and what we and all the bots are doing here at our website, https://sobotics.org/. If you'd like to help out with flagging, reporting, or anything else, let us know! We have tons of userscripts to make things easier, and you'll always find someone around who will help you to install them and explain how they work. Also make sure to check out our GitHub organization.\nAll bots: https://sobotics.org/all-bots/ UserScripts: https://sobotics.org/userscripts/ GitHub: https://github.com/sobotics", length_check=False)
 
             else:
-                utils.post_message("This command is not supported in this room.")
+                if utils.is_privileged(message):
+                    utils.post_message("This command is not supported in this room.")
+                else:
+                    message.reply_to("This command is restricted to moderators and room owners.")
         elif command in ["quota"]:
             utils.post_message(f"The remaining API quota is {utils.se_api.check_quota()}.")
         elif command in ["kill", "stop"]:
@@ -248,7 +260,7 @@ def on_message(message, client):
                     pass
                 raise os._exit(0)
             else:
-                message.reply_to("This command is restricted to moderators, room owners and maintainers.")
+                message.reply_to("This command is restricted to moderators and room owners.")
         elif command in ["standby", "sb"]:
             main_logger.warning(f"Leave requested by {message.user.name}")
 
@@ -257,7 +269,7 @@ def on_message(message, client):
                 utils.post_message("I'll be back!")
                 utils.client.get_room(utils.room_number).leave()
             else:
-                message.reply_to("This command is restricted to moderators, room owners and maintainers.")
+                message.reply_to("This command is restricted to moderators and room owners.")
         elif command in ["reboot", "restart"]:
             main_logger.warning(f"Reboot requested by {message.user.name}")
 
@@ -269,7 +281,7 @@ def on_message(message, client):
                     pass
                 raise os._exit(1)
             else:
-                message.reply_to("This command is restricted to moderators, room owners and maintainers.")
+                message.reply_to("This command is restricted to moderators and room owners.")
         elif command in ["commands", "help"]:
             utils.post_message("    ### CheckYerFlags commands ###\n" + \
                                "    del[ete], poof                - Deletes the message replied to, if possible. Requires privileges.\n" + \
