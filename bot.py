@@ -47,7 +47,7 @@ def main():
         utils.config = Struct(**config.prod_config)
 
     #Set version
-    utils.config.botVersion = "v2.3.0"
+    utils.config.botVersion = "v2.5.0"
 
     #Initialize SE API class instance
     utils.se_api = stackexchange_api.se_api(utils.config.stackExchangeApiKey)
@@ -63,12 +63,12 @@ def main():
         try:
             room.join()
         except ValueError as e:
-            if str(e).startswith("invalid literal for int() with base 10: 'login?returnurl=http%3a%2f%2fchat.stackoverflow.com%2fchats%2fjoin%2ffavorite"):
+            if str(e).startswith("invalid literal for int() with base 10: 'login?returnurl") or str(e).startswith("failed to get "):
                 raise chatexchange.browser.LoginError("Too many recent logins. Please wait a bit and try again.")
 
         try:
-            room.watch_socket(on_message)
-        except (BaseException, WebSocketConnectionClosedException, HTTPError)  as e:
+            room.watch_polling(on_message,3)
+        except (BaseException, HTTPError)  as e:
             main_logger.error(e)
             main_logger.error("Recovered from above exception, trying to reboot...")
             os._exit(1)
@@ -224,7 +224,7 @@ def on_message(message, client):
             if message.user.id == 9220325:
                 return
 
-            #Restrict function to (site) moderators, room owners and maintainers
+            #Restrict function to (site) moderators and room owners
             if utils.is_privileged(message):
                 say_message = md(' '.join(map(str, words[2:])))
                 utils.post_message(say_message)

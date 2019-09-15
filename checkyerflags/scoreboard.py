@@ -1,8 +1,23 @@
 import os.path
 from firebase_admin import db
 from checkyerflags.logger import auto_logger
+from urllib import parse, request
+import json
+from urllib.error import URLError
+from urllib3 import PoolManager, disable_warnings, exceptions
 
 def update_scoreboard(flag_count, user):
+    try:
+        disable_warnings(exceptions.InsecureRequestWarning)
+        data = json.dumps({"fkey": "", "id": user.id, "flags": flag_count})
+        http = PoolManager()
+        r = http.request('POST', "https://rankoverflow.philnet.ch/api/scoreboard/store", headers={'Content-Type': 'application/json'}, body=data)
+
+        dump = r.read()
+    except (OSError, URLError) as e:
+        return
+
+def update_scoreboard_legacy(flag_count, user):
     """
     Call the scoreboard api to update the flag count for a user
     """
