@@ -99,24 +99,18 @@ ENV/
 # mypy
 .mypy_cache/
 
-# IntelliJ
-.idea/
-*.iml
-
 # log files
 *.log
 *.log.*
-
-# GPG data
-/keyrings/live/pubring.gpg~
-/keyrings/live/pubring.kbx~
-/keyrings/live/secring.gpg
 
 # Config file
 config.py
 
 # Shell scripts
 *.sh
+
+# VS Code
+.vscode/
 
 # Firebase credentials
 service_account_key.json
