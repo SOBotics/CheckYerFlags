@@ -1,4 +1,8 @@
-CheckYerFlags
+> This code ran CheckYerFlags before it was rewritten in Java for several reasons, but primarily stability.  
+>
+> __Please note that this code is no longer actively maintained and bugs may occur.__
+
+CheckYerFlags (legacy)
 ===
 
 A bot notifying when a user reach a certain flag count
