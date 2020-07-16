@@ -1,0 +1,17 @@
+python:
+  - python3.x
+  - python2.7
+  - flask
+  - django
+  - scipy
+javascript:
+  - jquery
+sqlite:
+  - sqlite3
+sql:
+  - tsql
+  - mysql
+  - sql-server
+  - oracle
+  - postgresql
+  - sqlite
