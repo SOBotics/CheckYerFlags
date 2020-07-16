@@ -3,7 +3,6 @@ package ch.philnet.checkyerflags;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 
 public class TagListReader {
@@ -12,41 +11,6 @@ public class TagListReader {
     public TagListReader(Logger logger) {
         this.logger = logger;
     }
-
-    /**
-     * @deprecated Use YAML implementation instead
-     */
-    public HashMap<String, String> readTagListCsv() {
-        HashMap<String, String> tags = new HashMap<>();
-        String line = "";
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("." + File.separator + "data" + File.separator + "tags.csv"));
-            while((line = br.readLine()) != null) {
-                String[] lineTags = line.split(",");
-                tags.put(lineTags[0], lineTags[1]);
-            }
-
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return tags;
-    }
-
-    /**
-     * @deprecated This sucks, just don't use it
-     */
-    public Map<String, String> readTagListYAML() {
-        /*Yaml yaml = new Yaml();
-        InputStream inputStream = this.getClass()
-          .getClassLoader()
-          .getResourceAsStream("data" + File.separator + "tags.yaml");
-        Map<String, Object> obj = yaml.load(inputStream)*/
-        return null;
-    }
-
 
     public HashMap<String, String[]> readTagList() {
         String currentMainTag = "";
