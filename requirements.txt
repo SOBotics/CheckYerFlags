@@ -1,9 +1,0 @@
-beautifulsoup4>=4.6.0
-markdownify>=0.4.1
-urllib3>=1.23
-websocket-client>=0.46.0
-pyquery>=1.4.0
-requests>=2.20.0
-GitPython>=2.1.11
-ChatExchange>=0.0.4
-firebase-admin>=2.14.0
