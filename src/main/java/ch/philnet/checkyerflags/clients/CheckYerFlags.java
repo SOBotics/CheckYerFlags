@@ -24,7 +24,7 @@ public class CheckYerFlags {
         }
 
         client = new StackExchangeClient(prop.getProperty("email"), prop.getProperty("password"));
-        Room room = client.joinRoom(ChatHost.STACK_OVERFLOW, 163468); //Filnor's HQ
+        Room room = client.joinRoom(ChatHost.STACK_OVERFLOW, 167908); //SOBotics Workshop
         new BotService().run(room, prop.getProperty("location"));
         new QuestionService().run(room);
     }

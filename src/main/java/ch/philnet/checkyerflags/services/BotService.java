@@ -28,7 +28,8 @@ public class BotService {
     public void run(final Room room, String location) {
         //Notify chat users that the bot has started
         LOGGER.info("Send start message to chat...");
-        room.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] %s started on %s.", "v3.0-DEV", location));
+        String version = "3.0.0-dev";
+        room.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] v%s started on %s.", version, location));
 
         //Listen for reply, mention and message posted events
         room.addEventListener(EventType.MESSAGE_POSTED, event -> handleAliveMessage(room, event));
