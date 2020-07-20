@@ -8,8 +8,6 @@ A bot notifying when a user reach a certain flag count and reporting posts with 
 
 The relation between the tags can be seen in the tags.yaml file located in the data folder.
 
-~~Redunda: https://redunda.sobotics.org/bots/26/bot_instances  ~~
-
 ## Dependencies
 Java 8, Maven etc.  
 Also see the content of pom.xml
