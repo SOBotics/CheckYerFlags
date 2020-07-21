@@ -3,6 +3,7 @@ package ch.philnet.checkyerflags.services;
 import ch.philnet.checkyerflags.commands.AliveCommand;
 import ch.philnet.checkyerflags.commands.Command;
 import ch.philnet.checkyerflags.commands.CommandsCommand;
+import ch.philnet.checkyerflags.commands.PrivilegeCheckCommand;
 import ch.philnet.checkyerflags.commands.StopCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class BotService {
         LOGGER.info("New mention: " + message);
         LOGGER.info("Content: [" + event.getMessage().getContent() + "]");
         String[] allParts = message.toLowerCase().split(" ");
-        String[] parts = Arrays.copyOfRange(allParts, 1, allParts.length); //Parts without ping, (everthing except @user)
+        String[] parts = Arrays.copyOfRange(allParts, 1, allParts.length); //Parts without ping, (everything except @user)
 
         for(Command command : availableCommands(room)) {
             if(command.testCommandPattern(String.join(" ", parts))) {
@@ -85,6 +86,7 @@ public class BotService {
         ArrayList<Command> commandList = new ArrayList<Command>();
         commandList.add(new AliveCommand(room, LOGGER));
         commandList.add(new StopCommand(room, LOGGER));
+        commandList.add(new PrivilegeCheckCommand(room, LOGGER));
         commandList.add(new CommandsCommand(room, LOGGER));
         return commandList;
     }

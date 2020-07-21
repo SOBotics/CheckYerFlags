@@ -27,13 +27,25 @@ public abstract class Command {
      * @param messageId Id of the message that called the command
      */
     public boolean hasPrivileges(long messageId) {
+        return this.hasPrivileges(messageId, true);
+    }
+      
+
+    /**
+     * Test if the user that called the command has privileges to run it
+     * @param messageId Id of the message that called the command
+     * @param verbose To post a message if the user does not have the privileges
+     */
+    public boolean hasPrivileges(long messageId, boolean verbose) {
         User messageAuthor = room.getMessage(messageId).getUser();
 
         //Only allowed to room owners and moderators
         if (messageAuthor.isModerator() || messageAuthor.isRoomOwner()) {
             return true;
         } else {
-            room.replyTo(messageId, "This command is restricted to moderators and room owners.");
+            if (verbose)
+                room.replyTo(messageId, "This command is restricted to moderators and room owners.");
+                
             return false;
         }
     }
