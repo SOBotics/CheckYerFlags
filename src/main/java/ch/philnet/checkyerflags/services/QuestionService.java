@@ -43,7 +43,6 @@ public class QuestionService {
                             //Respond to heartbeat
                             if (new JSONObject(text).get("action").toString().equals("hb")){
                                 websocket.sendText("pong");
-                                LOGGER.info("Sent keep-alive ping.");
                                 return;
                             }
 
@@ -79,7 +78,7 @@ public class QuestionService {
                 //Check if child tag found and parent tag not found
                 if(questionTags.contains(watchedChildTag) && !questionTags.contains(parentTag)) {
                     missingParentTag = parentTag;
-                    return true;
+                    return true; //TODO: Store reported post id's in memory and don't re-report them
                 }
             }
         }

@@ -34,6 +34,7 @@ public class StatusCommand extends Command {
 
     private String getUptime() {
         long uptimeMillis = (System.currentTimeMillis() - this.startTime) / 1000;
+        //TODO: Fix calculation of this
         return String.format("%dd %02dh %02ds", uptimeMillis / 3600, (uptimeMillis % 3600) / 60, (uptimeMillis % 60));
     }
 
