@@ -26,7 +26,7 @@ public class ApiService {
         try {
             JsonObject usersData = JsonUtils.get(String.format("%s/users/%d", baseUrl, userId), "order", "desc", "sort", "reputation", "site", site, "key", apiKey);
             JsonUtils.handleBackoff(usersData);
-            quota = usersData.get("quota_remaining").getAsInt();
+            updateQuota(usersData.get("quota_remaining").getAsInt());
             JsonObject user = usersData.getAsJsonArray("items").get(0).getAsJsonObject();
             return user;
         } catch (IOException e) {
@@ -42,5 +42,12 @@ public class ApiService {
         } else {
             return "";
         }
+    }
+
+    private void updateQuota(int newQuota) {
+        if (newQuota < quota) {
+            logger.info(String.format("API quota rolled over at %s", quota));
+        }
+        quota = newQuota;
     }
 }

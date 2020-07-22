@@ -5,6 +5,8 @@ import ch.philnet.checkyerflags.commands.Command;
 import ch.philnet.checkyerflags.commands.CommandsCommand;
 import ch.philnet.checkyerflags.commands.PrivilegeCheckCommand;
 import ch.philnet.checkyerflags.commands.StopCommand;
+import ch.philnet.checkyerflags.commands.StatusCommand;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
@@ -20,17 +22,27 @@ import java.util.Arrays;
  */
 public class BotService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BotService.class);
+    private String location;
+    private String apiKey;
+    private long startTime;
 
     /**
      * Run the bot service
      * @param room Current room
      * @param location Bot location
      */
-    public void run(final Room room, String location) {
+    public void run(final Room room, String location, String apiKey) {
+        //Save startTime in ms
+        this.startTime = System.currentTimeMillis();
+
         //Notify chat users that the bot has started
         LOGGER.info("Send start message to chat...");
         String version = "3.0.0-dev";
         room.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] v%s started on %s.", version, location));
+
+        //Assign passed variables
+        this.location = location;
+        this.apiKey = apiKey;
 
         //Listen for reply, mention and message posted events
         room.addEventListener(EventType.MESSAGE_POSTED, event -> handleAliveMessage(room, event));
@@ -83,10 +95,13 @@ public class BotService {
      * Get a list of all commands available to the bot
      */
     private ArrayList<Command> availableCommands(Room room) {
+        ApiService api = new ApiService(this.apiKey, LOGGER);
+
         ArrayList<Command> commandList = new ArrayList<Command>();
         commandList.add(new AliveCommand(room, LOGGER));
         commandList.add(new StopCommand(room, LOGGER));
         commandList.add(new PrivilegeCheckCommand(room, LOGGER));
+        commandList.add(new StatusCommand(room, LOGGER, this.startTime, this.location, api));
         commandList.add(new CommandsCommand(room, LOGGER));
         return commandList;
     }

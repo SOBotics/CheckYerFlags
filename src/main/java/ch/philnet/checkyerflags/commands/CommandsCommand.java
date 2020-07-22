@@ -28,7 +28,6 @@ public class CommandsCommand extends Command {
         "    commands, help               - This command. Lists all available commands.\n" +
         "    goal <flag count> [message]  - Set your custom goal to <flag count> flags. Displays an optional message once you reach your custom rank.\n" +
         "    goal delete                  - Deletes your custom goal.\n" +
-        "    location                     - Returns current host where the bot is running.\n" +
         "    quota                        - Returns the amount of remaining Stack Exchange API quota.\n" +
         "    ranks next, r n              - Gets your next flag rank and how much flags you need to get to it. Returns your custom goal if it's closer than the next rank.\n" +
         "    say <message>                - Sends <message> as a chat message.\n" +

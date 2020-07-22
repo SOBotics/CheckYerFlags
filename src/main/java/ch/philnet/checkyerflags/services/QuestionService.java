@@ -48,7 +48,7 @@ public class QuestionService {
                                 JSONArray tags = question.getJSONArray("tags");
                                 if(hasMissingTags(Utils.jsonArrayToStringList(tags))) {
                                     LOGGER.info("Detected missing tags in post " + question.getString("url"));
-                                    chatRoom.send("[ [CheckYerFlags](https://stackapps.com/q/7792) ] [tag:" + String.join("] [tag:", Utils.jsonArrayToStringList(tags)) + "] Only narrow language tag on this post: [" + question.getString("titleEncodedFancy") + "](" + question.getString("url") + ")");
+                                    chatRoom.send("[ [CheckYerFlags](https://stackapps.com/q/7792) ] [tag:" + String.join("] [tag:", Utils.jsonArrayToStringList(tags)) + "] Only narrow language tag on this post: [" + question.getString("titleEncodedFancy") + "](" + question.getString("url") + ")" + " @Filnor");
                                 }
                             }
                         }
