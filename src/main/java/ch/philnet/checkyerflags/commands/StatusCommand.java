@@ -48,14 +48,13 @@ public class StatusCommand extends Command {
     }
 
     private String formatUptime(long duration) {
-        int ms, s, m, h, d;
+        int s, m, h, d;
         double dec;
         double time = duration * 1.0;
     
         time = (time / 1000.0);
         dec = time % 1;
         time = time - dec;
-        ms = (int)(dec * 1000);
     
         time = (time / 60.0);
         dec = time % 1;
