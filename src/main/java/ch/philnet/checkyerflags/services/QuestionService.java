@@ -18,6 +18,7 @@ import java.util.*;
 public class QuestionService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BotService.class);
     private String missingParentTag = "";
+    private ArrayList<Long> checkedPosts = new ArrayList<Long>();
 
     public void run(Room chatRoom) {
         try {
@@ -51,9 +52,11 @@ public class QuestionService {
 
                             //Check if it's a question from Stack Overflow and not some other site
                             //We need to do this since the single-site websocket doesn't work for SO
-                            if(question.getString("siteBaseHostAddress").equals("stackoverflow.com")) {
+                            if (question.getString("siteBaseHostAddress").equals("stackoverflow.com")) {
                                 JSONArray tags = question.getJSONArray("tags");
-                                if(hasMissingTags(Utils.jsonArrayToStringList(tags))) {
+                                if (!checkedPosts.contains(question.getLong("id")))
+                                    return;
+                                if (hasMissingTags(Utils.jsonArrayToStringList(tags), question.getLong("id"))) {
                                     LOGGER.info("Detected missing tags in question " + question.getString("url"));
                                     String tagList = "[tag:" + String.join("] [tag:", Utils.jsonArrayToStringList(tags)) + "]";
                                     String parentTag = "[tag:" + missingParentTag + "]";
@@ -69,16 +72,17 @@ public class QuestionService {
         }
     }
 
-    private boolean hasMissingTags(List<String> questionTags) {
+    private boolean hasMissingTags(List<String> questionTags, long questionId) {
         HashMap<String, String[]> watchedTags = new TagListReader(LOGGER).readTagList();
 
-        for(HashMap.Entry<String, String[]> watchedTag : watchedTags.entrySet()) {
+        for (HashMap.Entry<String, String[]> watchedTag : watchedTags.entrySet()) {
             String parentTag = watchedTag.getKey();
             for (String watchedChildTag : watchedTag.getValue()) {
                 //Check if child tag found and parent tag not found
-                if(questionTags.contains(watchedChildTag) && !questionTags.contains(parentTag)) {
+                if (questionTags.contains(watchedChildTag) && !questionTags.contains(parentTag)) {
                     missingParentTag = parentTag;
-                    return true; //TODO: Store reported post id's in memory and don't re-report them
+                    checkedPosts.add(questionId);
+                    return true;
                 }
             }
         }
