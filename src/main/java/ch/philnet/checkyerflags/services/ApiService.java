@@ -45,7 +45,7 @@ public class ApiService {
     }
 
     private void updateQuota(int newQuota) {
-        if (newQuota < quota) {
+        if (newQuota > quota) {
             logger.info(String.format("API quota rolled over at %s", quota));
         }
         quota = newQuota;
