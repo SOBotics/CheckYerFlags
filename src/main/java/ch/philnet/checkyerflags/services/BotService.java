@@ -4,6 +4,7 @@ import ch.philnet.checkyerflags.commands.AliveCommand;
 import ch.philnet.checkyerflags.commands.Command;
 import ch.philnet.checkyerflags.commands.CommandsCommand;
 import ch.philnet.checkyerflags.commands.PrivilegeCheckCommand;
+import ch.philnet.checkyerflags.commands.QuotaCommand;
 import ch.philnet.checkyerflags.commands.StopCommand;
 import ch.philnet.checkyerflags.commands.StatusCommand;
 
@@ -102,6 +103,7 @@ public class BotService {
         commandList.add(new StopCommand(room, LOGGER));
         commandList.add(new PrivilegeCheckCommand(room, LOGGER));
         commandList.add(new StatusCommand(room, LOGGER, this.startTime, this.location, api));
+        commandList.add(new QuotaCommand(room, LOGGER, api));
         commandList.add(new CommandsCommand(room, LOGGER));
         return commandList;
     }
