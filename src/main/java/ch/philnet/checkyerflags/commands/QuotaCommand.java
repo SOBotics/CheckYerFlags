@@ -2,6 +2,7 @@ package ch.philnet.checkyerflags.commands;
 
 import org.slf4j.Logger;
 import org.sobotics.chatexchange.chat.Room;
+import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 import ch.philnet.checkyerflags.services.ApiService;
 
@@ -23,7 +24,7 @@ public class QuotaCommand extends Command {
     }
 
     @Override
-    public void run(long messageId) {
+    public void run(long messageId, PingMessageEvent event) {
         logger.info("Replying to quota command");
         room.replyTo(messageId, "Remaining API quota: " + this.getQuota());
     }

@@ -3,6 +3,7 @@ package ch.philnet.checkyerflags.commands;
 import org.slf4j.Logger;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.User;
+import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 import java.util.regex.Pattern;
 
@@ -54,5 +55,5 @@ public abstract class Command {
      * Run a specific command
      * @param messageId The message id
      */
-    public abstract void run(long messageId);
+    public abstract void run(long messageId, PingMessageEvent event);
 }

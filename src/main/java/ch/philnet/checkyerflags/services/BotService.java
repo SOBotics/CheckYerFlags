@@ -3,6 +3,7 @@ package ch.philnet.checkyerflags.services;
 import ch.philnet.checkyerflags.commands.AliveCommand;
 import ch.philnet.checkyerflags.commands.Command;
 import ch.philnet.checkyerflags.commands.CommandsCommand;
+import ch.philnet.checkyerflags.commands.DeleteCommand;
 import ch.philnet.checkyerflags.commands.PrivilegeCheckCommand;
 import ch.philnet.checkyerflags.commands.QuotaCommand;
 import ch.philnet.checkyerflags.commands.StopCommand;
@@ -67,7 +68,7 @@ public class BotService {
 
         for (Command command : availableCommands(room)) {
             if (command.testCommandPattern(String.join(" ", parts))) {
-                command.run(messageId);
+                command.run(messageId, event);
             }
         }
     }
@@ -104,6 +105,7 @@ public class BotService {
         commandList.add(new PrivilegeCheckCommand(room, LOGGER));
         commandList.add(new StatusCommand(room, LOGGER, this.startTime, this.location, api));
         commandList.add(new QuotaCommand(room, LOGGER, api));
+        commandList.add(new DeleteCommand(room, LOGGER));
         commandList.add(new CommandsCommand(room, LOGGER));
         return commandList;
     }

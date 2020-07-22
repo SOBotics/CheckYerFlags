@@ -2,6 +2,7 @@ package ch.philnet.checkyerflags.commands;
 
 import org.slf4j.Logger;
 import org.sobotics.chatexchange.chat.Room;
+import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 public class PrivilegeCheckCommand extends Command {
     public PrivilegeCheckCommand(Room chatRoom, Logger commandLogger) {
@@ -18,7 +19,7 @@ public class PrivilegeCheckCommand extends Command {
     }
 
     @Override
-    public void run(long messageId) {
+    public void run(long messageId, PingMessageEvent event) {
         if (super.hasPrivileges(messageId, false)) {
             room.replyTo(messageId, "You are allowed to run privileged commands.");
         } else {

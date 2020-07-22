@@ -2,6 +2,7 @@ package ch.philnet.checkyerflags.commands;
 
 import org.slf4j.Logger;
 import org.sobotics.chatexchange.chat.Room;
+import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 public class CommandsCommand extends Command {
     public CommandsCommand(Room chatRoom, Logger commandLogger) {
@@ -19,7 +20,7 @@ public class CommandsCommand extends Command {
     }
 
     @Override
-    public void run(long messageId) {
+    public void run(long messageId, PingMessageEvent event) {
         logger.info("Printing command list");
         //TODO: Actually implement all those commands.
         String commands = "    ### CheckYerFlags commands ###\n" +
@@ -36,7 +37,7 @@ public class CommandsCommand extends Command {
         "    status                       - Returns uptime, location and api quota.\n" +
         //"    why                          - Gives the answer to everything.\n" +
         "    ### Privileged commands (room owners & moderators) ###\n" +
-        //"    delete                       - Deletes the message replied to, if possible.\n" +
+        "    delete                       - Deletes the message replied to, if possible.\n" +
         "    stop, bye                    - Stops the bot.";
 
 

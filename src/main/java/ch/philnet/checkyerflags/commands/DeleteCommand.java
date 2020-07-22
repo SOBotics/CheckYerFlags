@@ -4,12 +4,11 @@ import org.slf4j.Logger;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
-public class StopCommand extends Command {
-    public StopCommand(Room chatRoom, Logger commandLogger) {
+public class DeleteCommand extends Command {
+    public DeleteCommand(Room chatRoom, Logger commandLogger) {
         //Allowed Patters:
-        // stop
-        // bye
-        commandPattern = "(?i)(stop|bye)";
+        // alive
+        commandPattern = "(?i)(alive)";
         room = chatRoom;
         logger = commandLogger;
     }
@@ -22,10 +21,7 @@ public class StopCommand extends Command {
     @Override
     public void run(long messageId, PingMessageEvent event) {
         if (super.hasPrivileges(messageId)) {
-            room.send("I'll be back!");
-            logger.info("Stopping the bot");
-            room.leave();
-            System.exit(0);
+            room.delete(event.getParentMessageId());
         }
     }
 }
