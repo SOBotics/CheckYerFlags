@@ -23,6 +23,7 @@ public class QuestionService {
 
             LOGGER.info("Connecting to Websocket...");
             new WebSocketFactory()
+                    .setConnectionTimeout(2147483647)
                     .createSocket("wss://qa.sockets.stackexchange.com/")
                     .addListener(new WebSocketAdapter() {
                         @Override
