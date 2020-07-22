@@ -17,13 +17,13 @@ import java.util.*;
  */
 public class QuestionService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BotService.class);
+    private String missingParentTag = "";
 
     public void run(Room chatRoom) {
         try {
 
             LOGGER.info("Connecting to Websocket...");
             new WebSocketFactory()
-                    .setConnectionTimeout(2147483647)
                     .createSocket("wss://qa.sockets.stackexchange.com/")
                     .addListener(new WebSocketAdapter() {
                         @Override
@@ -40,6 +40,13 @@ public class QuestionService {
                     .addListener(new WebSocketAdapter() {
                         @Override
                         public void onTextMessage(WebSocket websocket, String text) throws Exception {
+                            //Respond to heartbeat
+                            if (new JSONObject(text).get("action").toString().equals("hb")){
+                                websocket.sendText("pong");
+                                LOGGER.info("Sent keep-alive ping.");
+                                return;
+                            }
+
                             //Parse JSON string to object
                             JSONObject question = new JSONObject(new JSONObject(text).get("data").toString());
 
@@ -48,8 +55,10 @@ public class QuestionService {
                             if(question.getString("siteBaseHostAddress").equals("stackoverflow.com")) {
                                 JSONArray tags = question.getJSONArray("tags");
                                 if(hasMissingTags(Utils.jsonArrayToStringList(tags))) {
-                                    LOGGER.info("Detected missing tags in post " + question.getString("url"));
-                                    chatRoom.send("[ [CheckYerFlags](https://stackapps.com/q/7792) ] [tag:" + String.join("] [tag:", Utils.jsonArrayToStringList(tags)) + "] Only narrow language tag on this post: [" + question.getString("titleEncodedFancy") + "](" + question.getString("url") + ")" + " @Filnor");
+                                    LOGGER.info("Detected missing tags in question " + question.getString("url"));
+                                    String tagList = "[tag:" + String.join("] [tag:", Utils.jsonArrayToStringList(tags)) + "]";
+                                    String parentTag = "[tag:" + missingParentTag + "]";
+                                    chatRoom.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] %s Missing parent tag %s: [%s](%s)", tagList, parentTag, question.getString("titleEncodedFancy"), question.getString("url")));
                                 }
                             }
                         }
@@ -68,8 +77,10 @@ public class QuestionService {
             String parentTag = watchedTag.getKey();
             for (String watchedChildTag : watchedTag.getValue()) {
                 //Check if child tag found and parent tag not found
-                if(questionTags.contains(watchedChildTag) && !questionTags.contains(parentTag))
+                if(questionTags.contains(watchedChildTag) && !questionTags.contains(parentTag)) {
+                    missingParentTag = parentTag;
                     return true;
+                }
             }
         }
         //No missing child tag found
