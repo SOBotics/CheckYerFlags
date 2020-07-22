@@ -81,6 +81,8 @@ public class QuestionService {
                 //Check if child tag found and parent tag not found
                 if (questionTags.contains(watchedChildTag) && !questionTags.contains(parentTag)) {
                     missingParentTag = parentTag;
+                    if (checkedPosts.size() >= 100)
+                        checkedPosts.clear();
                     checkedPosts.add(questionId);
                     return true;
                 }

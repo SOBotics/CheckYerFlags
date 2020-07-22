@@ -65,8 +65,8 @@ public class BotService {
         String[] allParts = message.toLowerCase().split(" ");
         String[] parts = Arrays.copyOfRange(allParts, 1, allParts.length); //Parts without ping, (everything except @user)
 
-        for(Command command : availableCommands(room)) {
-            if(command.testCommandPattern(String.join(" ", parts))) {
+        for (Command command : availableCommands(room)) {
+            if (command.testCommandPattern(String.join(" ", parts))) {
                 command.run(messageId);
             }
         }
@@ -81,13 +81,13 @@ public class BotService {
         String msg = event.getMessage().getContent();
 
         //Respond to "@bots alive" command
-        if(msg != null && msg.toLowerCase().startsWith("@bots alive"))
+        if (msg != null && msg.toLowerCase().startsWith("@bots alive"))
             room.send("You doubt me?");
 
         //Respond to alive train
-        if(msg != null && msg.length() > 0) {
+        if (msg != null && msg.length() > 0) {
             int codePoint = Character.codePointAt(msg, 0);
-            if(codePoint == 128642 || (codePoint >= 128644 && codePoint <= 128650))
+            if (codePoint == 128642 || (codePoint >= 128644 && codePoint <= 128650))
                 room.send("[\uD83D\uDE83](https://www.youtube.com/watch?v=CSvFpBOe8eY)");
         }
     }

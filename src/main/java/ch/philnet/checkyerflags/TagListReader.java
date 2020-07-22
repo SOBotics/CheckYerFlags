@@ -19,11 +19,11 @@ public class TagListReader {
         try (BufferedReader br = new BufferedReader(new FileReader("data" + File.separator + "tags.yaml"))) {
             String line;
             while ((line = br.readLine()) != null) {
-               if(line.startsWith("  - ")) {
+               if (line.startsWith("  - ")) {
                    String childTag = line.replace("  - ", "");
                    childTags.add(childTag);
                } else {
-                   if(childTags.size() > 0) {
+                   if (childTags.size() > 0) {
                        tags.put(currentMainTag, childTags.toArray(new String[0]));
                        //Clear child tags array
                        childTags.removeAll(childTags);

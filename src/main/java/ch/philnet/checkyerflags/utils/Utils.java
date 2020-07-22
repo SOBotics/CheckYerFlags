@@ -26,7 +26,7 @@ public final class Utils {
      */
     public static List<String> jsonArrayToStringList(JSONArray jsonArray) {
         List<String> list = new ArrayList<String>();
-        for(int i = 0; i < jsonArray.length(); i++){
+        for (int i = 0; i < jsonArray.length(); i++){
             list.add(jsonArray.getString(i));
         }
         return list;
