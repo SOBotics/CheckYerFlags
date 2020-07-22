@@ -15,3 +15,5 @@ sql:
   - oracle
   - postgresql
   - sqlite
+django:
+  - django-rest-framework
