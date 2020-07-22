@@ -16,26 +16,26 @@ import java.util.*;
  * Monitor the site for new questions and analyze tags
  */
 public class QuestionService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BotService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BotService.class);
     private String missingParentTag = "";
     private ArrayList<Long> checkedPosts = new ArrayList<Long>();
 
     public void run(Room chatRoom) {
         try {
 
-            LOGGER.info("Connecting to Websocket...");
+            logger.info("Connecting to Websocket...");
             new WebSocketFactory()
                     .createSocket("wss://qa.sockets.stackexchange.com/")
                     .addListener(new WebSocketAdapter() {
                         @Override
                         public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
-                            LOGGER.info("Successfully connected to Websocket, listening for new posts.");
+                            logger.info("Successfully connected to Websocket, listening for new posts.");
                         }
                     })
                     .addListener(new WebSocketAdapter() {
                         @Override
                         public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
-                            LOGGER.warn("Disconnected from the socket");
+                            logger.warn("Disconnected from the socket");
                         }
                     })
                     .addListener(new WebSocketAdapter() {
@@ -57,7 +57,7 @@ public class QuestionService {
                                 if (!checkedPosts.contains(question.getLong("id")))
                                     return;
                                 if (hasMissingTags(Utils.jsonArrayToStringList(tags), question.getLong("id"))) {
-                                    LOGGER.info("Detected missing tags in question " + question.getString("url"));
+                                    logger.info("Detected missing tags in question " + question.getString("url"));
                                     String tagList = "[tag:" + String.join("] [tag:", Utils.jsonArrayToStringList(tags)) + "]";
                                     String parentTag = "[tag:" + missingParentTag + "]";
                                     chatRoom.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] %s Missing parent tag %s: [%s](%s)", tagList, parentTag, question.getString("titleEncodedFancy"), question.getString("url")));
@@ -73,7 +73,7 @@ public class QuestionService {
     }
 
     private boolean hasMissingTags(List<String> questionTags, long questionId) {
-        HashMap<String, String[]> watchedTags = new TagListReader(LOGGER).readTagList();
+        HashMap<String, String[]> watchedTags = new TagListReader(logger).readTagList();
 
         for (HashMap.Entry<String, String[]> watchedTag : watchedTags.entrySet()) {
             String parentTag = watchedTag.getKey();

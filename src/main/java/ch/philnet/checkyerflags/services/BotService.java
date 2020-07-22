@@ -23,7 +23,7 @@ import java.util.Arrays;
  * Handles interactions in chat like mentions and replies
  */
 public class BotService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BotService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BotService.class);
     private String location;
     private String apiKey;
     private long startTime;
@@ -38,7 +38,7 @@ public class BotService {
         this.startTime = System.currentTimeMillis();
 
         //Notify chat users that the bot has started
-        LOGGER.info("Send start message to chat...");
+        logger.info("Send start message to chat...");
         String version = "3.0.0-dev";
         room.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] v%s started on %s.", version, location));
 
@@ -48,8 +48,8 @@ public class BotService {
 
         //Listen for reply, mention and message posted events
         room.addEventListener(EventType.MESSAGE_POSTED, event -> handleAliveMessage(room, event));
-        room.addEventListener(EventType.USER_MENTIONED, event -> handleMessage(room, event)); //This event only fires if the logged-in chat user is pinged
-        //room.addEventListener(EventType.MESSAGE_REPLY, event -> handleMessage(room, event, true)); //Currently not needed
+        room.addEventListener(EventType.USER_MENTIONED, event -> handleMessage(room, event, false)); //This event only fires if the logged-in chat user is pinged
+        room.addEventListener(EventType.MESSAGE_REPLY, event -> handleMessage(room, event, true)); //Currently not needed
     }
 
     /**
@@ -58,13 +58,19 @@ public class BotService {
      * @param event The occured event
      * @param isReply If the current message is a reply
      */
-    private void handleMessage(Room room, PingMessageEvent event) {
+    private void handleMessage(Room room, PingMessageEvent event, boolean isReply) {
         String message = event.getMessage().getPlainContent();
         long messageId = event.getMessage().getId();
-        LOGGER.info("New mention: " + message);
-        LOGGER.info("Content: [" + event.getMessage().getContent() + "]");
+        logger.info("New mention: " + message);
+        logger.info("Content: [" + event.getMessage().getContent() + "]");
         String[] allParts = message.toLowerCase().split(" ");
         String[] parts = Arrays.copyOfRange(allParts, 1, allParts.length); //Parts without ping, (everything except @user)
+
+        //Exception for replies
+        if (isReply) {
+            new DeleteCommand(room, logger).run(messageId, event);
+            return;
+        }
 
         for (Command command : availableCommands(room)) {
             if (command.testCommandPattern(String.join(" ", parts))) {
@@ -97,16 +103,15 @@ public class BotService {
      * Get a list of all commands available to the bot
      */
     private ArrayList<Command> availableCommands(Room room) {
-        ApiService api = new ApiService(this.apiKey, LOGGER);
+        ApiService api = new ApiService(this.apiKey, logger);
 
         ArrayList<Command> commandList = new ArrayList<Command>();
-        commandList.add(new AliveCommand(room, LOGGER));
-        commandList.add(new StopCommand(room, LOGGER));
-        commandList.add(new PrivilegeCheckCommand(room, LOGGER));
-        commandList.add(new StatusCommand(room, LOGGER, this.startTime, this.location, api));
-        commandList.add(new QuotaCommand(room, LOGGER, api));
-        commandList.add(new DeleteCommand(room, LOGGER));
-        commandList.add(new CommandsCommand(room, LOGGER));
+        commandList.add(new AliveCommand(room, logger));
+        commandList.add(new StopCommand(room, logger));
+        commandList.add(new PrivilegeCheckCommand(room, logger));
+        commandList.add(new StatusCommand(room, logger, this.startTime, this.location, api));
+        commandList.add(new QuotaCommand(room, logger, api));
+        commandList.add(new CommandsCommand(room, logger));
         return commandList;
     }
 }
