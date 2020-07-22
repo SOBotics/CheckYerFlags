@@ -8,7 +8,7 @@ public class DeleteCommand extends Command {
     public DeleteCommand(Room chatRoom, Logger commandLogger) {
         //Allowed Patters:
         // alive
-        commandPattern = "(?i)(alive)";
+        commandPattern = "(?i)(delete)";
         room = chatRoom;
         logger = commandLogger;
     }
