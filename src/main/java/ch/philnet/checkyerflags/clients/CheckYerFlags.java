@@ -25,8 +25,6 @@ public class CheckYerFlags {
 
         try {
             prop.load(new FileInputStream( "." + File.separator + "properties" + File.separator + "auth.properties"));
-
-            
         } catch (IOException e) {
             System.err.println("Can't read properties file. Have you renamed 'auth.example.properties' to 'auth.properties'?");
             e.printStackTrace();
@@ -46,3 +44,4 @@ public class CheckYerFlags {
         new QuestionService().run(room);
     }
 }
+
