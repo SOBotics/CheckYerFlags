@@ -34,7 +34,7 @@ public class StatusCommand extends Command {
     @Override
     public void run(long messageId, PingMessageEvent event) {
         messageHandler.info("Reporting system status");
-        room.send(String.format("    uptime       %s\n    version       %s\n    location     %s\n    api quota    %s\s", this.getUptime(), config.codeVersion(), location, getQuota()));
+        room.send(String.format("    uptime       %s\n    version      %s\n    location     %s\n    api quota    %s\s", this.getUptime(), config.codeVersion(), location, getQuota()));
     }
 
     private String getUptime() {

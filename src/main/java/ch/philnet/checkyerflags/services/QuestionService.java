@@ -22,7 +22,6 @@ public class QuestionService {
 
     public void run(Room chatRoom) {
         try {
-
             logger.info("Connecting to Websocket...");
             new WebSocketFactory()
                     .createSocket("wss://qa.sockets.stackexchange.com/")
