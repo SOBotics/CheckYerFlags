@@ -1,20 +1,20 @@
 package ch.philnet.checkyerflags.commands;
 
-import org.slf4j.Logger;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 import ch.philnet.checkyerflags.services.ApiService;
+import ch.philnet.checkyerflags.utils.MessageHandler;
 
 public class QuotaCommand extends Command {
     private ApiService apiService;
 
-    public QuotaCommand(Room chatRoom, Logger commandLogger, ApiService api) {
+    public QuotaCommand(Room chatRoom, MessageHandler msgHandler, ApiService api) {
         //Allowed Patters:
         // quota
         commandPattern = "(?i)(quota)";
         room = chatRoom;
-        logger = commandLogger;
+        messageHandler = msgHandler;
         this.apiService = api;
     }
 
@@ -25,7 +25,7 @@ public class QuotaCommand extends Command {
 
     @Override
     public void run(long messageId, PingMessageEvent event) {
-        logger.info("Replying to quota command");
+        messageHandler.info("Replying to quota command");
         room.replyTo(messageId, "Remaining API quota: " + this.getQuota());
     }
 

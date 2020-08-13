@@ -1,16 +1,17 @@
 package ch.philnet.checkyerflags.commands;
 
-import org.slf4j.Logger;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
+import ch.philnet.checkyerflags.utils.MessageHandler;
+
 public class PrivilegeCheckCommand extends Command {
-    public PrivilegeCheckCommand(Room chatRoom, Logger commandLogger) {
+    public PrivilegeCheckCommand(Room chatRoom, MessageHandler msgHandler) {
         //Allowed Patters:
         // amiprivileged
         commandPattern = "(?i)(amiprivileged)";
         room = chatRoom;
-        logger = commandLogger;
+        messageHandler = msgHandler;
     }
 
     @Override

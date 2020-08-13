@@ -1,16 +1,17 @@
 package ch.philnet.checkyerflags.commands;
 
-import org.slf4j.Logger;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
+import ch.philnet.checkyerflags.utils.MessageHandler;
+
 public class DeleteCommand extends Command {
-    public DeleteCommand(Room chatRoom, Logger commandLogger) {
+    public DeleteCommand(Room chatRoom, MessageHandler msgHandler) {
         //Allowed Patters:
         // alive
         commandPattern = "(?i)(delete)";
         room = chatRoom;
-        logger = commandLogger;
+        messageHandler = msgHandler;
     }
 
     @Override

@@ -1,9 +1,10 @@
 package ch.philnet.checkyerflags.commands;
 
-import org.slf4j.Logger;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.User;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
+
+import ch.philnet.checkyerflags.utils.MessageHandler;
 
 import java.util.regex.Pattern;
 
@@ -13,7 +14,7 @@ import java.util.regex.Pattern;
 public abstract class Command {
     String commandPattern;
     Room room;
-    Logger logger;
+    MessageHandler messageHandler;
 
     /**
      * Test if the supplied command string has a valid pattern for the command instance
@@ -31,7 +32,6 @@ public abstract class Command {
         return this.hasPrivileges(messageId, true);
     }
       
-
     /**
      * Test if the user that called the command has privileges to run it
      * @param messageId Id of the message that called the command

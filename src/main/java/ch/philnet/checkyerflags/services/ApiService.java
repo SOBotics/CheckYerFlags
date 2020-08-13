@@ -1,8 +1,10 @@
 package ch.philnet.checkyerflags.services;
 
 import com.google.gson.JsonObject;
-import org.slf4j.Logger;
+
 import ch.philnet.checkyerflags.utils.JsonUtils;
+import ch.philnet.checkyerflags.utils.MessageHandler;
+
 import java.io.IOException;
 
 public class ApiService {
@@ -10,12 +12,12 @@ public class ApiService {
     private final String site = "stackoverflow";
     private final String baseUrl = "https://api.stackexchange.com/2.2";
     private String apiKey;
-    private Logger logger;
+    private MessageHandler messageHandler;
     private static int quota = 0;
 
-    public ApiService(String apiKey, Logger logger){
+    public ApiService(String apiKey, MessageHandler messageHandler){
         this.apiKey = apiKey;
-        this.logger = logger;
+        this.messageHandler = messageHandler;
     }
 
     public int getQuota(){
@@ -30,7 +32,7 @@ public class ApiService {
             JsonObject user = usersData.getAsJsonArray("items").get(0).getAsJsonObject();
             return user;
         } catch (IOException e) {
-            logger.error("Failed to get user information from SE API: " + e.getMessage());
+            this.messageHandler.error("Failed to get user information from SE API: " + e.getMessage(), e);
             return null;
         }
     }
@@ -46,7 +48,7 @@ public class ApiService {
 
     private void updateQuota(int newQuota) {
         if (newQuota > quota) {
-            logger.info(String.format("API quota rolled over at %s", quota));
+            this.messageHandler.info(String.format("API quota rolled over at %s", quota));
         }
         quota = newQuota;
     }

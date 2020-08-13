@@ -9,8 +9,8 @@
     <version>3.0.0-dev</version>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -39,6 +39,11 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20180813</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rollbar</groupId>
+            <artifactId>rollbar-java</artifactId>
+            <version>1.5.2</version>
         </dependency>
 
     </dependencies>

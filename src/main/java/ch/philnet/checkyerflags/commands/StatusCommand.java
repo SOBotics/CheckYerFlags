@@ -1,25 +1,29 @@
 package ch.philnet.checkyerflags.commands;
 
-import org.slf4j.Logger;
+import com.rollbar.notifier.config.Config;
+
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
 import ch.philnet.checkyerflags.services.ApiService;
+import ch.philnet.checkyerflags.utils.MessageHandler;
 
 public class StatusCommand extends Command {
     private long startTime;
     private String location;
     private ApiService apiService;
+    private Config config;
 
-    public StatusCommand(Room chatRoom, Logger commandLogger, long startTime, String location, ApiService api) {
+    public StatusCommand(Room chatRoom, MessageHandler msgHandler, long startTime, String location, ApiService api, Config config) {
         //Allowed Patters:
-        // alive
+        // status
         commandPattern = "(?i)(status)";
         room = chatRoom;
-        logger = commandLogger;
+        messageHandler = msgHandler;
         this.startTime = startTime;
         this.location = location;
         this.apiService = api;
+        this.config = config;
     }
 
     @Override
@@ -29,8 +33,8 @@ public class StatusCommand extends Command {
 
     @Override
     public void run(long messageId, PingMessageEvent event) {
-        logger.info("Reporting system status");
-        room.send(String.format("    uptime       %s\n    location     %s\n    api quota    %s\s", this.getUptime(), location, getQuota()));
+        messageHandler.info("Reporting system status");
+        room.send(String.format("    uptime       %s\n    version       %s\n    location     %s\n    api quota    %s\s", this.getUptime(), config.codeVersion(), location, getQuota()));
     }
 
     private String getUptime() {
