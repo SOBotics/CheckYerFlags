@@ -4,11 +4,9 @@ import org.sobotics.chatexchange.chat.Message;
 import org.sobotics.chatexchange.chat.Room;
 import org.sobotics.chatexchange.chat.event.PingMessageEvent;
 
-import ch.philnet.checkyerflags.services.ApiService;
 import ch.philnet.checkyerflags.utils.MessageHandler;
 
 public class SayCommand extends Command {
-    private ApiService apiService;
 
     public SayCommand(Room chatRoom, MessageHandler msgHandler) {
         //Allowed Patters:
