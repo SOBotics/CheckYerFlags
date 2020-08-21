@@ -32,11 +32,10 @@ public class CommandsCommand extends Command {
         //"    goal delete                  - Deletes your custom goal.\n" +
         "    quota                        - Returns the amount of remaining Stack Exchange API quota.\n" +
         //"    ranks next, r n              - Gets your next flag rank and how much flags you need to get to it. Returns your custom goal if it's closer than the next rank.\n" +
-        //"    say <message>                - Sends <message> as a chat message.\n" +
+        "    say <message>                - Sends <message> as a chat message.\n" +
         //"    rank <user id>             - Gets flag rank and status to the next rank for the specified <user id>.\n" +
         //"    rank me, rm            - Gets your own flag rank and status to the next rank.\n" +
         "    status                       - Returns uptime, location and api quota.\n" +
-        //"    why                          - Gives the answer to everything.\n" +
         "    ### Privileged commands (room owners & moderators) ###\n" +
         "    delete                       - Deletes the message replied to, if possible.\n" +
         "    stop, bye                    - Stops the bot.";
