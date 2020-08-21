@@ -55,7 +55,7 @@ public class BotService {
         this.config = config;
 
         //Listen for reply, mention and message posted events
-        room.addEventListener(EventType.MESSAGE_POSTED, event -> handleAliveMessage(room, event));
+        room.addEventListener(EventType.MESSAGE_POSTED, event -> handleAliveAndFunMessages(room, event));
         room.addEventListener(EventType.USER_MENTIONED, event -> handleMessage(room, event, false)); //This event only fires if the logged-in chat user is pinged
         room.addEventListener(EventType.MESSAGE_REPLY, event -> handleMessage(room, event, true));
     }
@@ -92,7 +92,7 @@ public class BotService {
      * @param room The current room
      * @param event The occured event
      */
-    private void handleAliveMessage(Room room, MessagePostedEvent event) {
+    private void handleAliveAndFunMessages(Room room, MessagePostedEvent event) {
         String msg = event.getMessage().getContent();
 
         //Respond to "@bots alive" command
@@ -104,6 +104,26 @@ public class BotService {
             int codePoint = Character.codePointAt(msg, 0);
             if (codePoint == 128642 || (codePoint >= 128644 && codePoint <= 128650))
                 room.send("[\uD83D\uDE83](https://www.youtube.com/watch?v=CSvFpBOe8eY)");
+
+            //region fun commands
+            switch (msg) {
+                case "@CheckYerFlags why":
+                    room.send("[42.](https://en.wikipedia.org/wiki/Phrases_from_The_Hitchhiker%27s_Guide_to_the_Galaxy#Answer_to_the_Ultimate_Question_of_Life,_the_Universe,_and_Everything_(42))");
+                    break;
+                case "/shrug":
+                    room.send("\u00AF\\ \\_(\u30C4)\\_ /\u00AF");
+                    break;
+                case "/tableflip":
+                case "/flip":
+                    room.send("(\u256F\u00B0\u25A1\u00B0\uFF09\u256F\uFE35 \u253B\u2501\u253B");
+                    break;
+                case "/unflip":
+                    room.send("\u252C\u2500\u252C \u30CE( \u309C-\u309C\u30CE)");
+                    break;
+                default:
+                    break;
+            }
+            //endregion
         }
     }
 
