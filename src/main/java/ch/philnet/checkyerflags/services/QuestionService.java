@@ -1,11 +1,14 @@
 package ch.philnet.checkyerflags.services;
 
 import ch.philnet.checkyerflags.TagListReader;
+import ch.philnet.checkyerflags.utils.MessageHandler;
 import ch.philnet.checkyerflags.utils.Utils;
 import com.neovisionaries.ws.client.*;
+import com.rollbar.notifier.Rollbar;
+import com.rollbar.notifier.config.Config;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
 
@@ -16,25 +19,26 @@ import java.util.*;
  * Monitor the site for new questions and analyze tags
  */
 public class QuestionService {
-    private static final Logger logger = LoggerFactory.getLogger(BotService.class);
     private String missingParentTag = "";
     private ArrayList<Long> checkedPosts = new ArrayList<Long>();
+    private MessageHandler messageHandler;
 
-    public void run(Room chatRoom) {
+    public void run(Room chatRoom, Config config) {
+        this.messageHandler = new MessageHandler(LoggerFactory.getLogger(QuestionService.class), new Rollbar(config));
         try {
-            logger.info("Connecting to Websocket...");
+            this.messageHandler.info("Connecting to Websocket...");
             new WebSocketFactory()
                     .createSocket("wss://qa.sockets.stackexchange.com/")
                     .addListener(new WebSocketAdapter() {
                         @Override
                         public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
-                            logger.info("Successfully connected to Websocket, listening for new posts.");
+                            messageHandler.info("Successfully connected to Websocket, listening for new posts.");
                         }
                     })
                     .addListener(new WebSocketAdapter() {
                         @Override
                         public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
-                            logger.warn("Disconnected from the socket");
+                            messageHandler.warning(new Exception("Disconnected from the socket"));
                         }
                     })
                     .addListener(new WebSocketAdapter() {
@@ -56,7 +60,7 @@ public class QuestionService {
                                 if (!checkedPosts.contains(question.getLong("id")))
                                     return;
                                 if (hasMissingTags(Utils.jsonArrayToStringList(tags), question.getLong("id"))) {
-                                    logger.info("Detected missing tags in question " + question.getString("url"));
+                                    messageHandler.info("Detected missing tags in question " + question.getString("url"));
                                     String tagList = "[tag:" + String.join("] [tag:", Utils.jsonArrayToStringList(tags)) + "]";
                                     String parentTag = "[tag:" + missingParentTag + "]";
                                     chatRoom.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] %s Missing parent tag %s: [%s](%s)", tagList, parentTag, question.getString("titleEncodedFancy"), question.getString("url")));
@@ -72,7 +76,7 @@ public class QuestionService {
     }
 
     private boolean hasMissingTags(List<String> questionTags, long questionId) {
-        HashMap<String, String[]> watchedTags = new TagListReader(logger).readTagList();
+        HashMap<String, String[]> watchedTags = new TagListReader(this.messageHandler).readTagList();
 
         for (HashMap.Entry<String, String[]> watchedTag : watchedTags.entrySet()) {
             String parentTag = watchedTag.getKey();

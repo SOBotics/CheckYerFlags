@@ -3,13 +3,14 @@ package ch.philnet.checkyerflags;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.slf4j.Logger;
+
+import ch.philnet.checkyerflags.utils.MessageHandler;
 
 public class TagListReader {
-    private Logger logger;
+    private MessageHandler messageHandler;
 
-    public TagListReader(Logger logger) {
-        this.logger = logger;
+    public TagListReader(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
     }
 
     public HashMap<String, String[]> readTagList() {
@@ -32,10 +33,10 @@ public class TagListReader {
                }
             }
         } catch(FileNotFoundException fnf) {
-            logger.error("Failed to read tag list, file does not exist!");
+            this.messageHandler.error("Failed to read tag list, file does not exist!", fnf);
 
         } catch(IOException io) {
-            logger.error("IOException while reading tag list!");
+            this.messageHandler.error("IOException while reading tag list!", io);
         }
 
         return tags;
