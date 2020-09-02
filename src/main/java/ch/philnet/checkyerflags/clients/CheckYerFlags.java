@@ -19,19 +19,19 @@ import com.rollbar.notifier.sender.SyncSender;
 
 public class CheckYerFlags {
     public static Rollbar rollbar;
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         StackExchangeClient client;
-        Properties prop = new Properties();
+        final Properties prop = new Properties();
 
         try {
             prop.load(new FileInputStream( "." + File.separator + "properties" + File.separator + "auth.properties"));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("Can't read properties file. Have you renamed 'auth.example.properties' to 'auth.properties'?");
             e.printStackTrace();
         }
 
         //Initialize Rollbar
-        Config config = ConfigBuilder.withAccessToken(prop.getProperty("rollbarAccessToken"))
+        final Config config = ConfigBuilder.withAccessToken(prop.getProperty("rollbarAccessToken"))
             .environment("development")
             .codeVersion("3.0.0")
             .sender(new SyncSender.Builder().build())
@@ -39,8 +39,8 @@ public class CheckYerFlags {
         .build();
 
         client = new StackExchangeClient(prop.getProperty("email"), prop.getProperty("password"));
-        Room room = client.joinRoom(ChatHost.STACK_OVERFLOW, Integer.parseInt(prop.getProperty("roomId")));
+        final Room room = client.joinRoom(ChatHost.STACK_OVERFLOW, Integer.parseInt(prop.getProperty("roomId")));
         new BotService().run(room, prop.getProperty("location"), prop.getProperty("apiKey"), config);
-        new QuestionService().run(room);
+        new QuestionService().run(room, config);
     }
 }
