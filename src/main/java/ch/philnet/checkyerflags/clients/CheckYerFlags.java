@@ -10,6 +10,7 @@ import ch.philnet.checkyerflags.services.QuestionService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 import com.rollbar.notifier.Rollbar;
@@ -22,6 +23,9 @@ public class CheckYerFlags {
     public static void main(final String[] args) throws IOException {
         StackExchangeClient client;
         final Properties prop = new Properties();
+
+        //Force en-us locale
+		Locale.setDefault(Locale.US);
 
         try {
             prop.load(new FileInputStream( "." + File.separator + "properties" + File.separator + "auth.properties"));
