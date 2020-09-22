@@ -11,7 +11,7 @@ public class SayCommand extends Command {
     public SayCommand(Room chatRoom, MessageHandler msgHandler) {
         //Allowed Patters:
         // quota
-        commandPattern = "(?i)(say)\s.+";
+        commandPattern = "(?i)(say)\\s.+";
         room = chatRoom;
         messageHandler = msgHandler;
     }
@@ -23,8 +23,8 @@ public class SayCommand extends Command {
 
     @Override
     public void run(long messageId, PingMessageEvent event) {
-        messageHandler.info("Writing say message");
+        messageHandler.info("(Command): Writing say message");
         Message message = room.getMessage(messageId);
-        room.send(message.getContent().replaceAll(".+\s(?i)(say)\s", ""));
+        room.send(message.getContent().replaceAll(".+\\s(?i)(say)\\s", ""));
     }
 }

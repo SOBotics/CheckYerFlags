@@ -21,7 +21,7 @@ public class AliveCommand extends Command {
 
     @Override
     public void run(long messageId, PingMessageEvent event) {
-        messageHandler.info("Replying to alive command");
+        messageHandler.info("(Command): Replying to alive command");
         room.replyTo(messageId, "You doubt me?");
     }
 }

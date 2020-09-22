@@ -25,7 +25,7 @@ public class QuotaCommand extends Command {
 
     @Override
     public void run(long messageId, PingMessageEvent event) {
-        messageHandler.info("Replying to quota command");
+        messageHandler.info("(Command): Replying to quota command");
         room.replyTo(messageId, "Remaining API quota: " + this.getQuota());
     }
 

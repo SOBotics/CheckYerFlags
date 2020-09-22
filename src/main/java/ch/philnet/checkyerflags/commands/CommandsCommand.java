@@ -22,7 +22,7 @@ public class CommandsCommand extends Command {
 
     @Override
     public void run(long messageId, PingMessageEvent event) {
-        messageHandler.info("Printing command list");
+        messageHandler.info("(Command): Printing command list");
         //TODO: Actually implement all those commands.
         String commands = "    ### CheckYerFlags commands ###\n" +
         "    alive                        - Responds with a message if the bot is running in the current room\n" +

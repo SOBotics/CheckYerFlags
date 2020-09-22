@@ -24,7 +24,7 @@ public class StopCommand extends Command {
     public void run(long messageId, PingMessageEvent event) {
         if (super.hasPrivileges(messageId)) {
             room.send("I'll be back!");
-            messageHandler.info("Stopping the bot");
+            messageHandler.info("(Command): Stopping the bot");
             room.leave();
             System.exit(0);
         }

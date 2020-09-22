@@ -22,23 +22,26 @@ public class QuestionService {
     private String missingParentTag = "";
     private ArrayList<Long> checkedPosts = new ArrayList<Long>();
     private MessageHandler messageHandler;
+    private HashMap<String, String[]> watchedTags;
 
     public void run(Room chatRoom, Config config) {
         this.messageHandler = new MessageHandler(LoggerFactory.getLogger(QuestionService.class), new Rollbar(config));
+        this.watchedTags = new TagListReader(this.messageHandler).readTagList();
+
         try {
-            this.messageHandler.info("Connecting to Websocket...");
+            this.messageHandler.info("[QuestionService] Connecting to Websocket...");
             new WebSocketFactory()
                     .createSocket("wss://qa.sockets.stackexchange.com/")
                     .addListener(new WebSocketAdapter() {
                         @Override
                         public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
-                            messageHandler.info("Successfully connected to Websocket, listening for new posts.");
+                            messageHandler.info("(QuestionService): Successfully connected to Websocket, listening for new posts.");
                         }
                     })
                     .addListener(new WebSocketAdapter() {
                         @Override
                         public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
-                            messageHandler.warning(new Exception("Disconnected from the socket"));
+                            messageHandler.warning(new Exception("(QuestionService): Disconnected from the socket."));
                         }
                     })
                     .addListener(new WebSocketAdapter() {
@@ -57,13 +60,16 @@ public class QuestionService {
                             //We need to do this since the single-site websocket doesn't work for SO
                             if (question.getString("siteBaseHostAddress").equals("stackoverflow.com")) {
                                 JSONArray tags = question.getJSONArray("tags");
-                                if (!checkedPosts.contains(question.getLong("id")))
+                                //Skip already checked posts
+                                if (checkedPosts.contains(question.getLong("id")))
                                     return;
                                 if (hasMissingTags(Utils.jsonArrayToStringList(tags), question.getLong("id"))) {
-                                    messageHandler.info("Detected missing tags in question " + question.getString("url"));
+                                    //Decode question title
+                                    String questionTitle = org.jsoup.parser.Parser.unescapeEntities(question.getString("titleEncodedFancy"), true);
+                                    messageHandler.info("(QuestionService): Detected missing tags in question " + question.getString("url"));
                                     String tagList = "[tag:" + String.join("] [tag:", Utils.jsonArrayToStringList(tags)) + "]";
                                     String parentTag = "[tag:" + missingParentTag + "]";
-                                    chatRoom.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] %s Missing parent tag %s: [%s](%s)", tagList, parentTag, question.getString("titleEncodedFancy"), question.getString("url")));
+                                    chatRoom.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] %s Missing parent tag %s: [%s](%s)", tagList, parentTag, questionTitle, question.getString("url")));
                                 }
                             }
                         }
@@ -76,9 +82,7 @@ public class QuestionService {
     }
 
     private boolean hasMissingTags(List<String> questionTags, long questionId) {
-        HashMap<String, String[]> watchedTags = new TagListReader(this.messageHandler).readTagList();
-
-        for (HashMap.Entry<String, String[]> watchedTag : watchedTags.entrySet()) {
+        for (HashMap.Entry<String, String[]> watchedTag : this.watchedTags.entrySet()) {
             String parentTag = watchedTag.getKey();
             for (String watchedChildTag : watchedTag.getValue()) {
                 //Check if child tag found and parent tag not found

@@ -32,7 +32,7 @@ public class ApiService {
             JsonObject user = usersData.getAsJsonArray("items").get(0).getAsJsonObject();
             return user;
         } catch (IOException e) {
-            this.messageHandler.error("Failed to get user information from SE API: " + e.getMessage(), e);
+            this.messageHandler.error("(ApiService): Failed to get user information from SE API: " + e.getMessage(), e);
             return null;
         }
     }
@@ -48,7 +48,7 @@ public class ApiService {
 
     private void updateQuota(int newQuota) {
         if (newQuota > quota) {
-            this.messageHandler.info(String.format("API quota rolled over at %s", quota));
+            this.messageHandler.info(String.format("(ApiService): API quota rolled over at %s", quota));
         }
         quota = newQuota;
     }

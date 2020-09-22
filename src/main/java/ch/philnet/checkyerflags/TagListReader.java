@@ -33,11 +33,15 @@ public class TagListReader {
                }
             }
         } catch(FileNotFoundException fnf) {
-            this.messageHandler.error("Failed to read tag list, file does not exist!", fnf);
+            this.messageHandler.error("(TagListReader): Failed to read tag list, file does not exist!", fnf);
 
         } catch(IOException io) {
-            this.messageHandler.error("IOException while reading tag list!", io);
+            this.messageHandler.error("(TagListReader): IOException while reading tag list!", io);
+        } catch(Exception e) {
+            this.messageHandler.error("(TagListReader): Unhandled general exception.", e);
         }
+        this.messageHandler.info(String.format("(TagListReader): Loaded %d tags.", tags.size()));
+
 
         return tags;
     }

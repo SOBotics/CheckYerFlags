@@ -21,7 +21,7 @@ public class RankCommand extends Command {
     public RankCommand(Room chatRoom, MessageHandler msgHandler, ApiService api) {
         //Allowed Patters:
         // alive
-        commandPattern = "(r[m|n])|(rank\s(next|me|[0-9]+))|(r\s[0-9]+)";
+        commandPattern = "(r[m|n])|(rank\\s(next|me|[0-9]+))|(r\\s[0-9]+)";
         room = chatRoom;
         messageHandler = msgHandler;
         this.api = api;
@@ -34,7 +34,7 @@ public class RankCommand extends Command {
 
     @Override
     public void run(long messageId, PingMessageEvent event) {
-        messageHandler.info("Replying to rank check command");
+        messageHandler.info("(Command): Replying to rank check command");
 
         Message message = room.getMessage(messageId);
         String messageText = message.getContent().toLowerCase();
@@ -68,7 +68,7 @@ public class RankCommand extends Command {
         } else if(messageText.matches("rn") || messageText.matches("rank next")) {
             room.replyTo(messageId, String.format("You need %,d more flags to get your next flag rank, **%s** %s (%,d flags in total).",
             flagsToNextRank, nextRank.getTitle(), nextRank.getDescription(), nextRank.getFlagCount()));
-        } else if(messageText.matches("(rank\s[0-9]+)|(r\s[0-9]+)")) {
+        } else if(messageText.matches("(rank\\s[0-9]+)|(r\\s[0-9]+)")) {
             long userId = this.getUserFromMessage(messageText);
 
             if(userId <= 0) {
@@ -100,7 +100,7 @@ public class RankCommand extends Command {
     }
 
     private long getUserFromMessage(String message) {
-        Pattern pattern = Pattern.compile("((?<=rank\s)[0-9]+)|((?<=r\s)[0-9]+)");
+        Pattern pattern = Pattern.compile("((?<=rank\\s)[0-9]+)|((?<=r\\s)[0-9]+)");
         Matcher matcher = pattern.matcher(message);
         String user = "0";
 
