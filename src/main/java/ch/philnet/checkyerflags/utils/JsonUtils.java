@@ -19,8 +19,8 @@ public class JsonUtils {
         if (response.statusCode() != 200) {
             throw new IOException("HTTP " + response.statusCode() + " fetching URL " + (url) + ". Body is: " + response.body());
         }
-        JsonObject root = new JsonParser().parse(json).getAsJsonObject();
-        return root;
+
+        return new JsonParser().parse(json).getAsJsonObject();
     }
     public static JsonObject post(String url, String... data) throws IOException {
         Connection.Response response = Jsoup.connect(url).data(data).method(Connection.Method.POST).ignoreContentType(true).ignoreHttpErrors(true).execute();
@@ -28,8 +28,7 @@ public class JsonUtils {
         if (response.statusCode() != 200) {
             throw new IOException("HTTP " + response.statusCode() + " fetching URL " + (url) + ". Body is: " + response.body());
         }
-        JsonObject root = new JsonParser().parse(json).getAsJsonObject();
-        return root;
+        return new JsonParser().parse(json).getAsJsonObject();
     }
     public static void handleBackoff(JsonObject root) {
         if (root.has("backoff")) {

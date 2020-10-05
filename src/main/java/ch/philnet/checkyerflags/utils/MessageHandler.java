@@ -10,8 +10,8 @@ import ch.philnet.checkyerflags.ErrorInterface;
  * Helper class to make reporting errors easier
  */
 public final class MessageHandler implements ErrorInterface {
-    private Logger logger;
-    private Rollbar rollbar;
+    private final Logger logger;
+    private final Rollbar rollbar;
 
     public MessageHandler(Logger logger, Rollbar rollbar) {
         this.logger = logger;

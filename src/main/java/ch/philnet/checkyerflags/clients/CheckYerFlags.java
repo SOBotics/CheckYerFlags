@@ -37,9 +37,9 @@ public class CheckYerFlags {
         //Initialize Rollbar
         final Config config = ConfigBuilder.withAccessToken(prop.getProperty("rollbarAccessToken"))
             .environment("development")
-            .codeVersion("3.0.0")
+            .codeVersion("3.0.1")
             .sender(new SyncSender.Builder().build())
-            .enabled(prop.getProperty("rollbarAccessToken") == "")
+            .enabled(prop.getProperty("rollbarAccessToken").equals(""))
         .build();
 
         client = new StackExchangeClient(prop.getProperty("email"), prop.getProperty("password"));
