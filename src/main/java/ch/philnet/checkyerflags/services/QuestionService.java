@@ -20,7 +20,7 @@ import java.util.*;
  */
 public class QuestionService {
     private String missingParentTag = "";
-    private ArrayList<Long> checkedPosts = new ArrayList<Long>();
+    private ArrayList<Long> checkedPosts = new ArrayList<>();
     private MessageHandler messageHandler;
     private HashMap<String, String[]> watchedTags;
 
@@ -29,7 +29,7 @@ public class QuestionService {
         this.watchedTags = new TagListReader(this.messageHandler).readTagList();
 
         try {
-            this.messageHandler.info("[QuestionService] Connecting to Websocket...");
+            this.messageHandler.info("(QuestionService): Connecting to Websocket...");
             new WebSocketFactory()
                     .createSocket("wss://qa.sockets.stackexchange.com/")
                     .addListener(new WebSocketAdapter() {
