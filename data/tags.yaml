@@ -4,16 +4,46 @@ python:
   - flask
   - django
   - scipy
-javascript:
-  - jquery
-sqlite:
-  - sqlite3
-sql:
-  - tsql
-  - mysql
-  - sql-server
-  - oracle
-  - postgresql
-  - sqlite
 django:
   - django-rest-framework
+mysql:
+  - mysql-5.0
+  - mysql-5.1
+  - mysql-5.5
+  - mysql-5.6
+  - mysql-5.7
+  - mysql-8.0
+  - mariadb
+mariadb:
+  - mariadb-10.1
+  - mariadb-10.2
+  - mariadb-10.3
+  - mariadb-10.4
+  - mariadb-10.5
+php:
+  - php-5.1
+  - php-5.2
+  - php-5.3
+  - php-5.4
+  - php-5.5
+  - php-5.6
+  - php-7
+  - php-7.0
+  - php-7.1
+  - php-7.2
+  - php-7.3
+  - php-7.4
+  - php-8
+  - mysqli
+  - pdo
+  - php-curl
+sql-server:
+  - sql-server-2000
+  - sql-server-2005
+  - sql-server-2008
+  - sql-server-2008-r2
+  - sql-server-2012
+  - sql-server-2014
+  - sql-server-2016
+  - sql-server-2017
+  - sql-server-2019
