@@ -1,16 +1,7 @@
 package ch.philnet.checkyerflags.services;
 
-import ch.philnet.checkyerflags.commands.AliveCommand;
-import ch.philnet.checkyerflags.commands.Command;
-import ch.philnet.checkyerflags.commands.CommandsCommand;
-import ch.philnet.checkyerflags.commands.DeleteCommand;
-import ch.philnet.checkyerflags.commands.PrivilegeCheckCommand;
-import ch.philnet.checkyerflags.commands.QuotaCommand;
-import ch.philnet.checkyerflags.commands.RankCommand;
-import ch.philnet.checkyerflags.commands.SayCommand;
-import ch.philnet.checkyerflags.commands.StopCommand;
+import ch.philnet.checkyerflags.commands.*;
 import ch.philnet.checkyerflags.utils.MessageHandler;
-import ch.philnet.checkyerflags.commands.StatusCommand;
 
 import org.slf4j.LoggerFactory;
 import org.sobotics.chatexchange.chat.Room;
@@ -48,7 +39,7 @@ public class BotService {
 
         //Notify chat users that the bot has started
         messageHandler.info("Send start message to chat...");
-        String modeSuffix = config.environment() == "development" ? " (dev)" : "";
+        String modeSuffix = config.environment().equals("development") ? " (dev)" : "";
         room.send(String.format("[ [CheckYerFlags](https://stackapps.com/q/7792) ] v%s%s started on %s.", config.codeVersion(), modeSuffix, location));
 
         //Assign passed variables
@@ -135,7 +126,7 @@ public class BotService {
     private ArrayList<Command> availableCommands(Room room) {
         ApiService api = new ApiService(this.apiKey, this.messageHandler);
 
-        ArrayList<Command> commandList = new ArrayList<Command>();
+        ArrayList<Command> commandList = new ArrayList<>();
         commandList.add(new AliveCommand(room, this.messageHandler));
         commandList.add(new StopCommand(room, this.messageHandler));
         commandList.add(new PrivilegeCheckCommand(room, this.messageHandler));
@@ -143,6 +134,7 @@ public class BotService {
         commandList.add(new QuotaCommand(room, this.messageHandler, api));
         commandList.add(new SayCommand(room, this.messageHandler));
         commandList.add(new RankCommand(room, this.messageHandler, api));
+        commandList.add(new WelcomeCommand(room, this.messageHandler));
         commandList.add(new CommandsCommand(room, this.messageHandler));
         return commandList;
     }

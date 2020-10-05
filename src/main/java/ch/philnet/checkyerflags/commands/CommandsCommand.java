@@ -45,7 +45,7 @@ public class CommandsCommand extends Command {
 
         //Only on SOBotics: Welcome command
         if (room.getRoomId() == 111347) {
-            commands += "welcome <username>           - Post a room introduction message. The specified user with <username> will get pinged.";
+            commands += "\nwelcome <username>           - Post a room introduction message. The specified user with <username> will get pinged.)";
         }
 
         room.send(commands);
